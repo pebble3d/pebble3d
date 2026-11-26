@@ -29,6 +29,9 @@ Write a scene as JSON, drive it from TypeScript with `createGame`, and verify it
 - [audio-sfx](docs/cookbook/audio-sfx.md): Synthesised WebAudio cues without autoplay warnings.
 - [json-levels-and-headless-verify](docs/cookbook/json-levels-and-headless-verify.md): Levels as data, proven in Node with `pnpm --filter chain-reaction verify`.
 - [assets-and-licensing](docs/cookbook/assets-and-licensing.md): Adding a model, HDRI or splat through the asset manifest.
+- [sub-path-hosting](docs/cookbook/sub-path-hosting.md): Serving a game under `/some/path/`: Vite `--base`, the asset base, shared assets.
+- [custom-camera](docs/cookbook/custom-camera.md): Driving the camera yourself: removing the orbit controls, follow and spring-arm cameras.
+- [owning-the-world](docs/cookbook/owning-the-world.md): Worlds your code creates, steps and draws next to `createGame`; stale views; `stateHash`.
 
 ## Examples
 
@@ -104,7 +107,7 @@ apps/hello-ball/
   test/sim.test.ts
 ```
 
-`vite.config.ts` must be copied: it serves the Basis transcoder at `/basis/`, points `publicDir` at `../playground/public` (shared assets, `favicon.svg`) and lets Vite serve the wasm from `packages/sdk/wasm/`. After creating the folder, run `pnpm i` so pnpm links the workspace packages (in a sandbox without network, `pnpm i --offline` works once the store has every package).
+`vite.config.ts` must be copied: it serves the Basis transcoder at `/basis/`, points `publicDir` at `../playground/public` (shared assets, `favicon.svg`) and lets Vite serve the wasm from `packages/sdk/wasm/`. Scenes and code keep asset paths root-absolute (`/assets/...`); to deploy under a sub-path, build with `vite build --base /some/path/` and the renderer prefixes them ([cookbook/sub-path-hosting.md](cookbook/sub-path-hosting.md)). After creating the folder, run `pnpm i` so pnpm links the workspace packages (in a sandbox without network, `pnpm i --offline` works once the store has every package).
 
 New-app checklist: `package.json`, `index.html`, copied `vite.config.ts` and `tsconfig.json`, your own `vitest.config.ts` **plus an `"apps/<name>"` line in the root `vitest.config.ts` `projects` list** (without it vitest never runs the app's tests), then `pnpm i`.
 
@@ -405,6 +408,7 @@ Choosing `--ticks`: `--ticks n` captures right after engine tick n (fixed mode, 
 - [verification.md](verification.md): shots, determinism, benches.
 - [troubleshooting.md](troubleshooting.md): when something fails.
 - [api-reference.md](api-reference.md): every `createGame` option, `Game` member and `World` method.
+- Next steps most games need: [cookbook/custom-camera.md](cookbook/custom-camera.md) (your own camera), [cookbook/owning-the-world.md](cookbook/owning-the-world.md) (worlds you create per round), [cookbook/sub-path-hosting.md](cookbook/sub-path-hosting.md) (deploying under a sub-path).
 - Real games to copy from: `apps/chain-reaction` (createGame plus its own worlds), `apps/rockfall` (custom boot, spawners, 1,800 bodies).
 
 
@@ -449,7 +453,7 @@ Pebble3D is a browser 3D engine: JSON scenes validated by a zod schema, rendered
 | All TS tests                                       | `pnpm test` (root vitest, every project) or `pnpm -r test`                                                                    |
 | One project's tests                                | `npx vitest run --project rockfall` (a project must be listed in the root `vitest.config.ts`)                                 |
 | Typecheck                                          | `pnpm typecheck`                                                                                                              |
-| Lint (biome)                                       | `pnpm lint`; auto-fix with `npx biome check --write <paths>`                                                                  |
+| Lint (biome)                                       | `pnpm lint`; auto-fix with `npx biome check --write <paths>` (never `--unsafe` on CSS: it deletes `!important`)               |
 | Rust tests, both builds                            | `cargo test -p engine-core --features deterministic` and `cargo test -p engine-core --no-default-features --features fast`    |
 | Determinism (Node)                                 | `node --experimental-strip-types packages/sdk/test/determinism.mjs --expect "$(cat packages/sdk/test/fixtures/det-hash.txt)"` |
 | Screenshot                                         | `pnpm shot --scene showcase --cam hero` or `pnpm shot --app rockfall --param demo=1 --ticks 600`                              |
@@ -901,6 +905,8 @@ Wasm URLs come from Vite `?url` imports of `packages/sdk/wasm/det/engine_core_de
 | `stopAtTick` | `number` | none | Fixed mode only: the sim stops advancing at this tick and `__pebble3d.done` turns true once that frame has rendered. |
 | `backend` | `"webgpu" \| "webgl"` | `"webgpu"` | A WebGPU request that falls back throws `BackendUnavailable: webgpu`; retry on a fresh canvas with `"webgl"` (`apps/playground/src/main.ts`, lines 200-212). |
 | `splatOnly` | `boolean` | `false` | Debug: draw only the splat, no meshes or post. |
+| `assetBase` | `string` | `VITE_PEBBLE3D_ASSET_BASE`, else Vite's `BASE_URL`, else `"/"` | Prefix for root-absolute asset URLs (`/assets/...` in the scene, `renderer.loadGltf`, the `/basis/` transcoder). See [cookbook/sub-path-hosting.md](cookbook/sub-path-hosting.md). |
+| `webglFallback` | `boolean` | on only with `VITE_PEBBLE3D_WEBGL_FALLBACK=1` or `?webglFallback=1` | When WebGPU is missing, keep WebGL on the same canvas (with a small notice) instead of throwing `BackendUnavailable`. |
 
 What happens each frame, in order:
 
@@ -921,13 +927,13 @@ There is no per-tick hook. To run game rules once per tick, either count `world.
 | `sim` | `SimHandle`: `world` (the wasm `World`), `memory` (its `WebAssembly.Memory`), `build`, `seed`, `spawnScene(entries)`. |
 | `views` | `StateViews`: `prev`, `curr` (Float32Array, 8 floats per slot), `scratch` (Float32Array of `SCRATCH_LEN`), `capacity`, `refresh()`. |
 | `ids` | `Map<sceneId, simId>`. Includes the generated `__ground` and `__bounds.<side>` statics. Spawner-created bodies are not in it. |
-| `player` | `PlayerRig \| null`, the scene's first entity with a `character`: `simId`, `view` (a `CharacterView`), `camera` (`ThirdPersonController` when `camera.controller` is `"thirdPerson"`, else null), `input` (`{ keys: { f, b, l, r }, jump, sprint }`). Keyboard listeners (WASD/arrows, Space, Shift) write `input`; scripts and bots may write it directly. |
-| `renderer` | `EngineRenderer`: `three` (`renderer`, `scene`, `camera`), `controller`, `instances`, `dof`, `splatColor`, `style`, `stylize(root)`, `loadGltf(url)`, `setCameraPreset(name)`, `reportError(msg)`. |
+| `player` | `PlayerRig \| null`, the scene's first entity with a `character`: `simId`, `view` (a `CharacterView`), `camera` (`ThirdPersonController` when `camera.controller` is `"thirdPerson"`, else null), `input` (`{ keys: { f, b, l, r }, jump, sprint }`). Keyboard listeners (WASD/arrows, Space, Shift) write `input`; scripts and bots may write it directly. Every frame, 0-tick frames included, `input` is sent with `setCharacterInput`, overwriting any `setCharacterInput` your code made for this character (re-send yours at the end of `onFrame`). Other characters get no animation until you call `renderer.attachCharacter` ([cookbook/character-and-camera.md](cookbook/character-and-camera.md)). |
+| `renderer` | `EngineRenderer`: `three` (`renderer`, `scene`, `camera`), `controller` (settable: `dispose()` it and set `null` to own the camera, [cookbook/custom-camera.md](cookbook/custom-camera.md)), `instances`, `dof`, `splatColor`, `style`, `stylize(root)`, `loadGltf(url)`, `assetUrl(url)`, `attachCharacter(simId, clipMap)`, `setCameraPreset(name)`, `reportError(msg)`. |
 | `onFrame(cb)` | `cb(dt)` every frame after `renderer.sync`, before `render`. `dt` is wall seconds in realtime and `ticks / 60` in fixed mode (`1/60`, or 0 once stopped). |
 | `setCamera(name)` | A camera preset from `camera.presets`, or `"controller"` to hand back to the scene's controller. A preset suspends the third-person camera; the player still moves relative to its yaw. |
 | `stats()` | `GameStats` (fps, frameMs, drawCalls, triangles, splats, physicsMs, activeBodies, sleepingBodies, build, tick, errors). Returns the same mutated object every call. |
 
-Read state from `views` only after `views.refresh()`: wasm memory can grow on any spawn, which detaches old typed-array views. `createGame` refreshes once per frame before `onFrame`; refresh again after you spawn or step yourself.
+Read state from `views` only after `views.refresh()`: wasm memory can grow on any spawn, which detaches old typed-array views (they then read as empty, `byteLength` 0). `createGame` refreshes once per frame before `onFrame`; refresh again after you spawn or step yourself. Every world made from the same wasm module shares one memory, so a spawn in one world detaches the views of all the others. Read `views.curr` and `views.scratch` from the `views` object each time; a `Float32Array` kept in a local or a field across calls goes stale.
 
 ## State buffers
 
@@ -974,7 +980,7 @@ if (hit) {
 | `1` | static bodies only (ground, bounds, static entities) | ignored |
 | `2` | everything except the body of `excludeId` | the entity to skip (the caster itself) |
 
-The direction is normalised for you, so `toi` is metres. `hitId` is the entity id (compare with `game.ids`). Raycasts see the broad phase as of the last `step`: a body spawned since then is invisible until the next tick. A zero direction or `maxToi <= 0` returns false. The third-person camera uses filter 1 so moving props never pull the camera in.
+The direction is normalised for you, so `toi` is metres. `hitId` is the entity id (compare with `game.ids`). Raycasts see the broad phase as of the last `step`: a body spawned since then is invisible until the next tick, and a world that has never stepped misses everything, static floor included. Step a new world once before probing it. A zero direction or `maxToi <= 0` returns false. The third-person camera uses filter 1 so moving props never pull the camera in.
 
 ## Body control
 
@@ -983,14 +989,16 @@ All take the entity id and return `false` for unknown ids or the wrong body type
 | Method | Works on | Effect |
 | --- | --- | --- |
 | `applyImpulse(id, ix, iy, iz)` | dynamic | Adds `impulse / mass` to the velocity (N·s); wakes the body. |
-| `applyTorqueImpulse(id, tx, ty, tz)` | dynamic | Angular impulse; wakes the body. |
+| `applyTorqueImpulse(id, tx, ty, tz)` | dynamic | Angular impulse in **world** axes (N·m·s); the angular velocity changes by the inverse world-space inertia times it. Wakes the body. |
 | `setVelocity(id, vx, vy, vz, wx, wy, wz)` | dynamic | Sets linear and angular velocity; wakes the body. |
-| `setKinematicPose(id, px, py, pz, qx, qy, qz, qw)` | kinematic | Target pose, reached on the next step. |
+| `setKinematicPose(id, px, py, pz, qx, qy, qz, qw)` | kinematic | Target pose, reached on the next step. Position and rotation only: colliders cannot be rescaled after spawn. |
 | `teleport(id, x, y, z)` | any with a body | Moves instantly, zeroes a dynamic body's velocity, sets `NO_INTERP`. Returns nothing. |
 | `setCharacterInput(id, wx, wz, jump, sprint)` | character | World-space XZ direction (clamped to length 1). `createGame` overwrites it every frame for `game.player`. |
 | `spawn(json)` / `despawn(id)` | | `spawn` takes an `EntityDescJson` string (camelCase: `position`, `rotation`, `body: { type, mass, friction, restitution, linearDamping, angularDamping, ccd, collider }`, `character`, `spawner`) and returns the id; it throws on bad JSON. Bodies spawned this way get no visual: add one yourself. |
 
-Default mass is collider volume at density 1 (a 1 m box is 1 kg, a 0.5 m radius sphere about 0.52 kg).
+Default mass is collider volume at density 1 (a 1 m box is 1 kg, a 0.5 m radius sphere about 0.52 kg). The inertia tensor comes from the collider shape at uniform density; an explicit `mass` scales it with the mass. Damping defaults to 0, and Rapier has no rolling resistance, so a rolling sphere needs `angularDamping` to ever stop ([cookbook/bodies-impulses-velocity.md](cookbook/bodies-impulses-velocity.md)).
+
+There are no contact or collision events. Detect hits in your rules after each step from positions and velocities (overlap distance, closing speed, an unexplained one-tick velocity change); the bodies recipe has the patterns and the games that use them.
 
 ## The `window.__pebble3d` probe
 
@@ -1009,7 +1017,21 @@ Default mass is collider volume at density 1 (a 1 m box is 1 kg, a 0.5 m radius 
 | `position(sceneId)` | `[x, y, z]` of a scene entity's body, or null. Allocates. |
 | `error` | Set by your `main().catch` so automation reports the failure instead of timing out. |
 
-Add game probes with `Object.assign(window.__pebble3d ?? {}, { game: { score: () => sim.score } })`. `pnpm shot` calls every function in `game` and writes the results to the sidecar. An app that uses the engine with its own world (Chain Reaction) can override `stateHash` the same way so captures report that world. An app that boots without `createGame` must install the whole hook itself: `ready`, `done`, `frame`, `tick`, `stats`, `adapterInfo`, `stateHash`, `setCamera` (`apps/rockfall/src/main.ts`, lines 274-322).
+Add game probes with `Object.assign(window.__pebble3d ?? {}, { game: { score: () => sim.score } })`. `pnpm shot` calls every function in `game` and writes the results to the sidecar. An app that runs its game in its own worlds (Chain Reaction, Ringout, Pebble Garden) must override `stateHash` the same way, `Object.assign(window.__pebble3d ?? {}, { stateHash: () => myWorld.stateHash() })`, or every capture reports `createGame`'s idle world and the hash never changes ([cookbook/owning-the-world.md](cookbook/owning-the-world.md)). An app that boots without `createGame` must install the whole hook itself: `ready`, `done`, `frame`, `tick`, `stats`, `adapterInfo`, `stateHash`, `setCamera` (`apps/rockfall/src/main.ts`, lines 274-322).
+
+## Validating scenes
+
+`parseScene(input)` (and `createGame`) throws a `SceneError` for the **first** problem only, with its `path` (`entities[3].prefab`). To list every problem at once (an editor, an import dialog, a level linter), call `SceneSchema.safeParse(input)` and walk `error.issues`; `formatPath(issue.path)` gives the same path text:
+
+```ts
+import { formatPath, SceneSchema } from "@pebble3d/sdk/schema";
+
+const r = SceneSchema.safeParse(json);
+if (!r.success)
+	for (const i of r.error.issues) console.log(`${formatPath(i.path)}: ${i.message}`);
+```
+
+Validation runs in two passes. The cross-field checks (duplicate ids, unknown prefabs, "entity needs a mesh, body or spawner", collider/body combinations) run only once the whole scene passes the field-level schema, so a scene with a bad field reports only field errors; fix those and the cross-field errors appear on the next run.
 
 ## Booting without createGame
 
@@ -1436,6 +1458,19 @@ Error messages and symptoms seen while building Pebble3D and its showcase games,
 | A second game on the same page misbehaves | [One game per page](#a-second-game-on-the-same-page) |
 | `No projects were found ... The filter matched no projects: <app>`, or `No test files found, exiting with code 0` for a new app | [App tests not registered](#a-new-apps-tests-never-run) |
 | A headless (Node) run's `stateHash` differs from the browser's at the same tick | [Headless hash differs](#headless-hash-differs-from-the-browser) |
+| Assets, the transcoder or the wasm 404 when the game is served under a sub-path | [Sub-path 404s](#assets-404-under-a-sub-path) |
+| Dragging or scrolling on the canvas moves a camera your code drives | [Orbit controls fight your camera](#the-orbit-camera-fights-your-camera) |
+| A bot's or sim's character input is ignored on high-refresh displays; the player walks on a menu | [Player input overwritten](#your-setcharacterinput-is-overwritten) |
+| A second character slides around without animating or turning | [Characters after the first](#other-characters-do-not-animate) |
+| A static body was teleported but its mesh stayed put | [Static visuals](#a-static-mesh-does-not-move) |
+| A ball or wheel rolls forever | [Rolling without damping](#spheres-roll-forever) |
+| State reads return zeros or stale values; `views.curr.byteLength` is 0 | [Detached views](#state-views-read-zeros-after-a-spawn) |
+| `raycast` returns false on a world you just built | [Raycast before the first step](#raycasts-miss-on-a-new-world) |
+| You need collision callbacks | [No contact events](#there-are-no-contact-events) |
+| A bad scene reports one error at a time | [One scene error](#only-the-first-scene-error-is-reported) |
+| The sidecar `stateHash` is the same in every capture | [stateHash of the idle world](#the-shot-statehash-never-changes) |
+| `!important` vanished from a CSS file after a lint fix | [biome --unsafe](#biome---unsafe-removed-important) |
+| A worker-based sim makes fixed-mode captures flaky or time out | [Worker in fixed mode](#fixed-mode-captures-with-a-worker-sim) |
 
 ## BackendUnavailable: webgpu
 
@@ -1619,6 +1654,110 @@ const scene = sceneJson as unknown as SceneInput;
 
 **Fix:** one game per page. Switch levels inside one game (new `World`s, as Chain Reaction does per run) or reload the page with new URL params (Field Notes reloads to change site).
 
+## Assets 404 under a sub-path
+
+**Symptom:** served from `/games/x/` instead of `/`, the console shows 404s for `/assets/...`, `/basis/basis_transcoder.js` or a `.wasm`.
+
+**Cause:** a URL that bypasses the asset base. The renderer prefixes root-absolute URLs in the scene, in `renderer.loadGltf` and in the transcoder path with the asset base (`createGame`/`createRenderer` `assetBase`, else `VITE_PEBBLE3D_ASSET_BASE`, else Vite's `--base`). Your own `fetch`, `attachSound` and three.js loaders are not prefixed; neither are relative paths.
+
+**Fix:** build with `vite build --base /games/x/`, keep asset paths root-absolute, pass hand-loaded URLs through `renderer.assetUrl(url)`, and copy `vite.config.ts` from `apps/rockfall` (it emits `basis/`). Full layout: [cookbook/sub-path-hosting.md](cookbook/sub-path-hosting.md).
+
+## The orbit camera fights your camera
+
+**Symptom:** you set `renderer.three.camera` every frame, yet a mouse drag or the wheel still nudges it, or touch scrolling is dead on the canvas.
+
+**Cause:** the scene's `camera.controller` defaults to `"orbit"`, which attaches three's `OrbitControls` to the canvas. There is no `"none"` value. Setting `renderer.controller = null` stops its per-frame update but leaves its listeners, which update the camera themselves.
+
+**Fix:** `renderer.controller?.dispose(); renderer.controller = null;` after boot, or use `"controller": "thirdPerson"` in a scene without a `character` (no controller is created). See [cookbook/custom-camera.md](cookbook/custom-camera.md).
+
+## Your setCharacterInput is overwritten
+
+**Symptom:** your rules call `world.setCharacterInput` for the player character inside the per-tick loop; at 60 Hz it works, on a 120 Hz or 144 Hz display the demo bot stops steering or the player still walks with the keyboard when your rules say stand still.
+
+**Cause:** `createGame` sends `game.player.input` (the keyboard) with `setCharacterInput` every frame, including frames that run 0 ticks. On a fast display most frames run no tick, so the rig's value replaces yours before the next `world.step`.
+
+**Fix:** re-send your intent at the end of every `onFrame`, after the tick loop (`apps/lanternfall/src/main.ts`, lines 82-91, and `assertInput` in `apps/lanternfall/src/game/sim.ts`, lines 403-420), or drive the player only by writing `game.player.input`.
+
+## Other characters do not animate
+
+**Symptom:** the first character animates; the others move but stay in their bind pose and never turn.
+
+**Cause:** `createGame` builds a `CharacterView` (animation mixer and facing) only for `game.player`, the first entity with a `character`.
+
+**Fix:** for each other character call `game.renderer.attachCharacter(simId, clipMap)` once, then per frame `world.characterState(simId)` and `view.update(frame, dt)` (`apps/lanternfall/src/view/present.ts`, lines 155-160 and 248-260). To make a different character the player, put it first in `entities`.
+
+## A static mesh does not move
+
+**Symptom:** `world.teleport` on a `"static"` body moves its collider (things bump into it at the new spot) but its mesh stays where it started.
+
+**Cause:** the renderer places a static body's mesh once, on the first `renderer.sync` after it was added, and never reads its slot again.
+
+**Fix:** make anything that moves `"kinematic"` and move it with `setKinematicPose` or `teleport`; its visual then follows every frame. Code that inspects or merges static meshes must run after the first frame.
+
+## Spheres roll forever
+
+**Symptom:** a ball on flat ground never slows down.
+
+**Cause:** Rapier has no rolling resistance, and `angularDamping` and `linearDamping` default to 0.
+
+**Fix:** set `"angularDamping"` on rolling bodies (0.25 in Pebble Garden's pebble, `apps/pebble-garden/src/garden/pieces.ts`, lines 156-163). Details: [cookbook/bodies-impulses-velocity.md](cookbook/bodies-impulses-velocity.md).
+
+## State views read zeros after a spawn
+
+**Symptom:** after spawning (or when running several worlds), `views.curr` / `views.scratch` read 0 or old values, positions jump to the origin, or a raycast result reads 0.
+
+**Cause:** a spawn grew the wasm memory, which detaches every typed array over the old buffer. All worlds from one wasm module share that memory, so a spawn in any world detaches the views of all of them. `createGame` refreshes `game.views` once per frame; a world you create gets no such refresh.
+
+**Fix:** call `views.refresh()` after spawning or stepping, and before reading scratch results, and read `views.curr` / `views.scratch` through the views object instead of keeping the arrays (`apps/swarm-siege/src/game/sim.ts`, lines 380-385). See [cookbook/owning-the-world.md](cookbook/owning-the-world.md).
+
+## Raycasts miss on a new world
+
+**Symptom:** `world.raycast` returns false on a world you just created and spawned, even straight down onto the floor.
+
+**Cause:** queries use the broad phase as of the last `step`; a world that has never stepped has none.
+
+**Fix:** `world.step(1)` once after spawning, before the first query, or defer the query work to the first tick (`apps/lanternfall/src/game/sim.ts`, lines 325-329).
+
+## There are no contact events
+
+**Symptom:** you look for an `onCollision` callback or a contact list and find none.
+
+**Cause:** the engine does not expose Rapier's contact or intersection events.
+
+**Fix:** detect contacts in your rules after each step from state you already read: centre distance and closing speed (`apps/ringout/src/game/sim.ts`, lines 341-404), or a velocity change the forces you applied do not explain (`apps/drift-drone/src/game/sim.ts`, lines 407-423 and 441-451). Trigger zones that only test a position need no body at all. Patterns: [cookbook/bodies-impulses-velocity.md](cookbook/bodies-impulses-velocity.md).
+
+## Only the first scene error is reported
+
+**Symptom:** fixing one `SceneError` reveals the next, one per run.
+
+**Cause:** `parseScene` (and so `createGame`) throws for the first issue only. Also, the cross-field checks (duplicate ids, unknown prefabs, entities with nothing to draw or simulate) run only after every field passes.
+
+**Fix:** to list everything, `SceneSchema.safeParse(json)` and print each `error.issues[i]` with `formatPath(issue.path)` ([api-reference.md](api-reference.md#validating-scenes); `apps/pebble-garden/src/garden/validate.ts`, lines 73-81). Expect a second round of cross-field issues once the field errors are fixed.
+
+## The shot stateHash never changes
+
+**Symptom:** every `pnpm shot` sidecar has the same `stateHash`, whatever the tick or input.
+
+**Cause:** the game runs in worlds it creates itself, while `__pebble3d.stateHash` still reports `createGame`'s world, which holds no moving bodies.
+
+**Fix:** override it after `createGame`: `Object.assign(window.__pebble3d ?? {}, { stateHash: () => myWorld.stateHash() })` (`apps/ringout/src/main.ts`, lines 95-99; `apps/pebble-garden/src/main.ts`, lines 182-186).
+
+## biome --unsafe removed !important
+
+**Symptom:** after `npx biome check --write --unsafe`, a CSS rule lost its `!important` and a hidden panel shows again.
+
+**Cause:** biome's recommended rule `lint/complexity/noImportantStyles` has an unsafe fix that deletes `!important`. `--write` alone only reports it.
+
+**Fix:** don't run `--unsafe` over CSS. Where `!important` is needed, keep it with a suppression comment on the line before: `/* biome-ignore lint/complexity/noImportantStyles: <reason> */` (`apps/pebble-garden/src/ui/hud.css`, lines 62-65), or raise the selector's specificity instead (`apps/drift-drone/src/game/ui/hud.css`, line 42).
+
+## Fixed-mode captures with a worker sim
+
+**Symptom:** with the sim in a Web Worker, `pnpm shot --ticks n` captures a different tick each run, or times out waiting for `__pebble3d.done`.
+
+**Cause:** a worker steps on its own clock, so "one tick per frame, stop at n" cannot be enforced across the thread boundary.
+
+**Fix:** run the same sim inline on the main thread whenever `mode` is `fixed` and use the worker only in realtime (`apps/swarm-siege/src/main.ts`, line 81 and lines 133-135; `apps/breakpoint/src/main.ts`, line 85). See [cookbook/instanced-crowds-and-perf.md](cookbook/instanced-crowds-and-perf.md).
+
 
 ===== docs/cookbook/scene-basics.md =====
 
@@ -1656,11 +1795,12 @@ Load it in the playground: save it as `apps/playground/scenes/<name>.json` and o
 | Static colliders may overlap | Static bodies never collide with each other (Rapier skips fixed-fixed pairs), so a static pad sunk into the floor or two overlapping static boxes cost nothing and push nothing. |
 | Thin colliders | A 0.02 m static box holds resting bodies fine, but a fast body can pass through a thin collider in one tick: give the fast body `"ccd": true`, or make the collider thicker. A target that rules only test by position (an `inZone` check) needs no `body` at all. |
 | `environment.ground` vs a floor box | `ground` is an infinite static half-space at `ground.y` (friction 0.5, restitution 0, the body defaults); `size` only sizes the visible plane, so bodies never fall off its edge. A static box floor has edges and its own `friction`/`restitution`. Both are spawned by `expandScene`, so Node and the browser get the same floor either way. |
+| Static visuals are placed once | The renderer places a `static` body's mesh from the state buffer on the first `renderer.sync` after it is added, then never touches it again (dynamic, kinematic and character visuals follow their slot every frame). `teleport` on a static body moves its collider but not its mesh: anything that moves must be `kinematic`. Code that reads or merges static meshes (baking a level into a few draw calls) must wait until after the first frame, when they have their final transforms. |
 | Collider limits | `plane` only on static bodies; `trimesh` only on static or kinematic ones. |
 
 Every field and default: [scene-reference.md](../scene-reference.md). Editor validation: set `"$schema"` to `packages/sdk/scene.schema.json` relative to the file.
 
-See it in: [apps/playground/scenes/studio.json](../../apps/playground/scenes/studio.json) (primitives, materials, prefabs), [apps/chain-reaction/levels/base.json](../../apps/chain-reaction/levels/base.json) (a studio base scene).
+See it in: [apps/playground/scenes/studio.json](../../apps/playground/scenes/studio.json) (primitives, materials, prefabs), [apps/chain-reaction/levels/base.json](../../apps/chain-reaction/levels/base.json) (a studio base scene), [apps/lanternfall/src/view/present.ts](../../apps/lanternfall/src/view/present.ts) (merging the static level meshes on the first frame, after their placement, lines 227-241).
 
 
 ===== docs/cookbook/prefabs-and-spawners.md =====
@@ -1748,6 +1888,11 @@ export function setup(game: Game) {
 | --- | --- |
 | Body type matters | `applyImpulse`, `applyTorqueImpulse`, `setVelocity` work on dynamic bodies only; `setKinematicPose` on kinematic only. They return `false` otherwise. |
 | Mass | Default is collider volume at density 1. Scale impulses by mass for a target speed: `m * (target - v)` (Chain Reaction springs). |
+| Torque is world-frame | `applyTorqueImpulse(id, tx, ty, tz)` takes a world-space angular impulse (N·m·s), not one in the body's local axes: the change in angular velocity is `I⁻¹ · τ` with the inertia tensor rotated to the body's current orientation. To spin about a body axis, rotate that axis into world space first (from the quaternion in `views.curr`). |
+| Inertia follows the collider | The inertia tensor is the collider's shape at uniform density. With `mass` set, Rapier keeps the shape's tensor and scales it to that mass, so doubling `mass` halves the spin a torque impulse gives. A 2 x 1 x 0.5 m box of 1 kg yawed 90 degrees, given `applyTorqueImpulse(id, 1, 0, 0)`, spins at 2.4 rad/s (`1 / I_zz`, I_zz = m(2² + 1²)/12); at `mass: 10`, 0.24 rad/s. A sphere's inertia is the same about every axis (`0.4 m r²`), so its frame never matters. |
+| Spheres roll forever | Rapier has no rolling resistance. A ball rolling on flat ground keeps its speed indefinitely with the default `angularDamping: 0` (a 0.5 m sphere set rolling at 3 m/s still does 3.0 m/s after 10 s). Give rolling bodies `"angularDamping"` (0.25 to 0.6 is typical; 0.5 brought that ball to 0.73 m/s after 10 s) and optionally a little `"linearDamping"`. Damping scales velocity by `1 / (1 + dt · damping)` each tick. |
+| No contact events | The engine reports no collision or contact events. Detect hits in your rules after each `world.step`, from state you already read: the distance between two bodies dropping below the sum of their radii (and the closing speed along the line of centres), or a velocity change in one tick that gravity and your own impulses do not explain. Keep a per-pair "touching" flag so a contact fires once, not every tick. |
+| Kinematic pose has no scale | `setKinematicPose` sets position and rotation only; a collider's size is fixed at spawn. To resize a body, `despawn` it and `spawn` a new one with the new collider (and resize its visual yourself); to make it vanish, `despawn` it. |
 | Views go stale | `spawn` can grow wasm memory. Call `game.views.refresh()` after spawning, before reading `curr` or `scratch` in the same frame. |
 | Spawned bodies are invisible | `world.spawn` creates physics only. Draw it with your own mesh read from its slot, or through `game.renderer.instances.add(key, geometry, material, slot)`. |
 | Raycasts lag a tick | A body spawned this tick is not hit by raycasts until after the next `step`. |
@@ -1756,7 +1901,7 @@ export function setup(game: Game) {
 
 Full method list and return values: [api-reference.md](../api-reference.md#body-control).
 
-See it in: [apps/chain-reaction/src/puzzle/sim.ts](../../apps/chain-reaction/src/puzzle/sim.ts) (spring and fan impulses, lines 217-260; velocity reads, lines 266-293), [apps/katana-defense/src/game/view/zombie-view.ts](../../apps/katana-defense/src/game/view/zombie-view.ts) (spawn a ragdoll capsule and `setVelocity`, lines 496-537), [apps/field-notes/src/main.ts](../../apps/field-notes/src/main.ts) (`teleport` on restart, lines 158-166).
+See it in: [apps/chain-reaction/src/puzzle/sim.ts](../../apps/chain-reaction/src/puzzle/sim.ts) (spring and fan impulses, lines 217-260; velocity reads, lines 266-293), [apps/katana-defense/src/game/view/zombie-view.ts](../../apps/katana-defense/src/game/view/zombie-view.ts) (spawn a ragdoll capsule and `setVelocity`, lines 496-537), [apps/field-notes/src/main.ts](../../apps/field-notes/src/main.ts) (`teleport` on restart, lines 158-166), [apps/ringout/src/game/sim.ts](../../apps/ringout/src/game/sim.ts) (rolling torque about the travel axis, lines 210-212; impacts from distance and closing speed, lines 341-404), [apps/drift-drone/src/game/sim.ts](../../apps/drift-drone/src/game/sim.ts) (crashes from the velocity the drone would have had with no contact, lines 407-423 and 441-451), [apps/pebble-garden/src/garden/sim.ts](../../apps/pebble-garden/src/garden/sim.ts) (impact sounds from a one-tick velocity change, lines 240-263), [apps/pebble-garden/src/garden/pieces.ts](../../apps/pebble-garden/src/garden/pieces.ts) (a rolling pebble with `angularDamping`, lines 156-163).
 
 
 ===== docs/cookbook/raycasts.md =====
@@ -1847,12 +1992,15 @@ Goal: a walking, jumping player with a third-person camera, eased acceleration a
 | `accel` | m/s² toward the input velocity; 0 (default) is instant. 14 ramps a 4 m/s walk in about 0.3 s. |
 | Clip `speed` | The clip's authored ground speed; playback rate becomes `speed / authored`, clamped to 0.6-1.6, which stops foot sliding. Walk/run switch at 0.75 x `sprintSpeed`. |
 | Driving it from code | Write `game.player.input` (`keys.f/b/l/r`, `jump`, `sprint`). It is sent as `setCharacterInput` before your `onFrame` runs, so a value set in the frame at tick t is first used by the step that produces tick t + 2. |
+| Your own `setCharacterInput` for the player | `createGame` calls `setCharacterInput` for `game.player` from `game.player.input` every frame, **including frames that advance 0 ticks** (any display above 60 Hz, where most frames run no tick). If your rules call `world.setCharacterInput(game.player.simId, ...)` themselves only inside the per-tick loop, the rig overwrites that on the next 0-tick frame and the following `world.step` uses keyboard input instead (a demo bot that stops steering, a player who walks on the title screen). Re-send your intent at the end of every `onFrame`, after the tick loop: it then always wins. Or drive the player only through `game.player.input`. |
+| Which character is the player | The first entity in `entities` (after prefab expansion) that has a `character`. Reorder the entities to change it; there is no option to pick another or to have none while keeping characters. |
+| More characters | Only the player gets an animated `CharacterView`. Every other character is still moved by the renderer (its root follows its capsule), but plays no clip and never turns until you call `game.renderer.attachCharacter(simId, clipMap)` once, then each frame `world.characterState(simId)` and `view.update(frame, dt)` with `{ grounded, vx, vz, vy, sprintSpeed }` read from scratch `[8..12)`. `update` also turns the model toward its velocity; set `view.root.rotation` after it to face elsewhere. |
 | Reading it back | `world.characterState(id)` writes `[grounded, vx, vz, vy]` to scratch `[8..12)` (vz before vy). |
-| Camera | `game.player.camera` (`ThirdPersonController`): `yaw` (0 looks down -Z), `pitch` (-1.2 to 0.3), `distance`. Its arm ray is static-only. `game.setCamera("hero")` suspends it; `"controller"` resumes it. |
+| Camera | `game.player.camera` (`ThirdPersonController`): `yaw` (0 looks down -Z), `pitch` (-1.2 to 0.3), `distance`. Its arm ray is static-only. `game.setCamera("hero")` suspends it; `"controller"` resumes it. Your own camera instead: [custom-camera.md](custom-camera.md). |
 | Moving platforms | Set `"ridePlatforms": true` on the `character` to stand on a kinematic body driven by `world.setKinematicPose` each tick: the character moves (and turns about the platform's origin) exactly with it, and keeps its velocity as momentum after a jump or walking off. Without the flag Rapier's own platform friction lags a tick and a character at rest on a kinematic body can get pinned and fail to walk. The reported `characterState` velocity stays the character's own, relative to the platform. Set the platform's pose before the `world.step` it should apply to. A pose jump over 1 m in one tick counts as a teleport and is not carried. While riding, steps up to `stepHeight` are climbed by a lift-and-set-down cast, which ignores autostep's `min_width`. |
 | Own character | A character spawned with `world.spawn` (no `createGame` rig) is driven only by your `setCharacterInput` calls each tick. |
 
-See it in: [apps/field-notes/scenes/yard.json](../../apps/field-notes/scenes/yard.json) (glTF player with `accel`, lines 65-100), [apps/field-notes/src/main.ts](../../apps/field-notes/src/main.ts) (a sim writing `rig.input` from its own buttons, lines 210-218), [apps/playground/src/main.ts](../../apps/playground/src/main.ts) (scripted input and the jump timing, lines 132-179), [apps/rockfall/src/game/sim.ts](../../apps/rockfall/src/game/sim.ts) (character spawned from JSON and driven per tick, lines 264-287 and 373-415).
+See it in: [apps/field-notes/scenes/yard.json](../../apps/field-notes/scenes/yard.json) (glTF player with `accel`, lines 65-100), [apps/field-notes/src/main.ts](../../apps/field-notes/src/main.ts) (a sim writing `rig.input` from its own buttons, lines 210-218), [apps/playground/src/main.ts](../../apps/playground/src/main.ts) (scripted input and the jump timing, lines 132-179), [apps/rockfall/src/game/sim.ts](../../apps/rockfall/src/game/sim.ts) (character spawned from JSON and driven per tick, lines 264-287 and 373-415), [apps/lanternfall/src/main.ts](../../apps/lanternfall/src/main.ts) (re-sending the sim's intents after every frame's ticks, lines 82-91) with [apps/lanternfall/src/game/sim.ts](../../apps/lanternfall/src/game/sim.ts) (`assertInput`, lines 403-420), [apps/lanternfall/src/view/present.ts](../../apps/lanternfall/src/view/present.ts) (guards animated with `attachCharacter`, lines 155-160 and 248-260), [apps/skyrun/src/game/sim.ts](../../apps/skyrun/src/game/sim.ts) (a runner with `ridePlatforms` on kinematic movers, lines 169 and 206).
 
 
 ===== docs/cookbook/splat-environments.md =====
@@ -2171,10 +2319,12 @@ if (pebbles) pebbles.castShadow = false;
 | --- | --- |
 | No allocation per frame | Preallocate vectors, typed arrays and event records; reuse the `{ ticks, alpha }` object `FixedStepLoop.advance` returns. |
 | Instance keys must match | A new key is a new `InstancedMesh` (a new draw call). Vary colour per instance (the 5th argument), not material. |
+| Workers need an inline path for captures | A worker runs on its own clock, so `?mode=fixed&ticks=n` (one tick per frame, `pnpm shot`) cannot be guaranteed through it. Put the sim behind one host interface with two implementations, a worker host and an inline host that runs the same sim code on the main thread, and pick inline whenever `mode` is `fixed` (and for a `?worker=0` debug switch). Node tests use the inline code too. |
+| Worker wasm URL | Resolve the `?url` import against the page before posting it: `new URL(wasmUrl, location.href).href`. A worker resolves relative URLs against its own script, so a relative build base would otherwise point it at the wrong folder. See [sub-path-hosting.md](sub-path-hosting.md). |
 | Budgets | Splats 1,500,000 (warns above); shadow cascades 3, max distance 120 m; DPR capped at 2. |
 | Measure on an idle GPU | Benches: `node apps/<app>/bench/fps.mjs`; see [verification.md](../verification.md#benches-and-capture-scripts). |
 
-See it in: [apps/rockfall/src/game/view/rock-view.ts](../../apps/rockfall/src/game/view/rock-view.ts) (spawned rocks into the registry, lines 68-101).
+See it in: [apps/rockfall/src/game/view/rock-view.ts](../../apps/rockfall/src/game/view/rock-view.ts) (spawned rocks into the registry, lines 68-101), [apps/swarm-siege/src/main.ts](../../apps/swarm-siege/src/main.ts) (worker only in realtime, inline otherwise, line 81; absolute wasm URL, lines 109-112; host choice, lines 133-135), [apps/swarm-siege/src/game/host.ts](../../apps/swarm-siege/src/game/host.ts) (`InlineHost` and `WorkerHost` behind one interface, lines 90 and 169-230), [apps/breakpoint/src/main.ts](../../apps/breakpoint/src/main.ts) (the same split, lines 85 and 125-157).
 
 
 ===== docs/cookbook/audio-sfx.md =====
@@ -2371,6 +2521,313 @@ Reference it from a scene as `"/assets/RobotExpressive.glb"` (`mesh.gltf.url`, `
 | No file needed | Procedural geometry (Ronin Outpost's katana, `apps/katana-defense/src/game/view/katana.ts`) and synthesised audio need no manifest entry. |
 
 See it in: [apps/playground/assets.manifest.json](../../apps/playground/assets.manifest.json), [apps/playground/public/assets/LICENSES.md](../../apps/playground/public/assets/LICENSES.md), [scripts/fetch-assets.mjs](../../scripts/fetch-assets.mjs), [apps/rockfall/vite.config.ts](../../apps/rockfall/vite.config.ts).
+
+
+===== docs/cookbook/sub-path-hosting.md =====
+
+# Sub-path hosting
+
+Goal: serve a game from a URL like `https://example.com/games/skyrun/` instead of the site root, with every asset, the Basis transcoder and the wasm still loading.
+
+Scenes and apps write shared files as root-absolute paths: `/assets/qwantani_noon_puresky_2k.hdr`, `/assets/rocketbox-male-adult-16.glb`, `/basis/`. The renderer prefixes those paths with an **asset base**, so the JSON never changes between a dev server at `/` and a build under a sub-path.
+
+```bash
+# from apps/<app>: everything (page, wasm, public assets, basis/) under /games/skyrun/
+pnpm exec vite build --base /games/skyrun/
+```
+
+That is the whole change for a standalone build. Vite's `--base` (or `base: "/games/skyrun/"` in `vite.config.ts`) sets `import.meta.env.BASE_URL`, the renderer uses it as the asset base, and the build already contains what the prefixed URLs point at:
+
+| URL in code | Resolves to | Served from |
+| --- | --- | --- |
+| `/assets/x.hdr` (scene `environment.hdri`, `splat.url`, glTF `mesh.gltf.url`, `renderer.loadGltf(url)`) | `/games/skyrun/assets/x.hdr` | `dist/assets/`, copied from the shared `publicDir: "../playground/public"` |
+| `/basis/` (KTX2 transcoder, `createRenderer`'s `transcoderPath` default) | `/games/skyrun/basis/` | `dist/basis/`, emitted by the `basisTranscoder()` plugin in the copied `vite.config.ts` |
+| `import detWasmUrl from ".../engine_core_det_bg.wasm?url"` | `/games/skyrun/assets/engine_core_det_bg-<hash>.wasm` | Vite rewrites `?url` imports for the base itself |
+| `new Worker(new URL("./sim.worker.ts", import.meta.url), { type: "module" })` | under the base | Vite bundles the worker |
+
+## Where the base comes from
+
+First match wins (`packages/renderer/src/asset-base.ts`, `defaultAssetBase`):
+
+1. `createGame({ assetBase })` or `createRenderer(canvas, settings, { assetBase })`.
+2. `VITE_PEBBLE3D_ASSET_BASE`, an env var read at build time: the shared files live somewhere other than the game's own base.
+3. Vite's `BASE_URL` (the `--base` the app was built with).
+4. `"/"`: every URL is returned unchanged. Default builds and the dev server behave exactly as before.
+
+`resolveAssetUrl(url, base)` (exported from `@pebble3d/renderer`) prefixes only root-absolute URLs. Relative URLs (`assets/x.glb`), protocol-relative `//host/x` and URLs with a scheme (`https:`, `data:`, `blob:`) pass through, and a URL that already starts with the base is not prefixed twice.
+
+## Several games sharing one copy of the assets
+
+`pnpm build:site` (`scripts/build-site.mjs`) builds every game in `site/src/data/games.json` this way:
+
+```bash
+VITE_PEBBLE3D_ASSET_BASE=/pebble3d/ VITE_PEBBLE3D_WEBGL_FALLBACK=1 \
+  pnpm exec vite build --base /pebble3d/play/<id>/ --outDir site/dist/play/<id>
+```
+
+```text
+site/dist/
+  assets/          apps/playground/public/assets, copied once
+  basis/           the Basis transcoder, kept once (LICENSE.txt added)
+  play/<id>/       one game: index.html and its hashed bundles and wasm in assets/
+```
+
+The page, its JS and its wasm load from `/pebble3d/play/<id>/` (Vite's base); scene assets and the transcoder load from `/pebble3d/assets/` and `/pebble3d/basis/` (the asset base). After each game's build the script deletes that game's copies of the shared public files and of `basis/`, so the large splats and HDRIs exist once.
+
+## What is not resolved for you
+
+| You load | Do this |
+| --- | --- |
+| A file with your own `fetch`, `Audio`, `TextureLoader`, `HDRLoader` | Pass `renderer.assetUrl("/assets/x.ogg")` (the renderer's resolver with its base). |
+| A sound through `attachSound` | It does not resolve its URL: `attachSound(..., renderer.assetUrl(url))`. |
+| A glTF through your own `GLTFLoader` | Use `renderer.loadGltf(url)` instead: resolved, cached per url, KTX2-ready, counted in `stats().textureMB`. |
+| A wasm URL posted to a Web Worker | Make it absolute first: `new URL(detWasmUrl, location.href).href`. A worker resolves a relative URL against its own script, not the page. |
+| A link to another page of your site | `import.meta.env.BASE_URL + "other/"`. |
+
+Without `createGame`, `createRenderer` applies the same default, so an app that boots itself (Skyrun, Swarm Siege) only needs root-absolute paths and the copied `vite.config.ts`.
+
+## Check it
+
+```bash
+cd apps/<app>
+pnpm exec vite build --base /x/   # into dist/ (gitignored)
+ls dist                      # assets/ basis/ favicon.svg index.html
+pnpm exec vite preview --base /x/ --port 5340   # open http://localhost:5340/x/
+```
+
+A 404 in the network tab names the URL that missed its base: usually a hand-written `fetch("/assets/...")` that should go through `renderer.assetUrl`.
+
+| Gotcha | Detail |
+| --- | --- |
+| Keep paths root-absolute | Write `/assets/x.glb`, not `assets/x.glb` or `./assets/x.glb`: relative paths are never prefixed and break on pages that are not at the base root. |
+| Copy `vite.config.ts` | It is what serves `/basis/` in dev and emits `dist/basis/` on build; without it KTX2 textures fail under any base. (`apps/ringout` and `apps/drift-drone` load no KTX2 glTF and leave the plugin out, so their builds have no `basis/`.) |
+| Don't prefix by hand | Leave paths root-absolute and let the asset base do it. A path you prefixed with `BASE_URL` yourself is wrong as soon as `VITE_PEBBLE3D_ASSET_BASE` points somewhere else. |
+
+See it in: [apps/skyrun/src/main.ts](../../apps/skyrun/src/main.ts) (root-absolute HDRI, transcoder and runner glTFs with `createRenderer` and `renderer.loadGltf`, lines 86-115), [apps/swarm-siege/src/main.ts](../../apps/swarm-siege/src/main.ts) (absolute wasm URL for the sim worker, lines 109-112), [scripts/build-site.mjs](../../scripts/build-site.mjs) (the shared-assets layout, lines 76-137), [packages/renderer/src/asset-base.ts](../../packages/renderer/src/asset-base.ts).
+
+
+===== docs/cookbook/custom-camera.md =====
+
+# Custom camera
+
+Goal: drive the camera from your own code (a chase cam, a fixed arena view, a top-down follow) without the built-in orbit controls fighting you for it.
+
+## What the scene's `camera.controller` gives you
+
+| `controller` | Created by `createRenderer` | Created by `createGame` | Input it takes |
+| --- | --- | --- | --- |
+| `"orbit"` (default) | `OrbitController` (three's `OrbitControls`) on the canvas, as `renderer.controller` | nothing more | Drag rotates, wheel zooms, right-drag pans; sets the canvas's `touch-action: none`. |
+| `"fly"` | `FlyController`, as `renderer.controller` | nothing more | Keyboard and mouse fly-through. |
+| `"thirdPerson"` | nothing: `renderer.controller` is `null` | a `ThirdPersonController` for the scene's first `character` (`game.player.camera`), or nothing when there is no character | Click to pointer-lock; mouse moves yaw and pitch. |
+
+There is no `"none"` value. Two ways get you a camera nobody else moves:
+
+- **Dispose the controller** after boot: `renderer.controller?.dispose(); renderer.controller = null;`. Works with any scene.
+- **`"controller": "thirdPerson"` in a scene with no `character`**: no controller is ever created. Swarm Siege and Skyrun (which boot with `createRenderer`) do this.
+
+Always call `dispose()` before setting `null`. Setting `renderer.controller = null` alone only stops the per-frame `update`; three's `OrbitControls` keeps its pointer and wheel listeners on the canvas, and those call `update()` themselves, so a drag still moves the camera between your writes.
+
+## Drive it every frame
+
+```ts
+import type { Game } from "@pebble3d/sdk/game";
+import { Vector3 } from "three/webgpu";
+
+export function ownCamera(game: Game, targetId: string): void {
+	const r = game.renderer;
+	r.controller?.dispose(); // remove OrbitControls' canvas listeners
+	r.controller = null;
+	const cam = r.three.camera;
+	cam.fov = 55;
+	cam.updateProjectionMatrix(); // after any fov / near / far change
+
+	const id = game.ids.get(targetId);
+	if (id === undefined) throw new Error(`no "${targetId}" in the scene`);
+	const slot = game.sim.world.slotOf(id);
+	const focus = new Vector3();
+	const want = new Vector3();
+	let snap = true;
+
+	game.onFrame((dt) => {
+		const c = game.views.curr; // refreshed by createGame before onFrame
+		want.set(c[slot * 8] as number, c[slot * 8 + 1] as number, c[slot * 8 + 2] as number);
+		// Frame-rate independent easing; snap on the first frame.
+		focus.lerp(want, snap ? 1 : 1 - Math.exp(-5 * dt));
+		snap = false;
+		cam.position.set(focus.x, focus.y + 12, focus.z + 9);
+		cam.lookAt(focus);
+	});
+}
+```
+
+`onFrame` runs after `renderer.sync` (every visual is already at its interpolated pose) and before `renderer.render`, so a camera written there never lags a frame. To follow a visual rather than the raw tick state, read its object: `game.player.view.root.position` for the player character.
+
+## A spring arm without the built-in rig
+
+`ThirdPersonController` (from `@pebble3d/renderer`) works on its own: give it the camera and a ray function, call `update(pivot, dt)` each frame, and `connect(canvas)` if the mouse should steer it.
+
+```ts
+import { ThirdPersonController } from "@pebble3d/renderer";
+
+const STATIC_ONLY = 1; // raycast filter: moving props never pull the arm in
+const tpc = new ThirdPersonController(camera, (o, d, max) => {
+	if (!world.raycast(o.x, o.y, o.z, d.x, d.y, d.z, max, STATIC_ONLY, 0)) return null;
+	views.refresh(); // re-read scratch: wasm memory may have grown
+	return views.scratch[0] as number;
+});
+tpc.distance = 6.4;
+tpc.pitch = -0.3;
+tpc.connect(canvas);
+// per frame: tpc.update(pivot, dt); yaw 0 looks down -Z
+```
+
+| Gotcha | Detail |
+| --- | --- |
+| Character movement follows the camera | `createGame` turns WASD into a world direction using `game.player.camera.yaw` when the rig has a third-person camera, else the yaw of `renderer.three.camera`. Owning the camera of a character scene with `"orbit"` plus `dispose()` keeps "W = away from the camera" working. With `"thirdPerson"`, setting `game.player.camera.enabled = false` stops it moving the camera, but movement still uses its (now frozen) yaw. |
+| Presets and `pnpm shot --cam` | `game.setCamera("hero")` and `__pebble3d.setCamera` apply the preset straight to the camera when there is no controller, but your next `onFrame` overwrites it. Keep a flag and skip your camera code while a preset is active; replace `__pebble3d.setCamera` if the preset path must work in captures. |
+| Shadow cascades | The sun's cascades are fitted to the camera frustum. `renderer.resize` refits them; after changing `fov`, `near` or `far` yourself, call `updateCsmFrustums(renderer.csm)` (exported from `@pebble3d/renderer`). |
+| Things parented to the camera | The camera is not in the scene graph by default. `renderer.three.scene.add(camera)` before attaching a viewmodel or HUD mesh to it. |
+| Camera collision | Cast with filter `1` (static only) as above; a dynamic prop in the ray makes the camera pop in and out. |
+
+See it in: [apps/drift-drone/src/game/app.ts](../../apps/drift-drone/src/game/app.ts) (dispose the orbit controller and own the camera, lines 139-145) with [apps/drift-drone/src/game/view/camera-rig.ts](../../apps/drift-drone/src/game/view/camera-rig.ts) (chase cam kept out of walls by a static-only raycast, lines 71-120), [apps/ringout/src/game/app.ts](../../apps/ringout/src/game/app.ts) (lines 114-121), [apps/lanternfall/src/view/present.ts](../../apps/lanternfall/src/view/present.ts) (top-down follow of a character, lines 262-285), [apps/skyrun/src/game/view/camera-rig.ts](../../apps/skyrun/src/game/view/camera-rig.ts) (a standalone `ThirdPersonController`, lines 35-51), [apps/skyrun/src/main.ts](../../apps/skyrun/src/main.ts) (`setCamera` presets next to a game camera, lines 340-347), [apps/swarm-siege/scenes/plateau.json](../../apps/swarm-siege/scenes/plateau.json) (`"thirdPerson"` with no character, line 24).
+
+
+===== docs/cookbook/owning-the-world.md =====
+
+# Owning the world
+
+Goal: keep `createGame` for the renderer, the canvas and the automation hook, but run your game in physics worlds your code creates, steps, draws and throws away (a fresh world per round, a replay world beside the live one, a level editor's Play button).
+
+`createGame` loads one wasm module and makes one `World` for the scene. Any number of extra worlds can come from that same module:
+
+```ts
+import type { Game } from "@pebble3d/sdk/game";
+import { type SimHandle, StateViews } from "@pebble3d/sdk/sim";
+import { expandScene } from "@pebble3d/sdk/expand";
+import { parseScene } from "@pebble3d/sdk/schema";
+
+type World = SimHandle["world"];
+
+export function worldMaker(h: SimHandle): (seed: number, gravity: number) => World {
+	const Ctor = h.world.constructor as new (seed: number, gravity: number) => World;
+	return (seed, gravity) => new Ctor(seed, gravity);
+}
+
+export class Round {
+	readonly world: World;
+	readonly views: StateViews;
+	readonly ids: Map<string, number>;
+	tick = 0;
+
+	constructor(game: Game, sceneJson: unknown) {
+		const scene = parseScene(sceneJson);
+		this.world = worldMaker(game.sim)(scene.sim.seed, scene.sim.gravity);
+		this.ids = new Map();
+		for (const e of expandScene(scene).sim)
+			this.ids.set(e.sceneId, this.world.spawn(JSON.stringify(e.desc)));
+		// StateViews only needs the world and the module's memory.
+		this.views = new StateViews({ ...game.sim, world: this.world });
+		this.world.step(1); // raycasts see nothing until the first step
+		this.tick = 1;
+		this.views.refresh();
+	}
+
+	step(): void {
+		// rules that write forces / kinematic poses go here, then:
+		this.world.step(1);
+		this.tick++;
+		this.views.refresh();
+	}
+
+	free(): void {
+		this.world.free();
+	}
+}
+```
+
+## Step it from `onFrame`
+
+`createGame` keeps stepping its own (now idle) world; your world advances only when you call `step()`. Run it on an accumulator fed by `onFrame`'s `dt`:
+
+```ts
+const DT = 1 / 60;
+let acc = 0;
+game.onFrame((dt) => {
+	acc += dt;
+	let n = 0;
+	while (acc >= DT - 1e-9 && n < 5) {
+		acc -= DT;
+		round.step();
+		n++;
+	}
+	if (n === 5) acc = 0; // drop the backlog instead of spiralling
+	view.sync(round, Math.min(1, acc / DT)); // alpha for interpolation
+});
+```
+
+In fixed mode `onFrame`'s `dt` is exactly `1/60` per frame and 0 once `stopAtTick` is reached, so this runs one tick per frame and stops with `createGame`'s world: `pnpm shot --ticks n` still captures your world at tick n (plus the step in the constructor, if you keep it).
+
+## Draw its bodies
+
+The renderer only draws `createGame`'s world: `renderer.sync` and `renderer.instances` read `game.views`, whose slots mean nothing for your world. Build your own meshes and place them from your views with `readSlot` (from `@pebble3d/renderer`), which interpolates and honours `NO_INTERP`:
+
+```ts
+import { primitiveGeometry, readSlot } from "@pebble3d/renderer";
+import { Mesh, MeshStandardNodeMaterial, Quaternion, Vector3 } from "three/webgpu";
+
+const _p = new Vector3();
+const _q = new Quaternion();
+
+export class RoundView {
+	private readonly items: { mesh: Mesh; slot: number }[] = [];
+
+	add(game: Game, round: Round, id: string, size: [number, number, number]): void {
+		const mesh = new Mesh(primitiveGeometry("box", size), new MeshStandardNodeMaterial());
+		mesh.castShadow = true;
+		game.renderer.three.scene.add(mesh);
+		const simId = round.ids.get(id) as number;
+		this.items.push({ mesh, slot: round.world.slotOf(simId) });
+	}
+
+	sync(round: Round, alpha: number): void {
+		const { prev, curr } = round.views;
+		for (const it of this.items) {
+			const on = it.slot >= 0 && readSlot(prev, curr, it.slot, alpha, _p, _q);
+			it.mesh.visible = on; // false once the slot is freed
+			if (on) {
+				it.mesh.position.copy(_p);
+				it.mesh.quaternion.copy(_q);
+			}
+		}
+	}
+}
+```
+
+`primitiveGeometry(primitive, size)` builds the same geometry the renderer uses for scene primitives, at the real size. For many identical bodies, one `InstancedMesh` you fill from the slots is cheaper than one mesh each.
+
+## Report your world to automation
+
+`pnpm shot` writes `__pebble3d.stateHash()` into the sidecar, and `createGame` installs it for **its** world. Point it at yours, or every capture reports the same idle hash:
+
+```ts
+Object.assign(window.__pebble3d ?? {}, {
+	stateHash: () => round.world.stateHash(),
+	game: { tick: () => round.tick },
+});
+```
+
+| Gotcha | Detail |
+| --- | --- |
+| One memory for every world | All worlds from one module share one `WebAssembly.Memory`. A `spawn` in *any* world (createGame's included) can grow it, which detaches every `Float32Array` over the old buffer: views of other worlds read zeros (`byteLength` 0). Call `views.refresh()` after spawning or stepping, and read `views.curr` / `views.scratch` from the object each time instead of keeping the array in a local or a field. |
+| Scratch after a query | Query results land in the shared scratch region. Read them right after the call, through `views.scratch` after a `refresh()` (cheap: it compares four numbers and returns). |
+| Raycasts on a new world | A world that has never stepped has an empty query structure: every `raycast` returns false, even onto a static floor. Step once after spawning (as above) before probing. Bodies spawned later are likewise invisible to raycasts until the next step. |
+| Free what you make | `world.free()` when a round ends; wasm memory is not garbage-collected. |
+| Same seed, same order | Spawn order and seed decide the state hash; spawning from `expandScene(scene).sim` in order matches `createGame` and Node. |
+| Keep the scene small | `createGame` still needs a valid scene: an environment and a camera preset are enough. Its world steps every frame, so leave dynamic bodies out of it. |
+| The camera | The orbit controller is still on the canvas; see [custom-camera.md](custom-camera.md). |
+| Node | The same `Round` class runs in a test with `loadSim("deterministic", bytes)` as the handle, so the browser and the verifier call one code path. |
+
+See it in: [apps/pebble-garden/src/garden/sim.ts](../../apps/pebble-garden/src/garden/sim.ts) (worlds from the loaded module, lines 43-46; spawn from `expandScene` and views, lines 133-186; one tick, lines 221-237) with [apps/pebble-garden/src/view/garden-view.ts](../../apps/pebble-garden/src/view/garden-view.ts) (meshes from `primitiveGeometry`, placed with `readSlot`, lines 165-176), [apps/ringout/src/game/physics.ts](../../apps/ringout/src/game/physics.ts) (world factory and views that re-point after growth, lines 15-70), [apps/ringout/src/game/app.ts](../../apps/ringout/src/game/app.ts) (accumulator in `onFrame`, lines 491-503; alpha, lines 563-569), [apps/ringout/src/main.ts](../../apps/ringout/src/main.ts) (`stateHash` override, lines 95-99), [apps/pebble-garden/src/main.ts](../../apps/pebble-garden/src/main.ts) (lines 182-186), [apps/lanternfall/src/game/sim.ts](../../apps/lanternfall/src/game/sim.ts) (raycast work deferred to the first tick, lines 325-329).
 
 
 ===== docs/examples.md =====

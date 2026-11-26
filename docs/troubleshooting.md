@@ -23,6 +23,19 @@ Error messages and symptoms seen while building Pebble3D and its showcase games,
 | A second game on the same page misbehaves | [One game per page](#a-second-game-on-the-same-page) |
 | `No projects were found ... The filter matched no projects: <app>`, or `No test files found, exiting with code 0` for a new app | [App tests not registered](#a-new-apps-tests-never-run) |
 | A headless (Node) run's `stateHash` differs from the browser's at the same tick | [Headless hash differs](#headless-hash-differs-from-the-browser) |
+| Assets, the transcoder or the wasm 404 when the game is served under a sub-path | [Sub-path 404s](#assets-404-under-a-sub-path) |
+| Dragging or scrolling on the canvas moves a camera your code drives | [Orbit controls fight your camera](#the-orbit-camera-fights-your-camera) |
+| A bot's or sim's character input is ignored on high-refresh displays; the player walks on a menu | [Player input overwritten](#your-setcharacterinput-is-overwritten) |
+| A second character slides around without animating or turning | [Characters after the first](#other-characters-do-not-animate) |
+| A static body was teleported but its mesh stayed put | [Static visuals](#a-static-mesh-does-not-move) |
+| A ball or wheel rolls forever | [Rolling without damping](#spheres-roll-forever) |
+| State reads return zeros or stale values; `views.curr.byteLength` is 0 | [Detached views](#state-views-read-zeros-after-a-spawn) |
+| `raycast` returns false on a world you just built | [Raycast before the first step](#raycasts-miss-on-a-new-world) |
+| You need collision callbacks | [No contact events](#there-are-no-contact-events) |
+| A bad scene reports one error at a time | [One scene error](#only-the-first-scene-error-is-reported) |
+| The sidecar `stateHash` is the same in every capture | [stateHash of the idle world](#the-shot-statehash-never-changes) |
+| `!important` vanished from a CSS file after a lint fix | [biome --unsafe](#biome---unsafe-removed-important) |
+| A worker-based sim makes fixed-mode captures flaky or time out | [Worker in fixed mode](#fixed-mode-captures-with-a-worker-sim) |
 
 ## BackendUnavailable: webgpu
 
@@ -205,3 +218,107 @@ const scene = sceneJson as unknown as SceneInput;
 **Cause:** `Game.dispose` does not exist yet. `game.stop()` only cancels the frame loop; the renderer, the wasm `World`, the window key listeners, the `ResizeObserver` and `window.__pebble3d` stay.
 
 **Fix:** one game per page. Switch levels inside one game (new `World`s, as Chain Reaction does per run) or reload the page with new URL params (Field Notes reloads to change site).
+
+## Assets 404 under a sub-path
+
+**Symptom:** served from `/games/x/` instead of `/`, the console shows 404s for `/assets/...`, `/basis/basis_transcoder.js` or a `.wasm`.
+
+**Cause:** a URL that bypasses the asset base. The renderer prefixes root-absolute URLs in the scene, in `renderer.loadGltf` and in the transcoder path with the asset base (`createGame`/`createRenderer` `assetBase`, else `VITE_PEBBLE3D_ASSET_BASE`, else Vite's `--base`). Your own `fetch`, `attachSound` and three.js loaders are not prefixed; neither are relative paths.
+
+**Fix:** build with `vite build --base /games/x/`, keep asset paths root-absolute, pass hand-loaded URLs through `renderer.assetUrl(url)`, and copy `vite.config.ts` from `apps/rockfall` (it emits `basis/`). Full layout: [cookbook/sub-path-hosting.md](cookbook/sub-path-hosting.md).
+
+## The orbit camera fights your camera
+
+**Symptom:** you set `renderer.three.camera` every frame, yet a mouse drag or the wheel still nudges it, or touch scrolling is dead on the canvas.
+
+**Cause:** the scene's `camera.controller` defaults to `"orbit"`, which attaches three's `OrbitControls` to the canvas. There is no `"none"` value. Setting `renderer.controller = null` stops its per-frame update but leaves its listeners, which update the camera themselves.
+
+**Fix:** `renderer.controller?.dispose(); renderer.controller = null;` after boot, or use `"controller": "thirdPerson"` in a scene without a `character` (no controller is created). See [cookbook/custom-camera.md](cookbook/custom-camera.md).
+
+## Your setCharacterInput is overwritten
+
+**Symptom:** your rules call `world.setCharacterInput` for the player character inside the per-tick loop; at 60 Hz it works, on a 120 Hz or 144 Hz display the demo bot stops steering or the player still walks with the keyboard when your rules say stand still.
+
+**Cause:** `createGame` sends `game.player.input` (the keyboard) with `setCharacterInput` every frame, including frames that run 0 ticks. On a fast display most frames run no tick, so the rig's value replaces yours before the next `world.step`.
+
+**Fix:** re-send your intent at the end of every `onFrame`, after the tick loop (`apps/lanternfall/src/main.ts`, lines 82-91, and `assertInput` in `apps/lanternfall/src/game/sim.ts`, lines 403-420), or drive the player only by writing `game.player.input`.
+
+## Other characters do not animate
+
+**Symptom:** the first character animates; the others move but stay in their bind pose and never turn.
+
+**Cause:** `createGame` builds a `CharacterView` (animation mixer and facing) only for `game.player`, the first entity with a `character`.
+
+**Fix:** for each other character call `game.renderer.attachCharacter(simId, clipMap)` once, then per frame `world.characterState(simId)` and `view.update(frame, dt)` (`apps/lanternfall/src/view/present.ts`, lines 155-160 and 248-260). To make a different character the player, put it first in `entities`.
+
+## A static mesh does not move
+
+**Symptom:** `world.teleport` on a `"static"` body moves its collider (things bump into it at the new spot) but its mesh stays where it started.
+
+**Cause:** the renderer places a static body's mesh once, on the first `renderer.sync` after it was added, and never reads its slot again.
+
+**Fix:** make anything that moves `"kinematic"` and move it with `setKinematicPose` or `teleport`; its visual then follows every frame. Code that inspects or merges static meshes must run after the first frame.
+
+## Spheres roll forever
+
+**Symptom:** a ball on flat ground never slows down.
+
+**Cause:** Rapier has no rolling resistance, and `angularDamping` and `linearDamping` default to 0.
+
+**Fix:** set `"angularDamping"` on rolling bodies (0.25 in Pebble Garden's pebble, `apps/pebble-garden/src/garden/pieces.ts`, lines 156-163). Details: [cookbook/bodies-impulses-velocity.md](cookbook/bodies-impulses-velocity.md).
+
+## State views read zeros after a spawn
+
+**Symptom:** after spawning (or when running several worlds), `views.curr` / `views.scratch` read 0 or old values, positions jump to the origin, or a raycast result reads 0.
+
+**Cause:** a spawn grew the wasm memory, which detaches every typed array over the old buffer. All worlds from one wasm module share that memory, so a spawn in any world detaches the views of all of them. `createGame` refreshes `game.views` once per frame; a world you create gets no such refresh.
+
+**Fix:** call `views.refresh()` after spawning or stepping, and before reading scratch results, and read `views.curr` / `views.scratch` through the views object instead of keeping the arrays (`apps/swarm-siege/src/game/sim.ts`, lines 380-385). See [cookbook/owning-the-world.md](cookbook/owning-the-world.md).
+
+## Raycasts miss on a new world
+
+**Symptom:** `world.raycast` returns false on a world you just created and spawned, even straight down onto the floor.
+
+**Cause:** queries use the broad phase as of the last `step`; a world that has never stepped has none.
+
+**Fix:** `world.step(1)` once after spawning, before the first query, or defer the query work to the first tick (`apps/lanternfall/src/game/sim.ts`, lines 325-329).
+
+## There are no contact events
+
+**Symptom:** you look for an `onCollision` callback or a contact list and find none.
+
+**Cause:** the engine does not expose Rapier's contact or intersection events.
+
+**Fix:** detect contacts in your rules after each step from state you already read: centre distance and closing speed (`apps/ringout/src/game/sim.ts`, lines 341-404), or a velocity change the forces you applied do not explain (`apps/drift-drone/src/game/sim.ts`, lines 407-423 and 441-451). Trigger zones that only test a position need no body at all. Patterns: [cookbook/bodies-impulses-velocity.md](cookbook/bodies-impulses-velocity.md).
+
+## Only the first scene error is reported
+
+**Symptom:** fixing one `SceneError` reveals the next, one per run.
+
+**Cause:** `parseScene` (and so `createGame`) throws for the first issue only. Also, the cross-field checks (duplicate ids, unknown prefabs, entities with nothing to draw or simulate) run only after every field passes.
+
+**Fix:** to list everything, `SceneSchema.safeParse(json)` and print each `error.issues[i]` with `formatPath(issue.path)` ([api-reference.md](api-reference.md#validating-scenes); `apps/pebble-garden/src/garden/validate.ts`, lines 73-81). Expect a second round of cross-field issues once the field errors are fixed.
+
+## The shot stateHash never changes
+
+**Symptom:** every `pnpm shot` sidecar has the same `stateHash`, whatever the tick or input.
+
+**Cause:** the game runs in worlds it creates itself, while `__pebble3d.stateHash` still reports `createGame`'s world, which holds no moving bodies.
+
+**Fix:** override it after `createGame`: `Object.assign(window.__pebble3d ?? {}, { stateHash: () => myWorld.stateHash() })` (`apps/ringout/src/main.ts`, lines 95-99; `apps/pebble-garden/src/main.ts`, lines 182-186).
+
+## biome --unsafe removed !important
+
+**Symptom:** after `npx biome check --write --unsafe`, a CSS rule lost its `!important` and a hidden panel shows again.
+
+**Cause:** biome's recommended rule `lint/complexity/noImportantStyles` has an unsafe fix that deletes `!important`. `--write` alone only reports it.
+
+**Fix:** don't run `--unsafe` over CSS. Where `!important` is needed, keep it with a suppression comment on the line before: `/* biome-ignore lint/complexity/noImportantStyles: <reason> */` (`apps/pebble-garden/src/ui/hud.css`, lines 62-65), or raise the selector's specificity instead (`apps/drift-drone/src/game/ui/hud.css`, line 42).
+
+## Fixed-mode captures with a worker sim
+
+**Symptom:** with the sim in a Web Worker, `pnpm shot --ticks n` captures a different tick each run, or times out waiting for `__pebble3d.done`.
+
+**Cause:** a worker steps on its own clock, so "one tick per frame, stop at n" cannot be enforced across the thread boundary.
+
+**Fix:** run the same sim inline on the main thread whenever `mode` is `fixed` and use the worker only in realtime (`apps/swarm-siege/src/main.ts`, line 81 and lines 133-135; `apps/breakpoint/src/main.ts`, line 85). See [cookbook/instanced-crowds-and-perf.md](cookbook/instanced-crowds-and-perf.md).

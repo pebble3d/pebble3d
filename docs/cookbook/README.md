@@ -18,5 +18,8 @@ One task per page: the goal, a snippet that works, the gotchas, and the files in
 | [audio-sfx.md](audio-sfx.md) | Synthesised WebAudio cues without autoplay warnings. |
 | [json-levels-and-headless-verify.md](json-levels-and-headless-verify.md) | Levels as data, proven in Node with `pnpm --filter chain-reaction verify`. |
 | [assets-and-licensing.md](assets-and-licensing.md) | Adding a model, HDRI or splat through the asset manifest. |
+| [sub-path-hosting.md](sub-path-hosting.md) | Serving a game under `/some/path/`: Vite `--base`, the asset base, shared assets. |
+| [custom-camera.md](custom-camera.md) | Driving the camera yourself: removing the orbit controls, follow and spring-arm cameras. |
+| [owning-the-world.md](owning-the-world.md) | Worlds your code creates, steps and draws next to `createGame`; stale views; `stateHash`. |
 
 Start from [getting-started.md](../getting-started.md) if you have no app yet. API details: [api-reference.md](../api-reference.md). Feature-to-file index: [examples.md](../examples.md).

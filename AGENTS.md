@@ -37,7 +37,7 @@ Pebble3D is a browser 3D engine: JSON scenes validated by a zod schema, rendered
 | All TS tests                                       | `pnpm test` (root vitest, every project) or `pnpm -r test`                                                                    |
 | One project's tests                                | `npx vitest run --project rockfall` (a project must be listed in the root `vitest.config.ts`)                                 |
 | Typecheck                                          | `pnpm typecheck`                                                                                                              |
-| Lint (biome)                                       | `pnpm lint`; auto-fix with `npx biome check --write <paths>`                                                                  |
+| Lint (biome)                                       | `pnpm lint`; auto-fix with `npx biome check --write <paths>` (never `--unsafe` on CSS: it deletes `!important`)               |
 | Rust tests, both builds                            | `cargo test -p engine-core --features deterministic` and `cargo test -p engine-core --no-default-features --features fast`    |
 | Determinism (Node)                                 | `node --experimental-strip-types packages/sdk/test/determinism.mjs --expect "$(cat packages/sdk/test/fixtures/det-hash.txt)"` |
 | Screenshot                                         | `pnpm shot --scene showcase --cam hero` or `pnpm shot --app rockfall --param demo=1 --ticks 600`                              |

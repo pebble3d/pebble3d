@@ -97,6 +97,7 @@ export class Presentation {
 		private readonly keep: Keep,
 	) {
 		const r = game.renderer;
+		r.controller?.dispose(); // detach the default controller's canvas listeners
 		r.controller = null; // the game drives the camera
 		const scene = r.three.scene;
 		scene.environmentIntensity = 0.06;

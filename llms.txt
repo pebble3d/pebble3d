@@ -29,6 +29,9 @@ Write a scene as JSON, drive it from TypeScript with `createGame`, and verify it
 - [audio-sfx](docs/cookbook/audio-sfx.md): Synthesised WebAudio cues without autoplay warnings.
 - [json-levels-and-headless-verify](docs/cookbook/json-levels-and-headless-verify.md): Levels as data, proven in Node with `pnpm --filter chain-reaction verify`.
 - [assets-and-licensing](docs/cookbook/assets-and-licensing.md): Adding a model, HDRI or splat through the asset manifest.
+- [sub-path-hosting](docs/cookbook/sub-path-hosting.md): Serving a game under `/some/path/`: Vite `--base`, the asset base, shared assets.
+- [custom-camera](docs/cookbook/custom-camera.md): Driving the camera yourself: removing the orbit controls, follow and spring-arm cameras.
+- [owning-the-world](docs/cookbook/owning-the-world.md): Worlds your code creates, steps and draws next to `createGame`; stale views; `stateHash`.
 
 ## Examples
 

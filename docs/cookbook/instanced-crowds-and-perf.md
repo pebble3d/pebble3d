@@ -40,7 +40,9 @@ if (pebbles) pebbles.castShadow = false;
 | --- | --- |
 | No allocation per frame | Preallocate vectors, typed arrays and event records; reuse the `{ ticks, alpha }` object `FixedStepLoop.advance` returns. |
 | Instance keys must match | A new key is a new `InstancedMesh` (a new draw call). Vary colour per instance (the 5th argument), not material. |
+| Workers need an inline path for captures | A worker runs on its own clock, so `?mode=fixed&ticks=n` (one tick per frame, `pnpm shot`) cannot be guaranteed through it. Put the sim behind one host interface with two implementations, a worker host and an inline host that runs the same sim code on the main thread, and pick inline whenever `mode` is `fixed` (and for a `?worker=0` debug switch). Node tests use the inline code too. |
+| Worker wasm URL | Resolve the `?url` import against the page before posting it: `new URL(wasmUrl, location.href).href`. A worker resolves relative URLs against its own script, so a relative build base would otherwise point it at the wrong folder. See [sub-path-hosting.md](sub-path-hosting.md). |
 | Budgets | Splats 1,500,000 (warns above); shadow cascades 3, max distance 120 m; DPR capped at 2. |
 | Measure on an idle GPU | Benches: `node apps/<app>/bench/fps.mjs`; see [verification.md](../verification.md#benches-and-capture-scripts). |
 
-See it in: [apps/rockfall/src/game/view/rock-view.ts](../../apps/rockfall/src/game/view/rock-view.ts) (spawned rocks into the registry, lines 68-101).
+See it in: [apps/rockfall/src/game/view/rock-view.ts](../../apps/rockfall/src/game/view/rock-view.ts) (spawned rocks into the registry, lines 68-101), [apps/swarm-siege/src/main.ts](../../apps/swarm-siege/src/main.ts) (worker only in realtime, inline otherwise, line 81; absolute wasm URL, lines 109-112; host choice, lines 133-135), [apps/swarm-siege/src/game/host.ts](../../apps/swarm-siege/src/game/host.ts) (`InlineHost` and `WorkerHost` behind one interface, lines 90 and 169-230), [apps/breakpoint/src/main.ts](../../apps/breakpoint/src/main.ts) (the same split, lines 85 and 125-157).

@@ -60,7 +60,7 @@ apps/hello-ball/
   test/sim.test.ts
 ```
 
-`vite.config.ts` must be copied: it serves the Basis transcoder at `/basis/`, points `publicDir` at `../playground/public` (shared assets, `favicon.svg`) and lets Vite serve the wasm from `packages/sdk/wasm/`. After creating the folder, run `pnpm i` so pnpm links the workspace packages (in a sandbox without network, `pnpm i --offline` works once the store has every package).
+`vite.config.ts` must be copied: it serves the Basis transcoder at `/basis/`, points `publicDir` at `../playground/public` (shared assets, `favicon.svg`) and lets Vite serve the wasm from `packages/sdk/wasm/`. Scenes and code keep asset paths root-absolute (`/assets/...`); to deploy under a sub-path, build with `vite build --base /some/path/` and the renderer prefixes them ([cookbook/sub-path-hosting.md](cookbook/sub-path-hosting.md)). After creating the folder, run `pnpm i` so pnpm links the workspace packages (in a sandbox without network, `pnpm i --offline` works once the store has every package).
 
 New-app checklist: `package.json`, `index.html`, copied `vite.config.ts` and `tsconfig.json`, your own `vitest.config.ts` **plus an `"apps/<name>"` line in the root `vitest.config.ts` `projects` list** (without it vitest never runs the app's tests), then `pnpm i`.
 
@@ -361,4 +361,5 @@ Choosing `--ticks`: `--ticks n` captures right after engine tick n (fixed mode, 
 - [verification.md](verification.md): shots, determinism, benches.
 - [troubleshooting.md](troubleshooting.md): when something fails.
 - [api-reference.md](api-reference.md): every `createGame` option, `Game` member and `World` method.
+- Next steps most games need: [cookbook/custom-camera.md](cookbook/custom-camera.md) (your own camera), [cookbook/owning-the-world.md](cookbook/owning-the-world.md) (worlds you create per round), [cookbook/sub-path-hosting.md](cookbook/sub-path-hosting.md) (deploying under a sub-path).
 - Real games to copy from: `apps/chain-reaction` (createGame plus its own worlds), `apps/rockfall` (custom boot, spawners, 1,800 bodies).

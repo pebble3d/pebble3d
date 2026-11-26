@@ -33,6 +33,8 @@ Wasm URLs come from Vite `?url` imports of `packages/sdk/wasm/det/engine_core_de
 | `stopAtTick` | `number` | none | Fixed mode only: the sim stops advancing at this tick and `__pebble3d.done` turns true once that frame has rendered. |
 | `backend` | `"webgpu" \| "webgl"` | `"webgpu"` | A WebGPU request that falls back throws `BackendUnavailable: webgpu`; retry on a fresh canvas with `"webgl"` (`apps/playground/src/main.ts`, lines 200-212). |
 | `splatOnly` | `boolean` | `false` | Debug: draw only the splat, no meshes or post. |
+| `assetBase` | `string` | `VITE_PEBBLE3D_ASSET_BASE`, else Vite's `BASE_URL`, else `"/"` | Prefix for root-absolute asset URLs (`/assets/...` in the scene, `renderer.loadGltf`, the `/basis/` transcoder). See [cookbook/sub-path-hosting.md](cookbook/sub-path-hosting.md). |
+| `webglFallback` | `boolean` | on only with `VITE_PEBBLE3D_WEBGL_FALLBACK=1` or `?webglFallback=1` | When WebGPU is missing, keep WebGL on the same canvas (with a small notice) instead of throwing `BackendUnavailable`. |
 
 What happens each frame, in order:
 
@@ -53,13 +55,13 @@ There is no per-tick hook. To run game rules once per tick, either count `world.
 | `sim` | `SimHandle`: `world` (the wasm `World`), `memory` (its `WebAssembly.Memory`), `build`, `seed`, `spawnScene(entries)`. |
 | `views` | `StateViews`: `prev`, `curr` (Float32Array, 8 floats per slot), `scratch` (Float32Array of `SCRATCH_LEN`), `capacity`, `refresh()`. |
 | `ids` | `Map<sceneId, simId>`. Includes the generated `__ground` and `__bounds.<side>` statics. Spawner-created bodies are not in it. |
-| `player` | `PlayerRig \| null`, the scene's first entity with a `character`: `simId`, `view` (a `CharacterView`), `camera` (`ThirdPersonController` when `camera.controller` is `"thirdPerson"`, else null), `input` (`{ keys: { f, b, l, r }, jump, sprint }`). Keyboard listeners (WASD/arrows, Space, Shift) write `input`; scripts and bots may write it directly. |
-| `renderer` | `EngineRenderer`: `three` (`renderer`, `scene`, `camera`), `controller`, `instances`, `dof`, `splatColor`, `style`, `stylize(root)`, `loadGltf(url)`, `setCameraPreset(name)`, `reportError(msg)`. |
+| `player` | `PlayerRig \| null`, the scene's first entity with a `character`: `simId`, `view` (a `CharacterView`), `camera` (`ThirdPersonController` when `camera.controller` is `"thirdPerson"`, else null), `input` (`{ keys: { f, b, l, r }, jump, sprint }`). Keyboard listeners (WASD/arrows, Space, Shift) write `input`; scripts and bots may write it directly. Every frame, 0-tick frames included, `input` is sent with `setCharacterInput`, overwriting any `setCharacterInput` your code made for this character (re-send yours at the end of `onFrame`). Other characters get no animation until you call `renderer.attachCharacter` ([cookbook/character-and-camera.md](cookbook/character-and-camera.md)). |
+| `renderer` | `EngineRenderer`: `three` (`renderer`, `scene`, `camera`), `controller` (settable: `dispose()` it and set `null` to own the camera, [cookbook/custom-camera.md](cookbook/custom-camera.md)), `instances`, `dof`, `splatColor`, `style`, `stylize(root)`, `loadGltf(url)`, `assetUrl(url)`, `attachCharacter(simId, clipMap)`, `setCameraPreset(name)`, `reportError(msg)`. |
 | `onFrame(cb)` | `cb(dt)` every frame after `renderer.sync`, before `render`. `dt` is wall seconds in realtime and `ticks / 60` in fixed mode (`1/60`, or 0 once stopped). |
 | `setCamera(name)` | A camera preset from `camera.presets`, or `"controller"` to hand back to the scene's controller. A preset suspends the third-person camera; the player still moves relative to its yaw. |
 | `stats()` | `GameStats` (fps, frameMs, drawCalls, triangles, splats, physicsMs, activeBodies, sleepingBodies, build, tick, errors). Returns the same mutated object every call. |
 
-Read state from `views` only after `views.refresh()`: wasm memory can grow on any spawn, which detaches old typed-array views. `createGame` refreshes once per frame before `onFrame`; refresh again after you spawn or step yourself.
+Read state from `views` only after `views.refresh()`: wasm memory can grow on any spawn, which detaches old typed-array views (they then read as empty, `byteLength` 0). `createGame` refreshes once per frame before `onFrame`; refresh again after you spawn or step yourself. Every world made from the same wasm module shares one memory, so a spawn in one world detaches the views of all the others. Read `views.curr` and `views.scratch` from the `views` object each time; a `Float32Array` kept in a local or a field across calls goes stale.
 
 ## State buffers
 
@@ -106,7 +108,7 @@ if (hit) {
 | `1` | static bodies only (ground, bounds, static entities) | ignored |
 | `2` | everything except the body of `excludeId` | the entity to skip (the caster itself) |
 
-The direction is normalised for you, so `toi` is metres. `hitId` is the entity id (compare with `game.ids`). Raycasts see the broad phase as of the last `step`: a body spawned since then is invisible until the next tick. A zero direction or `maxToi <= 0` returns false. The third-person camera uses filter 1 so moving props never pull the camera in.
+The direction is normalised for you, so `toi` is metres. `hitId` is the entity id (compare with `game.ids`). Raycasts see the broad phase as of the last `step`: a body spawned since then is invisible until the next tick, and a world that has never stepped misses everything, static floor included. Step a new world once before probing it. A zero direction or `maxToi <= 0` returns false. The third-person camera uses filter 1 so moving props never pull the camera in.
 
 ## Body control
 
@@ -115,14 +117,16 @@ All take the entity id and return `false` for unknown ids or the wrong body type
 | Method | Works on | Effect |
 | --- | --- | --- |
 | `applyImpulse(id, ix, iy, iz)` | dynamic | Adds `impulse / mass` to the velocity (N·s); wakes the body. |
-| `applyTorqueImpulse(id, tx, ty, tz)` | dynamic | Angular impulse; wakes the body. |
+| `applyTorqueImpulse(id, tx, ty, tz)` | dynamic | Angular impulse in **world** axes (N·m·s); the angular velocity changes by the inverse world-space inertia times it. Wakes the body. |
 | `setVelocity(id, vx, vy, vz, wx, wy, wz)` | dynamic | Sets linear and angular velocity; wakes the body. |
-| `setKinematicPose(id, px, py, pz, qx, qy, qz, qw)` | kinematic | Target pose, reached on the next step. |
+| `setKinematicPose(id, px, py, pz, qx, qy, qz, qw)` | kinematic | Target pose, reached on the next step. Position and rotation only: colliders cannot be rescaled after spawn. |
 | `teleport(id, x, y, z)` | any with a body | Moves instantly, zeroes a dynamic body's velocity, sets `NO_INTERP`. Returns nothing. |
 | `setCharacterInput(id, wx, wz, jump, sprint)` | character | World-space XZ direction (clamped to length 1). `createGame` overwrites it every frame for `game.player`. |
 | `spawn(json)` / `despawn(id)` | | `spawn` takes an `EntityDescJson` string (camelCase: `position`, `rotation`, `body: { type, mass, friction, restitution, linearDamping, angularDamping, ccd, collider }`, `character`, `spawner`) and returns the id; it throws on bad JSON. Bodies spawned this way get no visual: add one yourself. |
 
-Default mass is collider volume at density 1 (a 1 m box is 1 kg, a 0.5 m radius sphere about 0.52 kg).
+Default mass is collider volume at density 1 (a 1 m box is 1 kg, a 0.5 m radius sphere about 0.52 kg). The inertia tensor comes from the collider shape at uniform density; an explicit `mass` scales it with the mass. Damping defaults to 0, and Rapier has no rolling resistance, so a rolling sphere needs `angularDamping` to ever stop ([cookbook/bodies-impulses-velocity.md](cookbook/bodies-impulses-velocity.md)).
+
+There are no contact or collision events. Detect hits in your rules after each step from positions and velocities (overlap distance, closing speed, an unexplained one-tick velocity change); the bodies recipe has the patterns and the games that use them.
 
 ## The `window.__pebble3d` probe
 
@@ -141,7 +145,21 @@ Default mass is collider volume at density 1 (a 1 m box is 1 kg, a 0.5 m radius 
 | `position(sceneId)` | `[x, y, z]` of a scene entity's body, or null. Allocates. |
 | `error` | Set by your `main().catch` so automation reports the failure instead of timing out. |
 
-Add game probes with `Object.assign(window.__pebble3d ?? {}, { game: { score: () => sim.score } })`. `pnpm shot` calls every function in `game` and writes the results to the sidecar. An app that uses the engine with its own world (Chain Reaction) can override `stateHash` the same way so captures report that world. An app that boots without `createGame` must install the whole hook itself: `ready`, `done`, `frame`, `tick`, `stats`, `adapterInfo`, `stateHash`, `setCamera` (`apps/rockfall/src/main.ts`, lines 274-322).
+Add game probes with `Object.assign(window.__pebble3d ?? {}, { game: { score: () => sim.score } })`. `pnpm shot` calls every function in `game` and writes the results to the sidecar. An app that runs its game in its own worlds (Chain Reaction, Ringout, Pebble Garden) must override `stateHash` the same way, `Object.assign(window.__pebble3d ?? {}, { stateHash: () => myWorld.stateHash() })`, or every capture reports `createGame`'s idle world and the hash never changes ([cookbook/owning-the-world.md](cookbook/owning-the-world.md)). An app that boots without `createGame` must install the whole hook itself: `ready`, `done`, `frame`, `tick`, `stats`, `adapterInfo`, `stateHash`, `setCamera` (`apps/rockfall/src/main.ts`, lines 274-322).
+
+## Validating scenes
+
+`parseScene(input)` (and `createGame`) throws a `SceneError` for the **first** problem only, with its `path` (`entities[3].prefab`). To list every problem at once (an editor, an import dialog, a level linter), call `SceneSchema.safeParse(input)` and walk `error.issues`; `formatPath(issue.path)` gives the same path text:
+
+```ts
+import { formatPath, SceneSchema } from "@pebble3d/sdk/schema";
+
+const r = SceneSchema.safeParse(json);
+if (!r.success)
+	for (const i of r.error.issues) console.log(`${formatPath(i.path)}: ${i.message}`);
+```
+
+Validation runs in two passes. The cross-field checks (duplicate ids, unknown prefabs, "entity needs a mesh, body or spawner", collider/body combinations) run only once the whole scene passes the field-level schema, so a scene with a bad field reports only field errors; fix those and the cross-field errors appear on the next run.
 
 ## Booting without createGame
 
