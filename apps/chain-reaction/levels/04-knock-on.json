@@ -1,0 +1,105 @@
+{
+	"$schema": "../level.schema.json",
+	"id": "04-knock-on",
+	"name": "Knock-On",
+	"hint": "The ball waits on a ledge the marble can't reach. Stand dominoes in a row so the last one topples onto it; the marble only has to start the chain.",
+	"grid": {
+		"cols": 14,
+		"rows": 7,
+		"origin": [-7, 0]
+	},
+	"ball": {
+		"cell": [8, 2]
+	},
+	"marbles": [
+		{
+			"cell": [0, 4]
+		}
+	],
+	"goal": {
+		"cell": [9, 0]
+	},
+	"inventory": {
+		"domino": 4,
+		"ramp": 2
+	},
+	"par": 4,
+	"solution": [
+		{
+			"part": "ramp",
+			"cell": [0, 2],
+			"dir": "right"
+		},
+		{
+			"part": "domino",
+			"cell": [5, 1],
+			"dir": "up"
+		},
+		{
+			"part": "domino",
+			"cell": [6, 1],
+			"dir": "up"
+		},
+		{
+			"part": "domino",
+			"cell": [7, 1],
+			"dir": "up"
+		}
+	],
+	"scene": {
+		"entities": [
+			{
+				"id": "launch",
+				"prefab": "block",
+				"transform": {
+					"position": [-4.5, 1, 0],
+					"scale": [5, 2, 1]
+				}
+			},
+			{
+				"id": "floor",
+				"prefab": "block",
+				"transform": {
+					"position": [0, 0.5, 0],
+					"scale": [4, 1, 1]
+				}
+			},
+			{
+				"id": "stop",
+				"prefab": "block",
+				"transform": {
+					"position": [0, 1.15, 0],
+					"scale": [0.12, 0.3, 1]
+				}
+			},
+			{
+				"id": "fence",
+				"prefab": "block",
+				"transform": {
+					"position": [1.92, 1.15, 0],
+					"scale": [0.16, 0.3, 1]
+				}
+			},
+			{
+				"id": "ledge",
+				"prefab": "block",
+				"transform": {
+					"position": [1.65, 1.95, 0],
+					"scale": [0.7, 0.1, 1]
+				}
+			},
+			{
+				"id": "backstop",
+				"prefab": "block",
+				"transform": {
+					"position": [5, 1.75, 0],
+					"scale": [4, 3.5, 1]
+				}
+			}
+		]
+	},
+	"expect": {
+		"tick": 330,
+		"hash": "aa2cfac4c2a264be"
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"name": "@pebble3d/sdk",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./types": "./src/types.ts",
+		"./schema": "./src/schema.ts",
+		"./expand": "./src/expand.ts",
+		"./sim": "./src/sim.ts",
+		"./loop": "./src/loop.ts",
+		"./game": "./src/game.ts",
+		"./input": "./src/input.ts"
+	},
+	"scripts": {
+		"test": "vitest run",
+		"typecheck": "tsc -p tsconfig.json --noEmit",
+		"schema": "node --experimental-strip-types scripts/emit-schema.ts"
+	},
+	"dependencies": {
+		"@pebble3d/renderer": "workspace:*",
+		"three": "0.187.0",
+		"zod": "^4.6.7"
+	},
+	"license": "SEE LICENSE IN LICENSE"
+}

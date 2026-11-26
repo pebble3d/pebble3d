@@ -1,0 +1,29 @@
+---
+import { href, REPO_URL } from "../lib/site";
+import Logo from "./Logo.astro";
+
+interface Props {
+	current?: "demos" | "docs" | "ai" | "license" | undefined;
+}
+const { current } = Astro.props;
+const items = [
+	{ id: "demos", label: "Demos", href: href("demos/") },
+	{ id: "docs", label: "Docs", href: href("docs/") },
+	{ id: "ai", label: "Build with AI", href: href("build-with-ai/") },
+	{ id: "license", label: "License", href: href("license/") },
+] as const;
+---
+
+<header class="wrap site-header">
+	<a class="brand" href={href("")}><Logo />Pebble3D</a>
+	<nav class="site-nav" aria-label="Main">
+		{
+			items.map((i) => (
+				<a href={i.href} aria-current={current === i.id ? "page" : undefined}>
+					{i.label}
+				</a>
+			))
+		}
+		<a class="gh" href={REPO_URL}>GitHub</a>
+	</nav>
+</header>

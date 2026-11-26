@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+# Debug tests run the physics at a usable speed; workspace crates stay unoptimised.
+[profile.dev.package."*"]
+opt-level = 2

@@ -1,0 +1,54 @@
+---
+import GameCard from "../../components/GameCard.astro";
+import Base from "../../layouts/Base.astro";
+import { demoCount, gameJsonLd, games, href } from "../../lib/site";
+
+const itemList = {
+	"@context": "https://schema.org",
+	"@type": "ItemList",
+	name: "Pebble3D demos",
+	itemListElement: games.map((g, i) => ({
+		"@type": "ListItem",
+		position: i + 1,
+		item: gameJsonLd(g),
+	})),
+};
+---
+
+<Base
+	title="Demos"
+	description={`Play ${demoCount()} original games built with Pebble3D in your browser: ${games.map((g) => g.name).join(", ")}. Each one shows off one strength of the engine.`}
+	nav="demos"
+	jsonLd={[itemList]}
+>
+	<section class="wrap page-head">
+		<p class="eyebrow">{demoCount()} · play in your browser</p>
+		<h1>Demos</h1>
+		<p class="lede">
+			Original games, each built to show off one strength of the engine. Every one plays a
+			full loop, includes an autoplayer bot (<code>?demo=1</code>), and links to the recipes
+			behind it.
+		</p>
+		<p class="note">
+			Best in Chrome or Edge with WebGPU; other browsers use the WebGL fallback
+			automatically. Desktop with a keyboard and mouse recommended.
+		</p>
+	</section>
+	<section class="wrap" aria-label="All demos" style="padding-bottom: 72px">
+		<div class="grid game-grid">
+			{games.map((g, i) => <GameCard game={g} eager={i < 3} />)}
+		</div>
+	</section>
+	<section class="band">
+		<div class="wrap section start">
+			<h2 class="section-title">Run them locally</h2>
+			<pre><code>pnpm i && pnpm build:wasm && pnpm fetch-assets
+pnpm --filter &lt;app&gt; dev</code></pre>
+			<p>
+				Each demo page names its app under <code>apps/</code>. The
+				<a href={href("docs/examples/")}>examples map</a> lists where each engine feature is
+				used, by file and line range.
+			</p>
+		</div>
+	</section>
+</Base>

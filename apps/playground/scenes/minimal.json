@@ -1,0 +1,13 @@
+{
+	"version": 1,
+	"environment": { "preset": "studio", "ground": {} },
+	"prefabs": {
+		"ball": {
+			"mesh": { "primitive": "sphere" },
+			"body": { "restitution": 0.5 }
+		}
+	},
+	"entities": [
+		{ "id": "b1", "prefab": "ball", "transform": { "position": [0, 4, 0] } }
+	]
+}

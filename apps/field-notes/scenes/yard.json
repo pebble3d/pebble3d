@@ -1,0 +1,103 @@
+{
+	"$schema": "../../../packages/sdk/scene.schema.json",
+	"version": 1,
+	"environment": {
+		"preset": "outdoor",
+		"hdri": "/assets/qwantani_noon_puresky_2k.hdr",
+		"fog": false,
+		"splat": {
+			"url": "/assets/knock-community-hall-800k.spz",
+			"position": [0, -1.006, 0],
+			"rotation": [0.99997, -0.0006, 7e-5, -0.0077],
+			"scale": 2.2,
+			"envFromSplat": true,
+			"floorY": 0,
+			"exposure": 0.88,
+			"saturation": 1.1
+		},
+		"ground": {
+			"y": 0,
+			"size": 80,
+			"visible": false
+		}
+	},
+	"lighting": {
+		"sun": {
+			"direction": [0.97, 0.8, 0.22],
+			"intensity": 3.2,
+			"color": "#fff1de"
+		}
+	},
+	"post": {
+		"toneMapping": "aces",
+		"exposure": 1.0,
+		"bloom": {
+			"enabled": true,
+			"strength": 0.55,
+			"threshold": 1.2
+		}
+	},
+	"camera": {
+		"controller": "thirdPerson",
+		"presets": {
+			"title": {
+				"position": [14.5, 3.4, 17.0],
+				"target": [4.5, 1.2, 9.5],
+				"fov": 42
+			},
+			"hero": {
+				"position": [13.0, 5.6, 13.8],
+				"target": [5.2, 0.6, 8.2],
+				"fov": 42
+			},
+			"overhead": {
+				"position": [3, 24, 11.51],
+				"target": [3, 0, 11.5],
+				"fov": 60
+			}
+		}
+	},
+	"sim": {
+		"build": "deterministic",
+		"seed": 23
+	},
+	"entities": [
+		{
+			"id": "player",
+			"character": {
+				"speed": 4.0,
+				"sprintSpeed": 5.3,
+				"accel": 14
+			},
+			"mesh": {
+				"gltf": {
+					"url": "/assets/rocketbox-male-adult-16.glb",
+					"animations": {
+						"idle": "Idle",
+						"walk": { "clip": "Walk", "speed": 0.979 },
+						"run": { "clip": "Run", "speed": 5.649 },
+						"jump": "Jump",
+						"fall": "Fall"
+					},
+					"look": {
+						"envIntensity": 1.2,
+						"saturation": 0.85
+					}
+				}
+			},
+			"transform": {
+				"position": [11.0, 0.8, 13.0],
+				"rotation": [0, -0.9563, 0, 0.29237],
+				"scale": [1, 1, 1]
+			},
+			"body": {
+				"type": "kinematic",
+				"collider": {
+					"shape": "capsule",
+					"halfHeight": 0.5,
+					"radius": 0.3
+				}
+			}
+		}
+	]
+}

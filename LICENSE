@@ -1,0 +1,103 @@
+Pebble3D Engine License
+Version 1.0
+
+Copyright (c) 2026 RJV Solutions. All rights reserved.
+
+This license applies to the Pebble3D engine source code, tools and
+documentation in this repository (the "Software"), except for the
+third-party components listed in Section 7.
+
+1. Definitions
+
+   "Licensor" means RJV Solutions.
+
+   "You" means the individual or legal entity using the Software, together
+   with all of its Affiliates.
+
+   "Affiliate" means any entity that controls, is controlled by, or is under
+   common control with You. "Control" means ownership of more than 50% of
+   the voting interests of an entity, or the power to direct its management.
+
+   "Annual Revenue" means the total of:
+     (a) all gross revenue received by You and Your Affiliates from any
+         source, whether or not related to the Software, and
+     (b) all funding raised by You and Your Affiliates, including equity
+         investment, loans, grants and crowdfunding,
+   measured over the most recent trailing twelve (12) months.
+
+   "Threshold" means fifty thousand United States dollars (USD $50,000).
+
+2. Free License (Annual Revenue under the Threshold)
+
+   If Your Annual Revenue is less than the Threshold, the Licensor grants
+   You a worldwide, non-exclusive, non-transferable, royalty-free license
+   to use, copy, modify and run the Software, and to distribute the
+   Software and Your modifications of it, including as part of
+   applications, games and other products You create. Commercial use is
+   permitted.
+
+3. Commercial License (Annual Revenue at or above the Threshold)
+
+   If Your Annual Revenue is equal to or greater than the Threshold, the
+   free license in Section 2 does not apply to You. To use the Software,
+   You must first obtain a separate commercial license from the Licensor,
+   on terms agreed in writing with the Licensor.
+
+   If Your Annual Revenue first reaches the Threshold while You are using
+   the Software under Section 2, You have sixty (60) days from that date to
+   obtain a commercial license or to stop using the Software. Products You
+   distributed before that date may remain in the hands of their end users.
+
+4. Conditions
+
+   (a) You must keep this license file and all copyright notices with every
+       copy or substantial portion of the Software You distribute.
+   (b) Anyone who receives the Software from You receives it under this
+       license, and the Annual Revenue conditions apply to them separately.
+   (c) You may not remove or bypass the Annual Revenue conditions by
+       sublicensing the Software under different terms, or by splitting
+       Your business across entities.
+   (d) The Licensor may ask You in writing to confirm that Your Annual
+       Revenue is under the Threshold. You must answer truthfully within
+       thirty (30) days.
+
+5. End Users
+
+   End users of a game or application You build with the Software do not
+   need their own license to play or use it.
+
+6. Termination
+
+   If You breach this license and do not fix the breach within thirty (30)
+   days of written notice from the Licensor, Your rights under this license
+   end automatically. Sections 7, 8 and 9 survive termination.
+
+7. Third-Party Components
+
+   The Software uses or bundles components owned by others, which remain
+   under their own licenses and are not covered by this license, including:
+     - three.js (MIT License)
+     - Rapier physics engine (Apache License 2.0)
+     - other npm and Cargo dependencies, under the licenses stated in their
+       own packages
+     - demo assets downloaded by scripts/fetch-assets.mjs, under the
+       licenses listed in apps/playground/public/assets/LICENSES.md
+       (including CC BY 4.0 and CC0 1.0 works)
+   You must comply with those licenses as well.
+
+8. No Warranty
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+9. Limitation of Liability
+
+   IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE.
+
+10. Contact
+
+   For a commercial license, contact RJV Solutions.

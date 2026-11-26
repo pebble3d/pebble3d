@@ -1,0 +1,217 @@
+{
+	"id": "gale-spires",
+	"name": "Gale Spires",
+	"tagline": "Shuttles, a turnstile bridge, orbiting gondolas and a lift ladder to the high spire.",
+	"medals": { "gold": 45, "silver": 54, "bronze": 70 },
+	"killY": -8,
+	"start": { "pos": [-2, 0, 0], "yaw": -90 },
+	"islands": [
+		{ "pos": [0, 0, 0], "radius": 5, "depth": 7, "seed": 11 },
+		{ "pos": [22, 0, 0], "radius": 3.5, "depth": 5, "seed": 12 },
+		{ "pos": [42, 0, 0], "radius": 3, "depth": 5, "seed": 13, "top": "stone" },
+		{ "pos": [62.5, 1, 0], "radius": 3.5, "depth": 6, "seed": 14 },
+		{
+			"pos": [80, 10, 0],
+			"radius": 3.5,
+			"depth": 7,
+			"seed": 15,
+			"top": "stone"
+		},
+		{ "pos": [102, 13.5, 0], "radius": 4, "depth": 9, "seed": 16 }
+	],
+	"blocks": [
+		{ "pos": [16, -0.4, 0], "size": [2, 0.8, 2] },
+		{ "pos": [32, -2.5, 0], "size": [1.2, 4.6, 1.2], "kind": "brass" },
+		{ "pos": [52, -1.5, 0], "size": [1.4, 9, 1.4], "kind": "brass" },
+		{ "pos": [87, 9.8, 0], "size": [6, 0.4, 0.8], "kind": "wood" },
+		{
+			"pos": [95.03, 11.58, 0],
+			"size": [2.5, 0.4, 7],
+			"yaw": -90,
+			"tilt": 30,
+			"kind": "wood"
+		},
+		{ "pos": [102, 13.675, 0], "size": [3, 0.35, 3], "kind": "crystal" }
+	],
+	"movers": [
+		{
+			"id": "shuttleA",
+			"kind": "slide",
+			"size": [2.4, 0.4, 2.4],
+			"pos": [8, -0.2, 0],
+			"to": [8, -0.2, -5],
+			"period": 6,
+			"hold": 0.3
+		},
+		{
+			"id": "shuttleB",
+			"kind": "slide",
+			"size": [2.4, 0.4, 2.4],
+			"pos": [12, -0.2, -5],
+			"to": [12, -0.2, 0],
+			"period": 6,
+			"hold": 0.3
+		},
+		{
+			"id": "turnstile",
+			"kind": "spin",
+			"size": [12, 0.5, 2.2],
+			"pos": [32, -0.25, 0],
+			"rate": 30
+		},
+		{
+			"id": "gondolaA",
+			"kind": "orbit",
+			"size": [2.6, 0.4, 2.6],
+			"pos": [52, -0.2, 0],
+			"radius": 4.9,
+			"period": 9,
+			"phase": 0.5
+		},
+		{
+			"id": "gondolaB",
+			"kind": "orbit",
+			"size": [2.6, 0.4, 2.6],
+			"pos": [52, -0.2, 0],
+			"radius": 4.9,
+			"period": 9,
+			"phase": 0
+		},
+		{
+			"id": "lift1",
+			"kind": "slide",
+			"size": [2.4, 0.4, 2.4],
+			"pos": [67.5, 0.8, 0],
+			"to": [67.5, 3.8, 0],
+			"period": 6,
+			"phase": 0,
+			"hold": 0.3
+		},
+		{
+			"id": "lift2",
+			"kind": "slide",
+			"size": [2.4, 0.4, 2.4],
+			"pos": [71, 3.8, 0],
+			"to": [71, 6.8, 0],
+			"period": 6,
+			"phase": 0.5,
+			"hold": 0.3
+		},
+		{
+			"id": "lift3",
+			"kind": "slide",
+			"size": [2.4, 0.4, 2.4],
+			"pos": [74.5, 6.8, 0],
+			"to": [74.5, 9.8, 0],
+			"period": 6,
+			"phase": 0,
+			"hold": 0.3
+		}
+	],
+	"checkpoints": [
+		{ "pos": [22, 0, 0], "yaw": -90 },
+		{ "pos": [62.5, 1, 0], "yaw": -90 },
+		{ "pos": [80, 10, 0], "yaw": -90 }
+	],
+	"goal": { "pos": [102, 13.85, 0] },
+	"shards": [
+		[8, 1.3, -2.5],
+		[12, 1.3, -2.5],
+		[32, 1.4, 4.5],
+		[32, 1.4, -4.5],
+		[52, 1.6, 4.9],
+		[69.2, 6.0, 0],
+		[87, 11.4, 0],
+		[95, 13.6, 0]
+	],
+	"bot": [
+		{ "to": [4.2, 0, 0], "sprint": false },
+		{
+			"to": [0, 0, 0],
+			"rel": "shuttleA",
+			"within": 0.4,
+			"jump": true,
+			"jumpAt": 2.0,
+			"waitMover": { "id": "shuttleA", "at": [8, -0.2, 0], "near": 0.03 }
+		},
+		{ "to": [0, 0, 0], "rel": "shuttleA", "within": 0.4 },
+		{
+			"to": [0, 0, 0],
+			"rel": "shuttleB",
+			"within": 0.4,
+			"jump": true,
+			"jumpAt": 0,
+			"waitMover": { "id": "shuttleA", "at": [8, -0.2, -5], "near": 0.03 }
+		},
+		{ "to": [0, 0, 0], "rel": "shuttleB", "within": 0.4 },
+		{
+			"to": [16, 0, 0],
+			"jump": true,
+			"jumpAt": 0,
+			"within": 0.5,
+			"waitMover": { "id": "shuttleB", "at": [12, -0.2, 0], "near": 0.03 }
+		},
+		{ "to": [20.5, 0, 0], "jump": true, "jumpAt": 0, "within": 0.6 },
+		{ "to": [22, 0, 0] },
+		{ "to": [24.8, 0, 0] },
+		{
+			"to": [27.6, 0, 0],
+			"within": 1.0,
+			"waitAngle": { "id": "turnstile", "deg": 0, "within": 5, "mod": 180 }
+		},
+		{ "to": [40.5, 0, 0], "waitSelf": { "at": [36.6, 0, 0], "near": 0.6 } },
+		{ "to": [44.3, 0, 0] },
+		{
+			"to": [0, 0, 0],
+			"rel": "gondolaA",
+			"within": 0.5,
+			"jump": true,
+			"jumpAt": 0,
+			"waitMover": { "id": "gondolaA", "at": [47.1, -0.2, 0], "near": 0.5 }
+		},
+		{ "to": [0, 0, 0], "rel": "gondolaA", "within": 0.4 },
+		{
+			"to": [60, 1, 0],
+			"jump": true,
+			"jumpAt": 0,
+			"within": 0.6,
+			"waitMover": { "id": "gondolaA", "at": [56.9, -0.2, 0], "near": 0.5 }
+		},
+		{ "to": [62.5, 1, 0] },
+		{ "to": [65.6, 1, 0] },
+		{
+			"to": [0, 0, 0],
+			"rel": "lift1",
+			"within": 0.4,
+			"waitMover": { "id": "lift1", "at": [67.5, 0.8, 0], "near": 0.03 }
+		},
+		{
+			"to": [0, 0, 0],
+			"rel": "lift2",
+			"within": 0.4,
+			"jump": true,
+			"jumpAt": 0,
+			"waitMover": { "id": "lift1", "at": [67.5, 3.8, 0], "near": 0.03 }
+		},
+		{
+			"to": [0, 0, 0],
+			"rel": "lift3",
+			"within": 0.4,
+			"jump": true,
+			"jumpAt": 0,
+			"waitMover": { "id": "lift2", "at": [71, 6.8, 0], "near": 0.03 }
+		},
+		{
+			"to": [77.6, 10, 0],
+			"jump": true,
+			"jumpAt": 0,
+			"within": 0.6,
+			"waitMover": { "id": "lift3", "at": [74.5, 9.8, 0], "near": 0.03 }
+		},
+		{ "to": [80, 10, 0] },
+		{ "to": [83.6, 10, 0] },
+		{ "to": [93.2, 10.6, 0], "jump": true, "jumpAt": 3.8, "within": 0.7 },
+		{ "to": [102, 13.85, 0] }
+	],
+	"view": { "eye": [30, 16, 34], "target": [50, 3, 0] }
+}

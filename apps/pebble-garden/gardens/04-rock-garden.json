@@ -1,0 +1,484 @@
+{
+	"version": 1,
+	"environment": {
+		"preset": "studio",
+		"ground": {
+			"color": "#e8dcc4"
+		}
+	},
+	"camera": {
+		"presets": {
+			"hero": {
+				"position": [6, 11, 16],
+				"target": [0, 0.4, 1],
+				"fov": 45
+			}
+		}
+	},
+	"sim": {
+		"seed": 4
+	},
+	"prefabs": {
+		"boulder": {
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#45403d",
+					"roughness": 0.85
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"mass": 6
+			},
+			"transform": {
+				"scale": [1, 1, 1]
+			}
+		},
+		"pillar": {
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#9a958c",
+					"roughness": 0.85
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [0.6, 1.6, 0.6]
+			}
+		},
+		"wall": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#9a958c",
+					"roughness": 0.9
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [3, 0.6, 0.3]
+			}
+		},
+		"rake": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#6e4128",
+					"roughness": 0.55
+				}
+			},
+			"body": {
+				"type": "kinematic"
+			},
+			"transform": {
+				"scale": [3, 0.3, 0.3]
+			}
+		},
+		"plank": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#b8743f",
+					"roughness": 0.65
+				}
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.4
+			},
+			"transform": {
+				"scale": [2.4, 0.12, 0.8]
+			}
+		},
+		"domino": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#2b2724",
+					"roughness": 0.6
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"friction": 0.6
+			},
+			"transform": {
+				"scale": [0.16, 1, 0.5]
+			}
+		},
+		"roller": {
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#6e4128",
+					"roughness": 0.5
+				}
+			},
+			"body": {
+				"type": "kinematic",
+				"friction": 1
+			},
+			"transform": {
+				"scale": [0.5, 2, 0.5]
+			}
+		}
+	},
+	"entities": [
+		{
+			"id": "block-1",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#e6dccb",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.08, 0.4, 0],
+				"scale": [0.8, 0.8, 1.6]
+			}
+		},
+		{
+			"id": "block-2",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#e6dccb",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.92, 0.4, 0],
+				"scale": [0.8, 0.8, 1.6]
+			}
+		},
+		{
+			"id": "block-3",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#d9482f",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.5, 1.2, -0.42],
+				"scale": [1.6, 0.8, 0.8]
+			}
+		},
+		{
+			"id": "block-4",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#d9482f",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.5, 1.2, 0.42],
+				"scale": [1.6, 0.8, 0.8]
+			}
+		},
+		{
+			"id": "block-5",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#e6dccb",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.08, 2, 0],
+				"scale": [0.8, 0.8, 1.6]
+			}
+		},
+		{
+			"id": "block-6",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#e6dccb",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.92, 2, 0],
+				"scale": [0.8, 0.8, 1.6]
+			}
+		},
+		{
+			"id": "block-7",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#4f9d8c",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.5, 2.8, -0.42],
+				"scale": [1.6, 0.8, 0.8]
+			}
+		},
+		{
+			"id": "block-8",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#4f9d8c",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.5, 2.8, 0.42],
+				"scale": [1.6, 0.8, 0.8]
+			}
+		},
+		{
+			"id": "block-9",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#e9c46a",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.08, 3.6, 0],
+				"scale": [0.8, 0.8, 1.6]
+			}
+		},
+		{
+			"id": "block-10",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#e9c46a",
+					"roughness": 0.8
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [2.92, 3.6, 0],
+				"scale": [0.8, 0.8, 1.6]
+			}
+		},
+		{
+			"id": "post",
+			"prefab": "pillar",
+			"transform": {
+				"position": [-5.4, 1.1, 0],
+				"scale": [0.7, 2.2, 0.7]
+			}
+		},
+		{
+			"id": "ramp",
+			"prefab": "plank",
+			"transform": {
+				"position": [-3.9, 1.15, 0],
+				"rotation": [0, 0, -0.173648, 0.984808],
+				"scale": [3.6, 0.12, 1.2]
+			}
+		},
+		{
+			"id": "boulder",
+			"prefab": "boulder",
+			"transform": {
+				"position": [-4.9, 2.05, 0],
+				"scale": [0.8, 0.8, 0.8]
+			},
+			"body": {
+				"mass": 30
+			}
+		},
+		{
+			"id": "domino-1",
+			"prefab": "domino",
+			"transform": {
+				"position": [-3.319, 0.5, 3.974],
+				"rotation": [0, -0.573576, 0, -0.819152]
+			}
+		},
+		{
+			"id": "domino-2",
+			"prefab": "domino",
+			"transform": {
+				"position": [-3.016, 0.5, 3.366],
+				"rotation": [0, -0.477159, 0, -0.878817]
+			}
+		},
+		{
+			"id": "domino-3",
+			"prefab": "domino",
+			"transform": {
+				"position": [-2.584, 0.5, 2.842],
+				"rotation": [0, -0.374607, 0, -0.927184]
+			}
+		},
+		{
+			"id": "domino-4",
+			"prefab": "domino",
+			"transform": {
+				"position": [-2.045, 0.5, 2.428],
+				"rotation": [0, -0.267238, 0, -0.96363]
+			}
+		},
+		{
+			"id": "domino-5",
+			"prefab": "domino",
+			"transform": {
+				"position": [-1.427, 0.5, 2.147],
+				"rotation": [0, -0.156434, 0, -0.987688]
+			}
+		},
+		{
+			"id": "domino-6",
+			"prefab": "domino",
+			"transform": {
+				"position": [-0.761, 0.5, 2.011],
+				"rotation": [0, -0.043619, 0, -0.999048]
+			}
+		},
+		{
+			"id": "domino-7",
+			"prefab": "domino",
+			"transform": {
+				"position": [-0.082, 0.5, 2.029],
+				"rotation": [0, 0.069756, 0, -0.997564]
+			}
+		},
+		{
+			"id": "domino-8",
+			"prefab": "domino",
+			"transform": {
+				"position": [0.575, 0.5, 2.199],
+				"rotation": [0, 0.182236, 0, -0.983255]
+			}
+		},
+		{
+			"id": "domino-9",
+			"prefab": "domino",
+			"transform": {
+				"position": [1.178, 0.5, 2.513],
+				"rotation": [0, 0.292372, 0, -0.956305]
+			}
+		},
+		{
+			"id": "domino-10",
+			"prefab": "domino",
+			"transform": {
+				"position": [1.694, 0.5, 2.954],
+				"rotation": [0, 0.398749, 0, -0.91706]
+			}
+		},
+		{
+			"id": "domino-11",
+			"prefab": "domino",
+			"transform": {
+				"position": [2.098, 0.5, 3.5],
+				"rotation": [0, 0.5, 0, -0.866025]
+			}
+		},
+		{
+			"id": "domino-12",
+			"prefab": "domino",
+			"transform": {
+				"position": [2.369, 0.5, 4.123],
+				"rotation": [0, 0.594823, 0, -0.803857]
+			}
+		},
+		{
+			"id": "rake",
+			"prefab": "rake",
+			"transform": {
+				"position": [-4.6, 0.15, 3.4]
+			}
+		},
+		{
+			"id": "roller",
+			"prefab": "roller",
+			"transform": {
+				"position": [0, 0.3, -3],
+				"rotation": [0.707107, 0, 0, 0.707107]
+			}
+		},
+		{
+			"id": "drum-1",
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#d9482f",
+					"roughness": 0.4
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [0.1, 0.95, -3],
+				"scale": [0.6, 0.6, 0.6]
+			}
+		},
+		{
+			"id": "stone-arch",
+			"prefab": "pillar",
+			"transform": {
+				"position": [5.5, 0.8, -2.5]
+			}
+		},
+		{
+			"id": "capsule-1",
+			"mesh": {
+				"primitive": "capsule",
+				"material": {
+					"color": "#6f8f4e",
+					"roughness": 0.7
+				}
+			},
+			"body": {
+				"type": "dynamic"
+			},
+			"transform": {
+				"position": [5.5, 2.2, -2.5],
+				"scale": [0.5, 1.2, 0.5]
+			}
+		}
+	]
+}

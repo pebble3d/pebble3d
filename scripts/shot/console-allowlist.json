@@ -1,0 +1,15 @@
+{
+	"_comment": "Benign console output that must not fail `pnpm shot`. Only console `error` and `warning` lines are checked. An entry matches a line when `pattern` (a JavaScript RegExp, unanchored unless the pattern anchors itself) matches the message text AND (`type` is absent OR equals the console message type, e.g. 'warning', 'error', 'debug'). Seeded from the Task 1 spike baseline on the Vite dev server: 10 runs (5 cases x webgpu|webgl) on three 0.187.0 produced no warnings or errors, only the two Vite HMR debug lines below. `pnpm shot` serves a production build via `vite preview`, so those lines never appear there; the entries are kept as harmless documentation (they are type 'debug', which is never checked). Uncaught page errors always fail and cannot be allowlisted; one-off expected errors go through `--allow-console-error \"<substring>[:count]\"` instead.",
+	"allow": [
+		{
+			"pattern": "^\\[vite\\] connecting\\.\\.\\.$",
+			"type": "debug",
+			"justification": "Vite HMR client banner; only emitted by the dev server, absent from production builds."
+		},
+		{
+			"pattern": "^\\[vite\\] connected\\.$",
+			"type": "debug",
+			"justification": "Vite HMR client banner; only emitted by the dev server, absent from production builds."
+		}
+	]
+}

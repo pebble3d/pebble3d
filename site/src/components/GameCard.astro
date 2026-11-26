@@ -1,0 +1,26 @@
+---
+import { type Game, pageHref, shot } from "../lib/site";
+
+interface Props {
+	game: Game;
+	/** Load eagerly (first row). */
+	eager?: boolean;
+}
+const { game, eager = false } = Astro.props;
+---
+
+<a class="card game-card" href={pageHref(game)}>
+	<img
+		src={shot(game)}
+		alt={game.screenshots[0]?.alt ?? game.name}
+		width="1280"
+		height="720"
+		loading={eager ? "eager" : "lazy"}
+		decoding="async"
+	/>
+	<span class="body">
+		<span class="game-name">{game.name}</span>
+		<span class="game-blurb">{game.blurb}</span>
+		<span class="game-tag">{game.tag}</span>
+	</span>
+</a>

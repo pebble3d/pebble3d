@@ -1,0 +1,139 @@
+{
+	"_comment": "Eight escalating waves. interval: frames between spawns (jittered +-25%). maxAlive caps concurrent zombies. after: the group joins the spawn order after this fraction of the wave. hpScale grows enemy HP per wave.",
+	"preWaveFrames": 600,
+	"clearFrames": 210,
+	"upgradeEvery": 2,
+	"hpScalePerWave": 0.06,
+	"waves": [
+		{
+			"maxAlive": 12,
+			"interval": 50,
+			"groups": [
+				{
+					"type": "shambler",
+					"count": 10
+				}
+			]
+		},
+		{
+			"maxAlive": 16,
+			"interval": 42,
+			"groups": [
+				{
+					"type": "shambler",
+					"count": 16
+				}
+			]
+		},
+		{
+			"maxAlive": 20,
+			"interval": 36,
+			"groups": [
+				{
+					"type": "shambler",
+					"count": 16
+				},
+				{
+					"type": "runner",
+					"count": 6,
+					"after": 0.3
+				}
+			]
+		},
+		{
+			"maxAlive": 24,
+			"interval": 32,
+			"groups": [
+				{
+					"type": "shambler",
+					"count": 24
+				},
+				{
+					"type": "runner",
+					"count": 12,
+					"after": 0.2
+				}
+			]
+		},
+		{
+			"maxAlive": 28,
+			"interval": 30,
+			"groups": [
+				{
+					"type": "shambler",
+					"count": 26
+				},
+				{
+					"type": "runner",
+					"count": 12,
+					"after": 0.2
+				},
+				{
+					"type": "brute",
+					"count": 2,
+					"after": 0.45
+				}
+			]
+		},
+		{
+			"maxAlive": 32,
+			"interval": 26,
+			"groups": [
+				{
+					"type": "shambler",
+					"count": 30
+				},
+				{
+					"type": "runner",
+					"count": 16,
+					"after": 0.15
+				},
+				{
+					"type": "brute",
+					"count": 3,
+					"after": 0.35
+				}
+			]
+		},
+		{
+			"maxAlive": 36,
+			"interval": 22,
+			"groups": [
+				{
+					"type": "shambler",
+					"count": 34
+				},
+				{
+					"type": "runner",
+					"count": 20,
+					"after": 0.1
+				},
+				{
+					"type": "brute",
+					"count": 4,
+					"after": 0.3
+				}
+			]
+		},
+		{
+			"maxAlive": 40,
+			"interval": 18,
+			"groups": [
+				{
+					"type": "shambler",
+					"count": 40
+				},
+				{
+					"type": "runner",
+					"count": 24,
+					"after": 0.1
+				},
+				{
+					"type": "brute",
+					"count": 5,
+					"after": 0.25
+				}
+			]
+		}
+	]
+}

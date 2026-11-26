@@ -1,0 +1,201 @@
+---
+import Base from "../layouts/Base.astro";
+import { href, REPO_BRANCH, REPO_URL } from "../lib/site";
+
+// Each competitor cell is backed by the sources listed at the bottom of the page.
+const rows: [string, string, string, string, string][] = [
+	[
+		"What it is",
+		"A game engine for AI coding agents, built on three.js",
+		"A JavaScript 3D library [1]",
+		"A game and rendering engine [4]",
+		"A web graphics engine [8], plus a browser-based visual editor [9]",
+	],
+	[
+		"Licence",
+		"Source-available: free under USD $50k/yr revenue plus funding",
+		"MIT [1]",
+		"Apache-2.0 [5]",
+		"MIT, for the engine [8] and the editor front end [9]",
+	],
+	[
+		"Rendering",
+		"three.js WebGPU renderer with a WebGL fallback; PBR or toon style",
+		"WebGL and WebGPU renderers [1]",
+		"WebGL, with WebGPU support [6]",
+		"WebGPU and WebGL2 [8]",
+	],
+	[
+		"Physics",
+		"Rapier in Rust/WASM, with a deterministic build and a state hash",
+		"Addons for Ammo, Jolt and Rapier [2]",
+		"Plugins, including Havok [7]",
+		"ammo.js integration [8]",
+	],
+	[
+		"How you author",
+		"JSON scenes checked by a schema, plus TypeScript",
+		"Code",
+		"Code, plus web tools such as the Playground, Inspector and Node Material Editor [4] [5]",
+		"Visual editor, plus code [9]",
+	],
+	[
+		"Gaussian splats",
+		"Yes, through three.js, composited with meshes",
+		"Yes, as an addon (Pebble3D uses it) [13]",
+		"Yes [12]",
+		"Yes [8]",
+	],
+	[
+		"Docs for AI agents",
+		"AGENTS.md, llms.txt, a JSON Schema, headless screenshots and determinism checks",
+		"llms.txt and llms-full.txt [3]",
+		"llms.txt [4]",
+		"llms.txt [10] and an Editor MCP server [11]",
+	],
+];
+
+const sources: [string, string][] = [
+	["three.js repository README", "https://github.com/mrdoob/three.js"],
+	[
+		"three.js docs: physics addons",
+		"https://threejs.org/docs/#examples/en/physics/RapierPhysics",
+	],
+	["three.js llms.txt", "https://threejs.org/llms.txt"],
+	[
+		"Babylon.js documentation index (llms.txt)",
+		"https://doc.babylonjs.com/llms.txt",
+	],
+	["Babylon.js repository", "https://github.com/BabylonJS/Babylon.js"],
+	[
+		"Babylon.js docs: WebGPU support",
+		"https://doc.babylonjs.com/setup/support/webGPU",
+	],
+	[
+		"Babylon.js docs: Havok plugin",
+		"https://doc.babylonjs.com/features/featuresDeepDive/physics/havokPlugin",
+	],
+	[
+		"PlayCanvas engine repository README",
+		"https://github.com/playcanvas/engine",
+	],
+	["PlayCanvas editor repository", "https://github.com/playcanvas/editor"],
+	["PlayCanvas llms.txt", "https://developer.playcanvas.com/llms.txt"],
+	[
+		"PlayCanvas docs: Editor MCP server",
+		"https://developer.playcanvas.com/user-manual/editor/mcp-server/",
+	],
+	[
+		"Babylon.js docs: Gaussian splatting",
+		"https://doc.babylonjs.com/features/featuresDeepDive/mesh/gaussianSplatting",
+	],
+	[
+		"three.js addons: GaussianSplat object",
+		"https://github.com/mrdoob/three.js/tree/dev/examples/jsm/objects",
+	],
+];
+---
+
+<Base
+	title="Pebble3D vs three.js, Babylon.js and PlayCanvas"
+	description="An honest comparison of Pebble3D with three.js, Babylon.js and PlayCanvas: what each is, its licence, rendering, physics and authoring, and where each one fits."
+>
+	<section class="wrap page-head">
+		<p class="eyebrow">Compare</p>
+		<h1>Pebble3D, three.js, Babylon.js and PlayCanvas</h1>
+		<p class="lede">
+			Pebble3D is young and narrow on purpose: it is built on three.js and aimed at games an
+			AI agent writes and verifies. The other three are general-purpose tools. Here
+			is where each one fits.
+		</p>
+	</section>
+
+	<article class="wrap prose">
+		<div class="table-wrap" tabindex="0" role="region" aria-label="Comparison table, scrolls sideways">
+			<table>
+				<thead>
+					<tr>
+						<th scope="col"><span class="sr-only">Topic</span></th><th scope="col">Pebble3D</th><th scope="col">three.js</th><th scope="col">Babylon.js</th><th scope="col">PlayCanvas</th>
+					</tr>
+				</thead>
+				<tbody>
+					{
+						rows.map((r) => (
+							<tr>
+								<th scope="row">{r[0]}</th>
+								{r.slice(1).map((c) => (
+									<td>{c}</td>
+								))}
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+		<p class="faint" style="font-size: 14px">
+			Numbers in brackets point at the sources below. The other columns summarise each
+			project's own documentation as of 2026-11-25; check their sites for current details.
+		</p>
+	</article>
+
+	<article class="wrap prose">
+		<h2>Choose Pebble3D when</h2>
+		<ul>
+			<li>
+				A coding agent writes most of the game. Scenes are JSON with a
+				<a href={href("docs/scene-reference/")}>documented default for every field</a>, and the
+				rules are in <a href={href("docs/agents/")}>AGENTS.md</a>.
+			</li>
+			<li>
+				You want to prove a change worked: <code>pnpm shot</code> writes a PNG and a JSON
+				report, and the physics state hash matches between Node and Chromium. See
+				<a href={href("docs/verification/")}>Verification</a>.
+			</li>
+			<li>
+				You want replays, ghosts or headless level checks from deterministic physics, as in
+				<a href={href("demos/ghostline/")}>Ghostline</a> and
+				<a href={href("demos/chain-reaction/")}>Chain Reaction</a>.
+			</li>
+			<li>
+				You want real captured places as levels: <a href={href("demos/field-notes/")}>Field Notes</a>
+				composites meshes into Gaussian splats.
+			</li>
+		</ul>
+
+		<h2>Choose something else when</h2>
+		<ul>
+			<li>
+				<strong>You need a visual editor.</strong> Pebble3D has none. PlayCanvas has a
+				browser-based editor, and Babylon.js has web tools such as the Inspector and the
+				Node Material Editor.
+			</li>
+			<li>
+				<strong>You need an OSI open-source licence.</strong> three.js and the PlayCanvas
+				engine are MIT and Babylon.js is Apache-2.0. Pebble3D is
+				<a href={href("license/")}>source-available</a>, and organisations at or above USD
+				$50k a year need a commercial licence.
+			</li>
+			<li>
+				<strong>You want full control of rendering and will assemble the rest.</strong>
+				three.js is the library Pebble3D itself uses.
+			</li>
+			<li>
+				<strong>You need a long track record, a package on npm, or several games on one
+				page.</strong> Pebble3D is new, installs from GitHub, and has no
+				<code>Game.dispose</code> yet. The engine has no joints or contact events either.
+			</li>
+		</ul>
+
+		<h2>Sources, checked 2026-11-25</h2>
+		<ol class="sources">
+			{sources.map(([label, url]) => <li><a href={url}>{label}</a></li>)}
+		</ol>
+
+		<h2>Known limits</h2>
+		<p>
+			The README keeps an up-to-date list:
+			<a href={`${REPO_URL}/blob/${REPO_BRANCH}/README.md#known-limitations`}>known limitations</a>.
+			For example, determinism is verified on V8 (Node and Chromium) only.
+		</p>
+	</article>
+</Base>

@@ -1,0 +1,30 @@
+{
+	"name": "site",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"sync": "node scripts/sync.mjs",
+		"dev": "node scripts/sync.mjs && astro dev --port 5320",
+		"build": "node scripts/sync.mjs && astro build",
+		"check-links": "node scripts/check-links.mjs",
+		"serve": "node scripts/serve.mjs",
+		"typecheck": "node scripts/sync.mjs && astro sync && tsc -p tsconfig.json --noEmit",
+		"check-games": "node scripts/check-games.mjs",
+		"screens": "node scripts/screens.mjs",
+		"check-claims": "node scripts/check-claims.mjs"
+	},
+	"dependencies": {
+		"@astrojs/sitemap": "3.7.6",
+		"@astrojs/starlight": "0.43.1",
+		"@fontsource/jetbrains-mono": "5.3.0",
+		"@fontsource/space-grotesk": "5.3.0",
+		"astro": "7.4.13"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"devDependencies": {
+		"typescript": "^7.0.2",
+		"@types/node": "^26.6.7",
+		"playwright": "^1.65.1"
+	}
+}

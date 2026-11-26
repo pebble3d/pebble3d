@@ -1,0 +1,135 @@
+{
+	"id": "lacquer",
+	"name": "Lacquer Works",
+	"tagline": "Black enamel switchbacks under studio softboxes.",
+	"medals": {
+		"gold": 31.5,
+		"silver": 35,
+		"bronze": 40
+	},
+	"physics": {
+		"gravity": -16
+	},
+	"look": {
+		"deck": {
+			"color": "#08090b",
+			"stripe": "#e0b866",
+			"roughness": 0.12,
+			"clearcoat": 1
+		},
+		"wall": {
+			"color": "#5a4a3a",
+			"roughness": 0.1,
+			"metalness": 0,
+			"glass": 0.9
+		},
+		"hull": {
+			"color": "#16171b",
+			"roughness": 0.4,
+			"metalness": 0.6
+		},
+		"rail": {
+			"color": "#c9a45c"
+		},
+		"accent": "#e8c27a",
+		"pillars": {
+			"color": "#cfd2d8",
+			"every": 16
+		},
+		"ground": {
+			"y": 0,
+			"color": "#1c1a18",
+			"roughness": 0.85,
+			"size": 600,
+			"grid": "#3a3733"
+		},
+		"envIntensity": 0.7,
+		"fogColor": "#1d1b19"
+	},
+	"scene": {
+		"version": 1,
+		"environment": {
+			"preset": "studio",
+			"backdrop": {
+				"horizon": "#2a2622",
+				"zenith": "#060607"
+			},
+			"fog": {
+				"near": 90,
+				"far": 320,
+				"color": "#1d1b19"
+			}
+		},
+		"lighting": {
+			"sun": {
+				"direction": [-0.4, 0.9, 0.25],
+				"intensity": 3.2,
+				"color": "#fff6ea"
+			}
+		},
+		"post": {
+			"toneMapping": "agx",
+			"exposure": 1.0,
+			"bloom": {
+				"enabled": true,
+				"strength": 0.4,
+				"threshold": 1.3
+			},
+			"ao": {
+				"enabled": true,
+				"radius": 0.6
+			}
+		},
+		"camera": {
+			"controller": "orbit"
+		},
+		"sim": {
+			"build": "deterministic",
+			"seed": 1
+		}
+	},
+	"track": {
+		"start": {
+			"pos": [0, 52, 0],
+			"heading": 30
+		},
+		"width": 4.8,
+		"wall": 0.85,
+		"segments": [
+			{ "len": 12, "pitch": -3 },
+			{ "len": 22, "pitch": -12 },
+			{ "turn": -100, "radius": 14, "pitch": -6, "bank": 18 },
+			{ "turn": 100, "radius": 14, "pitch": -6, "bank": 18 },
+			{ "len": 16, "pitch": -8, "checkpoint": true },
+			{
+				"len": 18,
+				"pitch": -3,
+				"width": 6,
+				"sweeper": { "arm": 2.4, "speed": 1.6 }
+			},
+			{ "len": 20, "pitch": -10, "boost": true },
+			{ "len": 8, "pitch": 14, "wall": 0.6 },
+			{ "gap": 8, "pitch": -16 },
+			{ "len": 20, "pitch": -6, "width": 6.5 },
+			{
+				"turn": 160,
+				"radius": 13,
+				"pitch": -4,
+				"bank": 22,
+				"checkpoint": true
+			},
+			{ "len": 26, "pitch": -12 },
+			{ "turn": -90, "radius": 16, "pitch": -6, "bank": 16 },
+			{
+				"len": 18,
+				"pitch": -3,
+				"width": 6,
+				"sweeper": { "arm": 2.4, "speed": -1.3 }
+			},
+			{ "turn": 90, "radius": 16, "pitch": -6, "bank": 16, "checkpoint": true },
+			{ "len": 28, "pitch": -10, "boost": true },
+			{ "len": 20, "pitch": -2, "finish": true },
+			{ "len": 24, "pitch": 8 }
+		]
+	}
+}

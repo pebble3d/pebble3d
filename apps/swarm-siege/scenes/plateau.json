@@ -1,0 +1,32 @@
+{
+	"$schema": "../../../packages/sdk/scene.schema.json",
+	"version": 1,
+	"environment": {
+		"preset": "studio",
+		"backdrop": { "horizon": "#1a1630", "zenith": "#06050d" },
+		"fog": { "near": 105, "far": 220, "color": "#141128" },
+		"ground": { "y": 0, "size": 140, "visible": false }
+	},
+	"lighting": {
+		"sun": {
+			"direction": [-0.45, 0.8, 0.35],
+			"intensity": 1.1,
+			"color": "#9fb0ff"
+		}
+	},
+	"post": {
+		"toneMapping": "aces",
+		"exposure": 1.0,
+		"bloom": { "enabled": true, "strength": 0.85, "threshold": 0.9 },
+		"ao": { "enabled": true, "radius": 0.6 }
+	},
+	"camera": {
+		"controller": "thirdPerson",
+		"presets": {
+			"hero": { "position": [0, 52, 62], "target": [0, 0, 2], "fov": 45 },
+			"top": { "position": [0, 128, -1.99], "target": [0, 0, -2], "fov": 45 }
+		}
+	},
+	"sim": { "build": "fast", "seed": 7 },
+	"entities": []
+}

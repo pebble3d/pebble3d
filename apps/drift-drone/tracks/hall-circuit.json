@@ -1,0 +1,27 @@
+{
+	"id": "hall-circuit",
+	"name": "Hall Circuit",
+	"tagline": "A flowing lap of the yard: low over the garden beds, up past the hall windows, then a dive back to the line.",
+	"difficulty": "Rookie",
+	"site": "yard",
+	"laps": 3,
+	"pad": { "p": [11.4, 0, 12.7], "dir": [-1, 0] },
+	"gate": { "w": 1.8, "h": 1.4 },
+	"gates": [
+		{ "p": [8.4, 1.5, 12.4], "dir": [-1, 0], "name": "Start / finish" },
+		{ "p": [3.0, 1.35, 11.8], "dir": [-1, 0], "name": "Lawn" },
+		{ "p": [-2.6, 1.5, 11.6], "dir": [-1, 0], "name": "Garden hop" },
+		{ "p": [-5.0, 2.1, 8.0], "dir": [0, -1], "name": "West turn" },
+		{ "p": [0.5, 3.0, 5.2], "dir": [1, 0], "name": "Ramp run" },
+		{ "p": [7.0, 3.6, 5.3], "dir": [1, 0], "name": "Windows" },
+		{ "p": [12.0, 2.4, 8.6], "dir": [0, 1], "name": "Dive" }
+	],
+	"medals": { "gold": 8.5, "silver": 10.5, "bronze": 13 },
+	"view": {
+		"center": [3.5, 1.5, 9.5],
+		"radius": 11,
+		"height": 4.2,
+		"angle": 0.62
+	},
+	"colors": ["#ff3d7f", "#36e0ff"]
+}

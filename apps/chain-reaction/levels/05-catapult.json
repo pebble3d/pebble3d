@@ -1,0 +1,68 @@
+{
+	"$schema": "../level.schema.json",
+	"id": "05-catapult",
+	"name": "Catapult",
+	"hint": "A see-saw turns a heavy drop into a lob. Rest the ball on the low end and let the marble land on the high one.",
+	"grid": {
+		"cols": 12,
+		"rows": 8,
+		"origin": [-6, 0]
+	},
+	"ball": {
+		"cell": [5, 3]
+	},
+	"marbles": [
+		{
+			"cell": [4, 7]
+		}
+	],
+	"goal": {
+		"cell": [3, 1]
+	},
+	"inventory": {
+		"seesaw": 1,
+		"spring": 1,
+		"fan": 1
+	},
+	"par": 1,
+	"solution": [
+		{
+			"part": "seesaw",
+			"cell": [4, 0],
+			"dir": "right"
+		}
+	],
+	"scene": {
+		"entities": [
+			{
+				"id": "shelf",
+				"prefab": "block",
+				"transform": {
+					"position": [-4, 0.5, 0],
+					"scale": [4, 1, 1]
+				}
+			},
+			{
+				"id": "backstop",
+				"prefab": "block",
+				"transform": {
+					"position": [-3.5, 2, 0],
+					"scale": [1, 2, 1]
+				}
+			},
+			{
+				"id": "post",
+				"prefab": "block",
+				"transform": {
+					"position": [0.06, 0.3, 0],
+					"scale": [0.12, 0.6, 1]
+				}
+			}
+		]
+	},
+	"fixed": [],
+	"expect": {
+		"tick": 201,
+		"hash": "536996e8957ecefc"
+	}
+}

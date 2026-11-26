@@ -1,0 +1,49 @@
+{
+	"version": 1,
+	"environment": {
+		"preset": "studio",
+		"backdrop": {
+			"horizon": "#2b1230",
+			"zenith": "#0b1030"
+		},
+		"fog": {
+			"near": 30,
+			"far": 95,
+			"color": "#2b1230"
+		}
+	},
+	"lighting": {
+		"sun": {
+			"direction": [-0.5, 0.7, -0.5],
+			"intensity": 3.0,
+			"color": "#ffc49a"
+		}
+	},
+	"post": {
+		"toneMapping": "agx",
+		"exposure": 1.1,
+		"bloom": {
+			"enabled": true,
+			"strength": 0.55,
+			"threshold": 1.2
+		},
+		"ao": {
+			"enabled": true,
+			"radius": 0.6
+		}
+	},
+	"camera": {
+		"controller": "orbit",
+		"presets": {
+			"hero": {
+				"position": [0, 13, 13],
+				"target": [0, 0, 0.5],
+				"fov": 45
+			}
+		}
+	},
+	"sim": {
+		"build": "deterministic",
+		"seed": 1
+	}
+}

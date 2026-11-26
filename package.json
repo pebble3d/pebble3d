@@ -1,0 +1,37 @@
+{
+	"name": "pebble3d",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"test": "vitest run --passWithNoTests",
+		"typecheck": "tsc -p tsconfig.json --noEmit && pnpm -r typecheck",
+		"lint": "biome check .",
+		"dev": "pnpm --filter playground dev",
+		"build:wasm": "bash scripts/build-wasm.sh",
+		"fetch-assets": "node scripts/fetch-assets.mjs",
+		"shot": "node scripts/shot/shot.mjs",
+		"docs:gen": "node scripts/docs/gen.mjs",
+		"build:site": "node scripts/build-site.mjs"
+	},
+	"engines": {
+		"node": ">=22.6"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.6.9",
+		"@gltf-transform/core": "4.5.1",
+		"@gltf-transform/extensions": "4.5.1",
+		"@gltf-transform/functions": "4.5.1",
+		"@playcanvas/splat-transform": "3.12.0",
+		"@types/node": "^26.6.7",
+		"@types/three": "0.187.0",
+		"assimpjs": "0.0.10",
+		"meshoptimizer": "1.1.1",
+		"playwright": "^1.65.1",
+		"sharp": "0.35.5",
+		"three": "0.187.0",
+		"typescript": "^7.0.2",
+		"vite": "^8.3.8",
+		"vitest": "^5.1.1"
+	},
+	"license": "SEE LICENSE IN LICENSE"
+}

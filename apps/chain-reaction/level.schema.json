@@ -1,0 +1,310 @@
+{
+	"title": "Chain Reaction level",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"$schema": {
+			"type": "string"
+		},
+		"id": {
+			"type": "string",
+			"minLength": 1
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1
+		},
+		"hint": {
+			"default": "",
+			"type": "string"
+		},
+		"grid": {
+			"type": "object",
+			"properties": {
+				"cols": {
+					"type": "integer",
+					"minimum": 4,
+					"maximum": 24
+				},
+				"rows": {
+					"type": "integer",
+					"minimum": 3,
+					"maximum": 14
+				},
+				"origin": {
+					"type": "array",
+					"prefixItems": [
+						{
+							"type": "number"
+						},
+						{
+							"type": "number"
+						}
+					],
+					"items": false,
+					"minItems": 2,
+					"maxItems": 2,
+					"description": "World [x, y] of the grid's bottom-left corner (metres)."
+				}
+			},
+			"required": ["cols", "rows", "origin"],
+			"additionalProperties": false
+		},
+		"ball": {
+			"type": "object",
+			"properties": {
+				"cell": {
+					"type": "array",
+					"prefixItems": [
+						{
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 9007199254740991
+						},
+						{
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 9007199254740991
+						}
+					],
+					"items": false,
+					"minItems": 2,
+					"maxItems": 2,
+					"description": "[column, row]; row 0 is the bottom row."
+				},
+				"velocity": {
+					"default": [0, 0],
+					"description": "Initial [vx, vy], m/s.",
+					"type": "array",
+					"prefixItems": [
+						{
+							"type": "number"
+						},
+						{
+							"type": "number"
+						}
+					],
+					"items": false,
+					"minItems": 2,
+					"maxItems": 2
+				}
+			},
+			"required": ["cell"],
+			"additionalProperties": false
+		},
+		"marbles": {
+			"default": [],
+			"description": "Heavy starter marbles: they trigger the machine but do not score.",
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"cell": {
+						"type": "array",
+						"prefixItems": [
+							{
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991
+							},
+							{
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991
+							}
+						],
+						"items": false,
+						"minItems": 2,
+						"maxItems": 2,
+						"description": "[column, row]; row 0 is the bottom row."
+					},
+					"velocity": {
+						"default": [0, 0],
+						"type": "array",
+						"prefixItems": [
+							{
+								"type": "number"
+							},
+							{
+								"type": "number"
+							}
+						],
+						"items": false,
+						"minItems": 2,
+						"maxItems": 2
+					}
+				},
+				"required": ["cell"],
+				"additionalProperties": false
+			}
+		},
+		"goal": {
+			"type": "object",
+			"properties": {
+				"cell": {
+					"type": "array",
+					"prefixItems": [
+						{
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 9007199254740991
+						},
+						{
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 9007199254740991
+						}
+					],
+					"items": false,
+					"minItems": 2,
+					"maxItems": 2,
+					"description": "[column, row]; row 0 is the bottom row."
+				}
+			},
+			"required": ["cell"],
+			"additionalProperties": false
+		},
+		"inventory": {
+			"type": "object",
+			"propertyNames": {
+				"type": "string",
+				"enum": ["ramp", "domino", "spring", "fan", "seesaw"]
+			},
+			"additionalProperties": {
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 9007199254740991
+			}
+		},
+		"par": {
+			"type": "integer",
+			"minimum": 1,
+			"maximum": 9007199254740991,
+			"description": "Parts used for three stars (the reference solution's count)."
+		},
+		"timeLimit": {
+			"default": 900,
+			"description": "Ticks (60 Hz) before the run fails.",
+			"type": "integer",
+			"exclusiveMinimum": 0,
+			"maximum": 9007199254740991
+		},
+		"fixed": {
+			"default": [],
+			"description": "Parts that are part of the level and cannot be moved.",
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"part": {
+						"type": "string",
+						"enum": ["ramp", "domino", "spring", "fan", "seesaw"]
+					},
+					"cell": {
+						"type": "array",
+						"prefixItems": [
+							{
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991
+							},
+							{
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991
+							}
+						],
+						"items": false,
+						"minItems": 2,
+						"maxItems": 2,
+						"description": "[column, row]; row 0 is the bottom row."
+					},
+					"dir": {
+						"type": "string",
+						"enum": ["left", "right", "up"],
+						"description": "ramp: the side it descends towards. spring: launch direction. fan: blow direction. seesaw: the end that starts down."
+					}
+				},
+				"required": ["part", "cell", "dir"],
+				"additionalProperties": false
+			}
+		},
+		"solution": {
+			"minItems": 1,
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"part": {
+						"type": "string",
+						"enum": ["ramp", "domino", "spring", "fan", "seesaw"]
+					},
+					"cell": {
+						"type": "array",
+						"prefixItems": [
+							{
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991
+							},
+							{
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991
+							}
+						],
+						"items": false,
+						"minItems": 2,
+						"maxItems": 2,
+						"description": "[column, row]; row 0 is the bottom row."
+					},
+					"dir": {
+						"type": "string",
+						"enum": ["left", "right", "up"],
+						"description": "ramp: the side it descends towards. spring: launch direction. fan: blow direction. seesaw: the end that starts down."
+					}
+				},
+				"required": ["part", "cell", "dir"],
+				"additionalProperties": false
+			},
+			"description": "The reference solution `verify` checks."
+		},
+		"expect": {
+			"description": "The reference run's solve tick and engine state hash (written by `verify --update`).",
+			"type": "object",
+			"properties": {
+				"tick": {
+					"type": "integer",
+					"exclusiveMinimum": 0,
+					"maximum": 9007199254740991
+				},
+				"hash": {
+					"type": "string",
+					"pattern": "^[0-9a-f]{16}$"
+				}
+			},
+			"required": ["tick", "hash"],
+			"additionalProperties": false
+		},
+		"scene": {
+			"default": {},
+			"description": "Partial scene merged over levels/base.json (entities are appended).",
+			"type": "object",
+			"propertyNames": {
+				"type": "string"
+			},
+			"additionalProperties": {}
+		}
+	},
+	"required": [
+		"id",
+		"name",
+		"grid",
+		"ball",
+		"goal",
+		"inventory",
+		"par",
+		"solution"
+	],
+	"additionalProperties": false
+}

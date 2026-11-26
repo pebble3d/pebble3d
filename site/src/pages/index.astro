@@ -1,0 +1,235 @@
+---
+import GameCard from "../components/GameCard.astro";
+import Base from "../layouts/Base.astro";
+import {
+	demoCount,
+	engineJsonLd,
+	games,
+	href,
+	pageHref,
+	REPO_URL,
+	shot,
+} from "../lib/site";
+
+const hero = games[0];
+const scene = `{ "version": 1,
+  "environment": { "preset": "studio", "ground": {} },
+  "prefabs": { "ball": {
+    "mesh": { "primitive": "sphere" },
+    "body": { "restitution": 0.5 } } },
+  "entities": [
+    { "id": "b1", "prefab": "ball",
+      "transform": { "position": [0, 4, 0] } } ] }`;
+
+const pillars = [
+	{
+		title: "JSON scenes, schema-checked",
+		text: "Plain, declarative files. A generated JSON Schema, llms.txt and AGENTS.md tell agents exactly what is allowed.",
+		link: { label: "Scene reference →", href: href("docs/scene-reference/") },
+		icon: "frame",
+	},
+	{
+		title: "Deterministic physics",
+		text: "Rapier in Rust, compiled to WebAssembly. The same seed and inputs give a bit-identical result in the browser and in Node.",
+		link: {
+			label: "How it is checked →",
+			href: href("docs/verification/#determinism"),
+		},
+		icon: "clock",
+	},
+	{
+		title: "WebGPU and real places",
+		text: "three.js WebGPU rendering with a WebGL fallback, and Gaussian-splat captures of real locations composited with your meshes.",
+		link: {
+			label: "Splat environments →",
+			href: href("docs/cookbook/splat-environments/"),
+		},
+		icon: "trend",
+	},
+	{
+		title: "Agents can see their work",
+		text: "One command renders any scene in headless Chromium and writes a PNG plus a JSON report of stats, console errors and the state hash.",
+		link: { label: "pnpm shot →", href: href("docs/verification/#pnpm-shot") },
+		icon: "camera",
+	},
+];
+
+const files = [
+	{ name: "/llms.txt", what: "index for LLMs", href: href("llms.txt") },
+	{
+		name: "/llms-full.txt",
+		what: "all docs, one file",
+		href: href("llms-full.txt"),
+	},
+	{
+		name: "AGENTS.md",
+		what: "rules for coding agents",
+		href: href("docs/agents/"),
+	},
+	{
+		name: "scene.schema.json",
+		what: "validate before you run",
+		href: href("scene.schema.json"),
+	},
+];
+const agents = [
+	{ label: "Claude Code", href: href("build-with-ai/claude-code/") },
+	{ label: "Cursor", href: href("build-with-ai/cursor/") },
+	{ label: "Codex", href: href("build-with-ai/codex/") },
+	{ label: "Copilot", href: href("build-with-ai/copilot/") },
+];
+---
+
+<Base
+	title="Pebble3D: the browser 3D game engine built for AI agents"
+	fullTitle
+	description="Pebble3D is a browser 3D game engine designed for LLMs: plain JSON scenes checked by a schema, deterministic Rust/WASM physics, WebGPU rendering with Gaussian splats, and headless screenshots to verify every change."
+	jsonLd={engineJsonLd}
+>
+	<section class="wrap hero">
+		<div class="hero-copy">
+			<p class="eyebrow">The game engine AI agents can actually use</p>
+			<h1>Describe a world.<br />Your agent builds it.</h1>
+			<p class="lede">
+				Pebble3D is a browser 3D engine designed for LLMs: worlds are plain JSON scenes
+				checked by a schema, physics is deterministic Rust compiled to WebAssembly, and
+				every change can be verified with a headless screenshot.
+			</p>
+			<div class="btn-row">
+				<a class="btn btn-primary" href={href("demos/")}>Play the demos</a>
+				<a class="btn" href={href("docs/")}>Read the docs</a>
+			</div>
+		</div>
+		{
+			hero && (
+				<figure>
+					<a href={pageHref(hero)}>
+						<img
+							src={shot(hero)}
+							alt={hero.screenshots[0]?.alt}
+							width="1280"
+							height="720"
+							fetchpriority="high"
+						/>
+					</a>
+					<figcaption>{hero.caption}</figcaption>
+				</figure>
+			)
+		}
+	</section>
+
+	<section class="wrap" aria-label="A scene">
+		<div class="card scene-card">
+			<div class="copy">
+				<h2>A whole scene in eight lines</h2>
+				<p>
+					Every field has a default and a description in the JSON Schema, so an agent can
+					write a scene without reading engine code, and validate it before it runs.
+				</p>
+				<a class="mono-link" href={href("docs/scene-reference/")}>Scene reference →</a>
+			</div>
+			<pre class="code-block"><code>{scene}</code></pre>
+		</div>
+	</section>
+
+	<section class="wrap section" aria-labelledby="pillars">
+		<h2 id="pillars" class="section-title">Built so a model gets it right the first time</h2>
+		<div class="grid pillars">
+			{
+				pillars.map((p) => (
+					<article class="card pillar">
+						<svg
+							width="28"
+							height="28"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="#FF7A3D"
+							stroke-width="1.8"
+							aria-hidden="true"
+						>
+							{p.icon === "frame" && (
+								<>
+									<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+									<path d="M9 9h6v6H9z" />
+								</>
+							)}
+							{p.icon === "clock" && (
+								<>
+									<circle cx="12" cy="12" r="9" />
+									<path d="M12 7v5l3 2" />
+								</>
+							)}
+							{p.icon === "trend" && (
+								<>
+									<path d="M3 17l5-5 4 4 8-8" />
+									<path d="M14 8h6v6" />
+								</>
+							)}
+							{p.icon === "camera" && (
+								<>
+									<rect x="3" y="5" width="18" height="14" rx="2" />
+									<circle cx="12" cy="12" r="3" />
+								</>
+							)}
+						</svg>
+						<h3>{p.title}</h3>
+						<p>{p.text}</p>
+						<a href={p.link.href}>{p.link.label}</a>
+					</article>
+				))
+			}
+		</div>
+	</section>
+
+	<section class="wrap" aria-labelledby="demos" style="padding-bottom: 72px">
+		<div class="section-head">
+			<h2 id="demos" class="section-title">Test out {demoCount()}</h2>
+			<a class="mono-link" href={href("demos/")}>All demos →</a>
+		</div>
+		<div class="grid game-grid">
+			{games.map((g, i) => <GameCard game={g} eager={i < 3} />)}
+		</div>
+	</section>
+
+	<section class="band" aria-labelledby="ai">
+		<div class="wrap section agents">
+			<div class="copy">
+				<h2 id="ai" class="section-title">Works with the agent you already use</h2>
+				<p>
+					The repo ships the files coding agents look for, and every docs page has a
+					plain-markdown twin. The engine and all {demoCount()} were built with AI coding
+					agents.
+				</p>
+				<div class="pills">
+					{agents.map((a) => <a class="pill" href={a.href}>{a.label}</a>)}
+				</div>
+			</div>
+			<ul class="file-list">
+				{
+					files.map((f) => (
+						<li>
+							<a href={f.href}>
+								<span>{f.name}</span>
+								<span class="what">{f.what}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<section class="wrap section start" aria-labelledby="start">
+		<h2 id="start" class="section-title">Start in a minute</h2>
+		<pre><code>git clone {REPO_URL}
+cd pebble3d
+pnpm i && pnpm build:wasm && pnpm fetch-assets && pnpm dev</code></pre>
+		<p>
+			{"Needs Node 22.6 or newer, pnpm, Rust with the "}<code>wasm32-unknown-unknown</code>{" target, and "}<code>wasm-bindgen-cli</code>{" 0.2.130. "}<a href={href("docs/getting-started/")}>Getting started</a>
+		</p>
+		<p>
+			Free for organizations under USD $50,000 a year in revenue plus funding. Players
+			never need a license. <a href={href("license/")}>License details</a>
+		</p>
+	</section>
+</Base>

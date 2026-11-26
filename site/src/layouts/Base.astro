@@ -1,0 +1,76 @@
+---
+import "@fontsource/space-grotesk/latin-400.css";
+import "@fontsource/space-grotesk/latin-500.css";
+import "@fontsource/space-grotesk/latin-700.css";
+import "@fontsource/jetbrains-mono/latin-400.css";
+import "@fontsource/jetbrains-mono/latin-600.css";
+import "../styles/site.css";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { abs, href } from "../lib/site";
+
+interface Props {
+	/** Page title; " · Pebble3D" is appended unless `fullTitle` is set. */
+	title: string;
+	fullTitle?: boolean;
+	description: string;
+	/** Site path of the Open Graph image (1200x630). */
+	ogImage?: string;
+	ogType?: "website" | "article";
+	/** schema.org objects, each emitted as a JSON-LD script. */
+	jsonLd?: object[];
+	/** Highlights this main-nav item. */
+	nav?: "demos" | "docs" | "ai" | "license";
+}
+
+const {
+	title,
+	fullTitle = false,
+	description,
+	ogImage = "og/home.jpg",
+	ogType = "website",
+	jsonLd = [],
+	nav,
+} = Astro.props;
+const pageTitle = fullTitle ? title : `${title} · Pebble3D`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const image = abs(ogImage);
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{pageTitle}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		<link rel="icon" type="image/svg+xml" href={href("favicon.svg")} />
+		<link rel="sitemap" href={href("sitemap-index.xml")} />
+		<link rel="alternate" type="text/plain" title="llms.txt" href={href("llms.txt")} />
+		<meta name="theme-color" content="#0E0F12" />
+		<meta name="color-scheme" content="dark" />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:site_name" content="Pebble3D" />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={image} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:locale" content="en" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
+		{jsonLd.map((o) => <script type="application/ld+json" set:html={JSON.stringify(o)} />)}
+	</head>
+	<body>
+		<a class="skip" href="#main">Skip to content</a>
+		<Header current={nav} />
+		<main id="main">
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>

@@ -1,0 +1,324 @@
+{
+	"_comment": "Katana move list. Frames are 60 Hz sim ticks. pose keys: [frame, armYaw, armPitch, bladeYaw, bladePitch, reach?, grip?]: arm = direction from the chest pivot to the sword hand, blade = the blade's direction, degrees in character space (yaw + = the character's right, pitch + = up); reach = hand distance from the pivot in metres (default 0.42); grip = the left hand on the hilt, 1 two-handed .. 0 one-handed (default 1). rest / restRun: the guard and the running carry (no frame). root: [from, to, speed m/s] forward root motion. hits: active from `at` for `len` frames; `every` re-hits on that interval. shape arc = sector (radius, arc degrees) in front; circle = around the player; line = capsule from the player forward (length, width). poise: 1 light, 2 heavy (brutes only flinch to 2). cancel: [from, to] frames where a buffered press routes through `next`. dodgeCancel: frame from which a dodge may cancel the move.",
+	"rest": [-4, -32, 0, 32, 0.36, 1],
+	"restRun": [70, -62, 160, -30, 0.42, 0],
+	"moves": {
+		"light1": {
+			"name": "Rising Cut",
+			"total": 24,
+			"cancel": [10, 24],
+			"dodgeCancel": 8,
+			"root": [[2, 9, 2.6]],
+			"hits": [
+				{
+					"at": 6,
+					"len": 4,
+					"shape": "arc",
+					"radius": 2.1,
+					"arc": 150,
+					"damage": 10,
+					"stagger": 16,
+					"knockback": 2.2,
+					"hitstop": 3,
+					"shake": 0.12,
+					"focus": 6,
+					"poise": 1
+				}
+			],
+			"pose": [
+				[0, -4, -32, 0, 32, 0.36, 1],
+				[4, 30, 34, 128, 64, 0.34, 1],
+				[8, -6, -12, -30, -6, 0.44, 1],
+				[11, -40, -40, -95, -36, 0.4, 1],
+				[24, -32, -38, -70, -28, 0.38, 1]
+			],
+			"next": {
+				"light": "light2",
+				"heavy": "heavy"
+			}
+		},
+		"light2": {
+			"name": "Return Cut",
+			"total": 24,
+			"cancel": [10, 24],
+			"dodgeCancel": 8,
+			"root": [[2, 9, 2.6]],
+			"hits": [
+				{
+					"at": 6,
+					"len": 4,
+					"shape": "arc",
+					"radius": 2.1,
+					"arc": 150,
+					"damage": 11,
+					"stagger": 16,
+					"knockback": 2.2,
+					"hitstop": 3,
+					"shake": 0.12,
+					"focus": 6,
+					"poise": 1
+				}
+			],
+			"pose": [
+				[0, -32, -38, -70, -28, 0.38, 1],
+				[4, -46, -46, -150, -22, 0.4, 1],
+				[8, 6, -6, 38, 18, 0.44, 1],
+				[11, 50, 28, 98, 62, 0.42, 0.6],
+				[24, 40, 18, 88, 42, 0.4, 0.6]
+			],
+			"next": {
+				"light": "light3",
+				"heavy": "launcher"
+			}
+		},
+		"light3": {
+			"name": "Crescent Sweep",
+			"total": 34,
+			"cancel": [24, 34],
+			"dodgeCancel": 16,
+			"finisher": true,
+			"root": [[4, 12, 3.4]],
+			"hits": [
+				{
+					"at": 9,
+					"len": 5,
+					"shape": "arc",
+					"radius": 2.7,
+					"arc": 230,
+					"damage": 17,
+					"stagger": 26,
+					"knockback": 7,
+					"hitstop": 5,
+					"shake": 0.3,
+					"focus": 9,
+					"poise": 2
+				}
+			],
+			"pose": [
+				[0, 42, 18, 88, 42, 0.42, 0.6],
+				[7, 72, -8, 150, 4, 0.44, 0.3],
+				[10, 30, -10, 60, 0, 0.54, 0.6],
+				[12, -10, -10, -30, 0, 0.58, 0.4],
+				[15, -72, -10, -150, -2, 0.52, 0],
+				[34, -50, -22, -110, -16, 0.46, 0.3]
+			],
+			"next": {}
+		},
+		"heavy": {
+			"name": "Mountain Cleave",
+			"total": 42,
+			"cancel": [32, 42],
+			"dodgeCancel": 26,
+			"charge": {
+				"at": 10,
+				"min": 24,
+				"max": 60,
+				"into": "heavyCharged"
+			},
+			"root": [[16, 22, 4]],
+			"hits": [
+				{
+					"at": 18,
+					"len": 4,
+					"shape": "arc",
+					"radius": 2.6,
+					"arc": 100,
+					"damage": 26,
+					"stagger": 36,
+					"knockback": 4.5,
+					"hitstop": 5,
+					"shake": 0.4,
+					"focus": 10,
+					"poise": 2
+				}
+			],
+			"pose": [
+				[0, -4, -32, 0, 32, 0.36, 1],
+				[10, 0, 72, 180, 30, 0.44, 1],
+				[16, 0, 78, 180, 16, 0.44, 1],
+				[19, 0, 22, 0, 34, 0.46, 1],
+				[22, 0, -30, 0, -46, 0.44, 1],
+				[42, 0, -34, 0, -40, 0.42, 1]
+			],
+			"next": {
+				"light": "light1"
+			}
+		},
+		"heavyCharged": {
+			"name": "Thunder Cleave",
+			"total": 46,
+			"cancel": [36, 46],
+			"dodgeCancel": 30,
+			"finisher": true,
+			"shockwave": true,
+			"root": [[6, 12, 5]],
+			"hits": [
+				{
+					"at": 10,
+					"len": 4,
+					"shape": "arc",
+					"radius": 3.3,
+					"arc": 150,
+					"damage": 55,
+					"stagger": 50,
+					"knockback": 9,
+					"hitstop": 5,
+					"shake": 0.7,
+					"focus": 14,
+					"poise": 2
+				}
+			],
+			"pose": [
+				[0, 0, 78, 180, 16, 0.44, 1],
+				[7, 0, 84, 180, 8, 0.44, 1],
+				[10, 0, 24, 0, 30, 0.46, 1],
+				[12, 0, -34, 0, -62, 0.46, 1],
+				[46, 0, -38, 0, -50, 0.42, 1]
+			],
+			"next": {}
+		},
+		"launcher": {
+			"name": "Skyward Rend",
+			"total": 40,
+			"cancel": [26, 40],
+			"dodgeCancel": 20,
+			"root": [[2, 8, 2]],
+			"hits": [
+				{
+					"at": 8,
+					"len": 4,
+					"shape": "arc",
+					"radius": 2.3,
+					"arc": 140,
+					"damage": 14,
+					"stagger": 60,
+					"knockback": 1.2,
+					"launch": 8.5,
+					"hitstop": 5,
+					"shake": 0.35,
+					"focus": 10,
+					"poise": 2
+				}
+			],
+			"pose": [
+				[0, 40, 18, 88, 42, 0.4, 0.6],
+				[5, 14, -50, 170, -68, 0.42, 1],
+				[9, 4, 48, 0, 84, 0.44, 1],
+				[13, 0, 72, 180, 52, 0.44, 1],
+				[40, 0, 56, 0, 88, 0.42, 1]
+			],
+			"next": {
+				"light": "light1"
+			}
+		},
+		"dashSlash": {
+			"name": "Gale Step",
+			"total": 30,
+			"cancel": [20, 30],
+			"dodgeCancel": 18,
+			"iframes": [0, 10],
+			"root": [[0, 10, 15], [10, 14, 4]],
+			"hits": [
+				{
+					"at": 2,
+					"len": 9,
+					"shape": "circle",
+					"radius": 1.5,
+					"damage": 18,
+					"stagger": 22,
+					"knockback": 3.5,
+					"hitstop": 3,
+					"shake": 0.2,
+					"focus": 8,
+					"poise": 1
+				}
+			],
+			"pose": [
+				[0, -48, -48, -160, -12, 0.36, 0.3],
+				[3, -52, -48, -165, -12, 0.36, 0.3],
+				[10, 70, -6, 140, 4, 0.56, 0],
+				[30, 46, -26, 92, -20, 0.46, 0.3]
+			],
+			"next": {
+				"light": "light2"
+			}
+		},
+		"plunge": {
+			"name": "Falling Star",
+			"total": 34,
+			"air": true,
+			"dodgeCancel": 24,
+			"vy": [[0, 5, 2], [6, 9, -26]],
+			"hold": {
+				"at": 8,
+				"untilGrounded": true
+			},
+			"finisher": true,
+			"hits": [
+				{
+					"at": 9,
+					"len": 2,
+					"shape": "circle",
+					"radius": 3.1,
+					"damage": 24,
+					"stagger": 34,
+					"knockback": 7.5,
+					"launch": 3.5,
+					"hitstop": 5,
+					"shake": 0.6,
+					"focus": 10,
+					"poise": 2
+				}
+			],
+			"pose": [
+				[0, 0, 60, 0, 86, 0.44, 1],
+				[6, 0, -52, 180, -80, 0.46, 1],
+				[34, 0, -44, 0, -62, 0.44, 1]
+			],
+			"next": {}
+		},
+		"spinStorm": {
+			"name": "Spin Storm",
+			"total": 120,
+			"iframes": [0, 120],
+			"steer": 0.6,
+			"focusCost": 100,
+			"spin": 26,
+			"hits": [
+				{
+					"at": 4,
+					"len": 112,
+					"every": 8,
+					"shape": "circle",
+					"radius": 3.4,
+					"damage": 9,
+					"stagger": 20,
+					"knockback": 3,
+					"hitstop": 1,
+					"shake": 0.15,
+					"focus": 0,
+					"poise": 2,
+					"pull": 2.5
+				}
+			],
+			"pose": [[0, 82, -6, 92, 0, 0.58, 0], [120, 82, -6, 92, 0, 0.58, 0]],
+			"next": {}
+		},
+		"dodge": {
+			"name": "Dodge",
+			"total": 18,
+			"cancel": [6, 18],
+			"iframes": [0, 15],
+			"dash": [[0, 12, 13], [12, 18, 4]],
+			"cooldown": 36,
+			"hits": [],
+			"pose": [
+				[0, 44, -52, 150, -30, 0.38, 0],
+				[18, 10, -40, 40, 10, 0.38, 0.6]
+			],
+			"next": {
+				"light": "dashSlash"
+			}
+		}
+	}
+}

@@ -1,0 +1,159 @@
+---
+import manifest from "../../../apps/playground/assets.manifest.json";
+import Base from "../layouts/Base.astro";
+import { href, REPO_BRANCH, REPO_URL } from "../lib/site";
+
+interface Asset {
+	file: string;
+	license: string;
+	attribution: string;
+	url: string;
+}
+const assets = (manifest as { assets: Asset[] }).assets;
+/** Licence deed or text for each licence named in the manifest. */
+const DEEDS: Record<string, string> = {
+	"CC BY 4.0": "https://creativecommons.org/licenses/by/4.0/",
+	"CC0 1.0": "https://creativecommons.org/publicdomain/zero/1.0/",
+	MIT: href("assets/licenses/Microsoft-Rocketbox-MIT.txt"),
+};
+const blob = (p: string) => `${REPO_URL}/blob/${REPO_BRANCH}/${p}`;
+
+/** Splits text into plain strings and URLs, so URLs can be linked. */
+function parts(text: string): { url?: string; text: string }[] {
+	const out: { url?: string; text: string }[] = [];
+	let last = 0;
+	for (const m of text.matchAll(/https?:\/\/[^\s,)]+[^\s,).]/g)) {
+		const i = m.index ?? 0;
+		if (i > last) out.push({ text: text.slice(last, i) });
+		out.push({ url: m[0], text: m[0] });
+		last = i + m[0].length;
+	}
+	if (last < text.length) out.push({ text: text.slice(last) });
+	return out;
+}
+
+const software = [
+	{
+		name: "three.js",
+		license: "MIT",
+		href: "https://threejs.org/",
+		use: "Rendering",
+	},
+	{
+		name: "Rapier",
+		license: "Apache-2.0",
+		href: "https://rapier.rs/",
+		use: "Physics, compiled to WebAssembly",
+	},
+	{
+		name: "zod",
+		license: "MIT",
+		href: "https://zod.dev/",
+		use: "Scene schema validation, bundled in every demo",
+	},
+	{
+		name: "Basis Universal transcoder",
+		license: "Apache-2.0",
+		href: "https://github.com/BinomialLLC/basis_universal",
+		use: "KTX2 textures; shipped with three.js and served at basis/",
+	},
+	{
+		name: "Space Grotesk",
+		license: "SIL Open Font License 1.1",
+		href: "https://github.com/floriankarsten/space-grotesk",
+		use: "This site's text face, self-hosted",
+	},
+	{
+		name: "JetBrains Mono",
+		license: "SIL Open Font License 1.1",
+		href: "https://github.com/JetBrains/JetBrainsMono",
+		use: "This site's code face, self-hosted",
+	},
+	{
+		name: "Astro and Starlight",
+		license: "MIT",
+		href: "https://astro.build/",
+		use: "This site and its docs search",
+	},
+];
+---
+
+<Base
+	title="Credits"
+	description="Every third-party asset in the Pebble3D demos with its licence and attribution: Poly Haven HDRI (CC0), Gaussian-splat captures (CC BY 4.0), Quaternius robot (CC0) and Microsoft Rocketbox avatars (MIT)."
+>
+	<section class="wrap page-head">
+		<p class="eyebrow">Credits</p>
+		<h1>Credits and asset licences</h1>
+		<p class="lede">
+			The demos use a few third-party assets, all under licences that allow commercial use.
+			They are not committed to the repo: <code>pnpm fetch-assets</code> downloads each one
+			from a pinned URL and checks its sha256. Everything else in the demos (geometry, VFX,
+			HUDs and audio) is procedural or synthesised.
+		</p>
+	</section>
+
+	<article class="wrap prose">
+		<h2 style="margin-top: 0">Demo assets</h2>
+		<div class="table-wrap" tabindex="0" role="region" aria-label="Demo asset licences">
+			<table>
+				<thead>
+					<tr><th>File</th><th>Licence</th><th>Attribution and changes</th></tr>
+				</thead>
+				<tbody>
+					{
+						assets.map((a) => (
+							<tr>
+								<td><code>{a.file}</code></td>
+								<td style="white-space: nowrap">
+									{DEEDS[a.license] ? <a href={DEEDS[a.license]}>{a.license}</a> : a.license}
+								</td>
+								<td>
+									{parts(a.attribution).map((p) =>
+										p.url ? <a href={p.url}>{p.text}</a> : p.text,
+									)}
+									<br />
+									<a href={a.url} class="faint" style="font-size: 13px">Source download</a>
+								</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+		<p>
+			Generated from <a href={blob("apps/playground/assets.manifest.json")}><code>apps/playground/assets.manifest.json</code></a>,
+			the same data as
+			<a href={blob("apps/playground/public/assets/LICENSES.md")}><code>LICENSES.md</code></a>.
+			The full Microsoft Rocketbox licence text is
+			<a href={href("assets/licenses/Microsoft-Rocketbox-MIT.txt")}>served with the assets</a>.
+		</p>
+
+		<h2>Software</h2>
+		<div class="table-wrap" tabindex="0" role="region" aria-label="Software licences">
+			<table>
+				<thead>
+					<tr><th>Project</th><th>Licence</th><th>Used for</th></tr>
+				</thead>
+				<tbody>
+					{
+						software.map((s) => (
+							<tr>
+								<td><a href={s.href}>{s.name}</a></td>
+								<td>{s.license}</td>
+								<td>{s.use}</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</table>
+		</div>
+		<p class="callout">
+			The full licence texts of every third-party component the site and the demos
+			redistribute, including each Rust crate in the engine's WebAssembly and the font
+			licences, are in <a href={href("THIRD-PARTY-NOTICES.txt")}><code>THIRD-PARTY-NOTICES.txt</code></a>
+			(a copy also sits next to every demo). The Pebble3D engine itself is under the
+			<a href={href("license/")}>Pebble3D Engine License</a>.
+		</p>
+	</article>
+</Base>

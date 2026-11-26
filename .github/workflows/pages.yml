@@ -1,0 +1,124 @@
+# Builds the public site (site/ + every game in site/src/data/games.json) and deploys it
+# to GitHub Pages. The base path comes from site/site.config.mjs; set PEBBLE3D_SITE_URL
+# and PEBBLE3D_SITE_BASE below for a custom domain.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a newer push does not cancel a deploy that is already running.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  ASTRO_TELEMETRY_DISABLED: "1"
+  # PEBBLE3D_SITE_URL: https://pebble3d.com
+  # PEBBLE3D_SITE_BASE: /
+
+jobs:
+  build:
+    # Forks get no Pages deploy (and no failing run on every push).
+    if: github.repository == 'pebble3d/pebble3d'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.1
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # Pinned to the toolchain the determinism hash was verified with; a new rustc could
+      # shift float codegen and fail the hash test.
+      - name: Rust 1.94.1 with the wasm32 target
+        run: |
+          rustup toolchain install 1.94.1 --profile minimal --target wasm32-unknown-unknown
+          rustup default 1.94.1
+
+      - name: Cache cargo registry, build output and wasm-bindgen-cli
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/wasm-bindgen
+            ~/.cargo/bin/wasm-bindgen-test-runner
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}-bindgen-0.2.130
+          restore-keys: cargo-${{ runner.os }}-
+
+      - name: Install wasm-bindgen-cli 0.2.130
+        run: |
+          if [ "$(wasm-bindgen --version 2>/dev/null | awk '{print $2}')" != "0.2.130" ]; then
+            cargo install wasm-bindgen-cli --version 0.2.130 --locked --force
+          fi
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm build:wasm
+
+      - name: Cache fetch-assets downloads
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/pebble3d-assets
+          key: asset-sources-${{ hashFiles('apps/playground/assets.manifest.json') }}
+          restore-keys: asset-sources-
+
+      # The derived outputs (converted splats, built avatars) too, so they are derived once
+      # per manifest or build-script change instead of on every run.
+      - name: Cache derived assets
+        uses: actions/cache@v4
+        with:
+          path: |
+            apps/playground/public/assets
+            !apps/playground/public/assets/LICENSES.md
+            !apps/playground/public/assets/licenses
+          key: assets-${{ hashFiles('apps/playground/assets.manifest.json', 'scripts/fetch-assets.mjs', 'scripts/assets/**') }}
+
+      # Derived bytes were verified on one machine; on the runner a mismatch is a warning
+      # that prints the observed hash (downloads stay strict). Local runs stay strict.
+      - name: Fetch assets
+        run: pnpm fetch-assets --allow-derived-mismatch
+
+      - run: pnpm test
+
+      - run: pnpm typecheck
+
+      - run: pnpm lint
+
+      - run: pnpm build:site
+
+      - name: Check internal links and game claims
+        run: |
+          node site/scripts/check-links.mjs
+          node site/scripts/check-claims.mjs
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

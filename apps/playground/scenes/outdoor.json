@@ -1,0 +1,228 @@
+{
+	"$schema": "../../../packages/sdk/scene.schema.json",
+	"version": 1,
+	"environment": {
+		"preset": "outdoor",
+		"hdri": "/assets/qwantani_noon_puresky_2k.hdr",
+		"ground": {
+			"size": 200,
+			"color": "#5e5a50",
+			"roughness": 0.92
+		}
+	},
+	"lighting": {
+		"sun": {
+			"direction": [0.52, 0.76, 0.38],
+			"intensity": 4.2,
+			"color": "#fff6ea"
+		}
+	},
+	"camera": {
+		"controller": "orbit",
+		"presets": {
+			"hero": {
+				"position": [7.5, 3.6, 9.5],
+				"target": [0, 1.2, 0],
+				"fov": 45
+			}
+		}
+	},
+	"sim": {
+		"build": "deterministic",
+		"seed": 3
+	},
+	"prefabs": {
+		"crate": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#b5814b",
+					"roughness": 0.72
+				}
+			},
+			"transform": {
+				"scale": [0.6, 0.6, 0.6]
+			},
+			"body": {
+				"friction": 0.6
+			}
+		}
+	},
+	"entities": [
+		{
+			"id": "plinth",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#a39d90",
+					"roughness": 0.85,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [0, 0.4, 0],
+				"scale": [3, 0.8, 3]
+			},
+			"body": {
+				"type": "static"
+			}
+		},
+		{
+			"id": "chrome-ball",
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#e6e6e6",
+					"roughness": 0.08,
+					"metalness": 1
+				}
+			},
+			"transform": {
+				"position": [0, 1.4, 0],
+				"scale": [1.2, 1.2, 1.2]
+			},
+			"body": {
+				"type": "static"
+			}
+		},
+		{
+			"id": "pillar-a",
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#b3ac9e",
+					"roughness": 0.8,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [-5, 1.5, -3],
+				"scale": [0.8, 3, 0.8]
+			},
+			"body": {
+				"type": "static"
+			}
+		},
+		{
+			"id": "pillar-b",
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#b3ac9e",
+					"roughness": 0.8,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [5, 1.5, -3],
+				"scale": [0.8, 3, 0.8]
+			},
+			"body": {
+				"type": "static"
+			}
+		},
+		{
+			"id": "ramp",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#9a8f7c",
+					"roughness": 0.8,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [3.6, 0.55, 2.4],
+				"scale": [3, 0.25, 2],
+				"rotation": [0.0, 0.0, 0.1741, 0.9847]
+			},
+			"body": {
+				"type": "static"
+			}
+		},
+		{
+			"id": "ball-red",
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#b8392b",
+					"roughness": 0.35,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [-2.2, 3, 1.5],
+				"scale": [0.7, 0.7, 0.7]
+			},
+			"body": {
+				"type": "dynamic"
+			}
+		},
+		{
+			"id": "ball-blue",
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#2f5fa8",
+					"roughness": 0.3,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [4.2, 4, 2.4],
+				"scale": [0.6, 0.6, 0.6]
+			},
+			"body": {
+				"type": "dynamic"
+			}
+		},
+		{
+			"id": "crate-0",
+			"prefab": "crate",
+			"transform": {
+				"position": [-3.2, 0.3, 2.6],
+				"rotation": [0.0, 0.0, 0.0, 1.0]
+			}
+		},
+		{
+			"id": "crate-1",
+			"prefab": "crate",
+			"transform": {
+				"position": [-2.45, 0.3, 2.6],
+				"rotation": [0.0, 0.06, 0.0, 0.9982]
+			}
+		},
+		{
+			"id": "crate-2",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.7, 0.3, 2.6],
+				"rotation": [0.0, 0.1197, 0.0, 0.9928]
+			}
+		},
+		{
+			"id": "crate-3",
+			"prefab": "crate",
+			"transform": {
+				"position": [-3.2, 0.92, 2.6],
+				"rotation": [0.0, 0.179, 0.0, 0.9838]
+			}
+		},
+		{
+			"id": "crate-4",
+			"prefab": "crate",
+			"transform": {
+				"position": [-2.45, 0.92, 2.6],
+				"rotation": [0.0, 0.2377, 0.0, 0.9713]
+			}
+		},
+		{
+			"id": "crate-5",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.7, 0.92, 2.6],
+				"rotation": [0.0, 0.2955, 0.0, 0.9553]
+			}
+		}
+	]
+}

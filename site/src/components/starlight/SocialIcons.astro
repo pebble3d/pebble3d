@@ -1,0 +1,30 @@
+---
+import Default from "@astrojs/starlight/components/SocialIcons.astro";
+import { BASE } from "../../../site.config.mjs";
+
+const links = [
+	{ label: "Demos", href: `${BASE}demos/` },
+	{ label: "Docs", href: `${BASE}docs/` },
+	{ label: "Build with AI", href: `${BASE}build-with-ai/` },
+];
+---
+
+<nav aria-label="Site" class="site-nav">
+	{links.map((l) => <a href={l.href}>{l.label}</a>)}
+</nav>
+<Default />
+
+<style>
+	.site-nav {
+		display: flex;
+		gap: 1.25rem;
+		font-size: 0.95rem;
+	}
+	.site-nav a {
+		color: var(--sl-color-gray-2);
+		text-decoration: none;
+	}
+	.site-nav a:hover {
+		color: var(--sl-color-white);
+	}
+</style>

@@ -1,0 +1,55 @@
+{
+	"_comment": "Zombie visuals. avatars: Rocketbox GLBs built by fetch-assets (assets.manifest.json); walk/run = authored ground speeds (m/s) from the build log. archetypes: avatar indices each archetype draws from (by the zombie's `vary`). look: the zombie treatment of the avatars' materials (game-side TSL): `saturation`/`envIntensity` as the engine look; skin (detected by hue) is replaced by `skinTint` x luminance x `skinGain`; everything else is desaturated by `clothDesat`, darkened by `clothDarken` and mixed `grimeMix` toward `grime`. `shamble`: walk playback rate per m/s of ground speed relative to the clip's authored speed (slowed), clamped to [min, max].",
+	"avatars": [
+		{
+			"id": "male-06",
+			"url": "/assets/rocketbox-male-adult-06.glb",
+			"walk": 0.681,
+			"run": 5.58
+		},
+		{
+			"id": "male-18",
+			"url": "/assets/rocketbox-male-adult-18.glb",
+			"walk": 0.788,
+			"run": 5.636
+		},
+		{
+			"id": "female-04",
+			"url": "/assets/rocketbox-female-adult-04.glb",
+			"walk": 1.136,
+			"run": 5.33
+		},
+		{
+			"id": "female-08",
+			"url": "/assets/rocketbox-female-adult-08.glb",
+			"walk": 1.316,
+			"run": 5.425
+		}
+	],
+	"archetypes": {
+		"shambler": [0, 1, 2, 3],
+		"runner": [3, 1, 2],
+		"brute": [0, 1]
+	},
+	"look": {
+		"saturation": 0.9,
+		"envIntensity": 0.85,
+		"skinTint": "#c4d8a6",
+		"skinGain": 1.4,
+		"skinMix": 1,
+		"clothDesat": 0.7,
+		"clothDarken": 0.8,
+		"grime": "#22261c",
+		"grimeMix": 0.2,
+		"clothTint": "#2c3030",
+		"clothTintMix": 0.9,
+		"flatLevels": 4,
+		"skinShadow": "#3c5236",
+		"rot": 1
+	},
+	"shamble": {
+		"rate": 0.8,
+		"min": 0.45,
+		"max": 1.3
+	}
+}

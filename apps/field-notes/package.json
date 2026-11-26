@@ -1,0 +1,23 @@
+{
+	"name": "field-notes",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite --port 5231",
+		"build": "vite build",
+		"preview": "vite preview",
+		"test": "vitest run",
+		"typecheck": "tsc -p tsconfig.json --noEmit"
+	},
+	"dependencies": {
+		"@pebble3d/renderer": "workspace:*",
+		"@pebble3d/sdk": "workspace:*",
+		"three": "0.187.0"
+	},
+	"devDependencies": {
+		"vite": "^8.3.8",
+		"vitest": "^5.1.1"
+	},
+	"license": "SEE LICENSE IN LICENSE"
+}

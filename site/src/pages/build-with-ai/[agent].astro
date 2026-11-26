@@ -1,0 +1,88 @@
+---
+import AgentChecks from "../../components/AgentChecks.astro";
+import { type Agent, agents, PROMPT } from "../../data/agents";
+import Base from "../../layouts/Base.astro";
+import { href, REPO_BRANCH, REPO_URL } from "../../lib/site";
+
+export function getStaticPaths() {
+	return agents.map((agent) => ({
+		params: { agent: agent.id },
+		props: { agent },
+	}));
+}
+interface Props {
+	agent: Agent;
+}
+const { agent } = Astro.props;
+const howTo = {
+	"@context": "https://schema.org",
+	"@type": "HowTo",
+	name: `Build a Pebble3D game with ${agent.name}`,
+	step: agent.setup.map((text, i) => ({
+		"@type": "HowToStep",
+		position: i + 1,
+		text,
+	})),
+};
+---
+
+<Base
+	title={`Build with ${agent.name}`}
+	description={`Set up ${agent.name} for Pebble3D: the rules file it reads, a prompt that works, and the commands it can run to verify its own work.`}
+	nav="ai"
+	jsonLd={[howTo]}
+>
+	<nav class="wrap breadcrumb" aria-label="Breadcrumb">
+		<a href={href("build-with-ai/")}>Build with AI</a> / {agent.name}
+	</nav>
+	<section class="wrap page-head" style="padding-top: 16px">
+		<h1>Build with {agent.name}</h1>
+		<p class="lede">{agent.summary}</p>
+		<nav class="agent-tabs" aria-label="Agents">
+			{
+				agents.map((a) => (
+					<a
+						class="pill"
+						href={href(`build-with-ai/${a.id}/`)}
+						aria-current={a.id === agent.id ? "page" : undefined}
+					>
+						{a.short}
+					</a>
+				))
+			}
+		</nav>
+	</section>
+
+	<article class="wrap prose">
+		<h2 style="margin-top: 0">Setup</h2>
+		<ol>{agent.setup.map((s) => <li>{s}</li>)}</ol>
+		<p class="callout">
+			<strong>Rules file:</strong>
+			<a href={`${REPO_URL}/blob/${REPO_BRANCH}/${agent.rulesFile.path}`}><code>{agent.rulesFile.path}</code></a>.
+			{agent.rulesFile.note}
+		</p>
+
+		<h2>A prompt that works</h2>
+		<p>
+			Every command in it is documented in the repo, so the agent can follow it without
+			guessing. Paste it as-is, then change the scene to what you want.
+		</p>
+		<pre><code>{PROMPT}</code></pre>
+
+		<h2>What {agent.name} can verify</h2>
+		<AgentChecks />
+
+		<h2>Tips</h2>
+		<ul>{agent.tips.map((t) => <li>{t}</li>)}</ul>
+		<p>
+			Next: <a href={href("docs/getting-started/")}>Getting started</a> builds a first scene
+			and a minimal game app, and the <a href={href("demos/")}>demos</a> show what the
+			engine can do.
+		</p>
+
+		<p class="faint" style="font-size: 14px; margin-top: 3em">
+			{agent.name} is a product of its owner. Pebble3D is not affiliated with or endorsed by
+			it; this page only describes how the repo's files work with it.
+		</p>
+	</article>
+</Base>

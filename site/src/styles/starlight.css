@@ -1,0 +1,77 @@
+/* Starlight themed to direction A, "Forge". The site is dark only. */
+:root,
+:root[data-theme="dark"] {
+	--sl-font: "Space Grotesk", system-ui, sans-serif;
+	--sl-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+	--sl-color-accent-low: #3a1a0b;
+	--sl-color-accent: #ff7a3d;
+	--sl-color-accent-high: #ffb08a;
+
+	--sl-color-white: #eceae6;
+	--sl-color-gray-1: #d9d5ce;
+	--sl-color-gray-2: #b9b5ae;
+	--sl-color-gray-3: #8e8a83;
+	--sl-color-gray-4: #5c5953;
+	--sl-color-gray-5: #2a2c31;
+	--sl-color-gray-6: #15171b;
+	--sl-color-black: #0e0f12;
+
+	--sl-color-text-accent: #ff8a52;
+	--sl-color-bg-nav: #0e0f12;
+	--sl-color-bg-sidebar: #0e0f12;
+	--sl-color-hairline: #22242a;
+	--sl-color-hairline-light: #2a2c31;
+	--sl-color-hairline-shade: #0e0f12;
+	--sl-color-bg-inline-code: #1b1d22;
+	--sl-color-backdrop-overlay: rgba(14, 15, 18, 0.8);
+}
+
+body {
+	background: #0e0f12;
+}
+
+.sl-markdown-content a:not(:where(.not-content *)) {
+	color: #ff8a52;
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+	color: #ffb08a;
+}
+
+.sl-markdown-content :is(h1, h2, h3, h4) {
+	letter-spacing: -0.01em;
+}
+
+.sl-markdown-content code:not(:where(.not-content *)) {
+	border-radius: 4px;
+}
+
+.sl-markdown-content table {
+	display: block;
+	overflow-x: auto;
+	font-size: 0.9rem;
+}
+.sl-markdown-content :is(th, td) {
+	border-color: #2a2c31;
+}
+
+.site-title {
+	font-weight: 700;
+	color: #eceae6;
+	gap: 10px;
+}
+.site-title img {
+	width: 28px;
+	height: 28px;
+}
+
+/* Sidebar: current page in ember. */
+nav.sidebar a[aria-current="page"] {
+	background-color: #3a1a0b;
+	color: #ffb08a;
+}
+
+/* No theme picker, so no divider after the social icons. */
+.social-icons::after {
+	display: none;
+}

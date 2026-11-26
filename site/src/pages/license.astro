@@ -1,0 +1,95 @@
+---
+import Base from "../layouts/Base.astro";
+import { href, REPO_BRANCH, REPO_URL } from "../lib/site";
+
+const licenseUrl = `${REPO_URL}/blob/${REPO_BRANCH}/LICENSE`;
+---
+
+<Base
+	title="License"
+	description="Pebble3D's licence in plain English: free, including commercial use, for organizations under USD $50,000 a year in revenue plus funding; a commercial licence above that; players never need one."
+	nav="license"
+>
+	<section class="wrap page-head">
+		<p class="eyebrow">License</p>
+		<h1>Free for small teams. Players never need a license.</h1>
+		<p class="lede">
+			Pebble3D is source-available under the Pebble3D Engine License, © 2026 RJV Solutions.
+			This page is a plain-English summary; the <a href={licenseUrl}>LICENSE file</a> is the
+			binding text.
+		</p>
+	</section>
+
+	<article class="wrap prose">
+		<h2 style="margin-top: 0">The short version</h2>
+		<ul>
+			<li>
+				<strong>Free, including commercial use,</strong> if your annual revenue plus funding
+				is under <strong>USD $50,000</strong>. You can use, copy, modify and run the engine,
+				and ship it inside your games and apps.
+			</li>
+			<li>
+				<strong>At or above USD $50,000</strong>, you need a separate commercial licence
+				from RJV Solutions before you use it.
+			</li>
+			<li>
+				<strong>Players never need a license.</strong> End users of a game or app built
+				with Pebble3D can play or use it freely.
+			</li>
+		</ul>
+
+		<h2>What counts toward the $50,000</h2>
+		<ul>
+			<li>
+				All gross revenue from any source, whether or not it comes from the game, plus all
+				funding raised: equity, loans, grants and crowdfunding.
+			</li>
+			<li>Measured over the most recent trailing twelve months.</li>
+			<li>
+				Counted across your whole organisation and its affiliates (entities that control,
+				are controlled by, or share control with you). Splitting a business across
+				entities to stay under the threshold is not allowed.
+			</li>
+		</ul>
+
+		<h2>If you cross the threshold</h2>
+		<p>
+			You have 60 days from the date you first reach $50,000 to get a commercial licence or
+			stop using the engine. Products you distributed before that date can stay with their
+			users.
+		</p>
+
+		<h2>Conditions</h2>
+		<ul>
+			<li>Keep the licence file and copyright notices with every copy you distribute.</li>
+			<li>
+				Anyone who gets the engine from you gets it under the same licence, and the revenue
+				rule applies to them separately. You can't sublicense it under other terms.
+			</li>
+			<li>
+				RJV Solutions may ask you in writing to confirm you are under the threshold; you
+				must answer truthfully within 30 days.
+			</li>
+			<li>
+				If you breach the licence and don't fix it within 30 days of written notice, your
+				rights end.
+			</li>
+		</ul>
+
+		<h2>Third-party parts keep their own licences</h2>
+		<p>
+			three.js (MIT), Rapier (Apache-2.0), the other npm and Cargo dependencies, and the
+			demo assets downloaded by <code>pnpm fetch-assets</code> (CC BY 4.0, CC0 and MIT
+			works) are not covered by the Pebble3D licence. See <a href={href("credits/")}>Credits</a>.
+		</p>
+
+		<h2>No warranty</h2>
+		<p>The software is provided as is, without warranty, and without liability for damages.</p>
+
+		<p class="callout">
+			Need a commercial licence? The licence asks you to contact RJV Solutions. Read the
+			full text: <a href={licenseUrl}>LICENSE on GitHub</a> or
+			<a href={href("LICENSE")}>as plain text</a>.
+		</p>
+	</article>
+</Base>

@@ -1,0 +1,13 @@
+node_modules/
+target/
+dist/
+artifacts/
+.remember/
+.superpowers/
+*.wasm
+packages/sdk/wasm/
+apps/playground/public/assets/*
+!apps/playground/public/assets/LICENSES.md
+!apps/playground/public/assets/licenses/
+!apps/playground/public/assets/licenses/*.txt
+spike/public/

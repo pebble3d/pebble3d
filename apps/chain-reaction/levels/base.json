@@ -1,0 +1,243 @@
+{
+	"$schema": "../../../packages/sdk/scene.schema.json",
+	"version": 1,
+	"environment": {
+		"preset": "studio",
+		"backdrop": {
+			"horizon": "#262a33",
+			"zenith": "#08090c"
+		},
+		"fog": {
+			"near": 22,
+			"far": 60
+		},
+		"ground": {
+			"y": 0,
+			"size": 80,
+			"color": "#121317",
+			"roughness": 0.75
+		}
+	},
+	"lighting": {
+		"sun": {
+			"direction": [-0.6, 1.0, 1.05],
+			"intensity": 2.8,
+			"color": "#fff1e2"
+		}
+	},
+	"post": {
+		"exposure": 0.85,
+		"toneMapping": "aces",
+		"bloom": {
+			"enabled": true,
+			"strength": 0.4,
+			"threshold": 2.2
+		},
+		"ao": {
+			"enabled": true,
+			"radius": 0.45
+		}
+	},
+	"camera": {
+		"controller": "orbit"
+	},
+	"sim": {
+		"build": "deterministic",
+		"seed": 1
+	},
+	"prefabs": {
+		"ball": {
+			"transform": {
+				"scale": [0.4, 0.4, 0.4]
+			},
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#e8eaee",
+					"roughness": 0.12,
+					"metalness": 1
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"mass": 1,
+				"friction": 0.4,
+				"restitution": 0.3,
+				"linearDamping": 0.02,
+				"angularDamping": 0.05,
+				"ccd": true
+			}
+		},
+		"marble": {
+			"transform": {
+				"scale": [0.44, 0.44, 0.44]
+			},
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#23252b",
+					"roughness": 0.2,
+					"metalness": 0.9
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"mass": 2.5,
+				"friction": 0.4,
+				"restitution": 0.2,
+				"linearDamping": 0.02,
+				"angularDamping": 0.05,
+				"ccd": true
+			}
+		},
+		"block": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#2c2f36",
+					"roughness": 0.7
+				}
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.5,
+				"restitution": 0.1
+			}
+		},
+		"ramp": {
+			"transform": {
+				"scale": [1.44, 0.08, 0.9]
+			},
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#e0a458",
+					"roughness": 0.55
+				}
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.35,
+				"restitution": 0.1
+			}
+		},
+		"domino": {
+			"transform": {
+				"scale": [0.16, 1.6, 0.6]
+			},
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#f2ede4",
+					"roughness": 0.35
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"mass": 0.5,
+				"friction": 2.0,
+				"restitution": 0.05
+			}
+		},
+		"spring": {
+			"transform": {
+				"scale": [0.84, 0.3, 0.8]
+			},
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#e4572e",
+					"roughness": 0.4
+				}
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.5,
+				"restitution": 0
+			}
+		},
+		"fanBase": {
+			"transform": {
+				"scale": [0.8, 0.24, 0.7]
+			},
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#4f9dde",
+					"roughness": 0.4,
+					"metalness": 0.3
+				}
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.5,
+				"restitution": 0.1
+			}
+		},
+		"fanSide": {
+			"transform": {
+				"scale": [0.24, 0.8, 0.7]
+			},
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#4f9dde",
+					"roughness": 0.4,
+					"metalness": 0.3
+				}
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.5,
+				"restitution": 0.1
+			}
+		},
+		"fulcrum": {
+			"body": {
+				"type": "static",
+				"friction": 0.9,
+				"collider": {
+					"shape": "convexHull",
+					"points": [
+						-0.22, 0, -0.4, 0.22, 0, -0.4, 0, 0.4, -0.4, -0.22, 0, 0.4, 0.22, 0,
+						0.4, 0, 0.4, 0.4
+					]
+				}
+			}
+		},
+		"plank": {
+			"transform": {
+				"scale": [1.9, 0.08, 0.8]
+			},
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#9b6bd6",
+					"roughness": 0.5
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"mass": 0.6,
+				"friction": 0.9,
+				"restitution": 0.05,
+				"angularDamping": 0.1
+			}
+		},
+		"goalWall": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#1f6f5c",
+					"roughness": 0.35,
+					"emissive": "#0a3"
+				}
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.6,
+				"restitution": 0
+			}
+		}
+	}
+}

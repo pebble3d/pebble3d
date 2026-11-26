@@ -1,0 +1,234 @@
+{
+	"version": 1,
+	"environment": {
+		"ground": {}
+	},
+	"sim": {
+		"build": "deterministic",
+		"seed": 42
+	},
+	"prefabs": {
+		"crate": {
+			"mesh": {
+				"primitive": "box"
+			},
+			"body": {
+				"friction": 0.6
+			}
+		},
+		"ball": {
+			"mesh": {
+				"primitive": "sphere"
+			},
+			"transform": {
+				"scale": [0.5, 0.5, 0.5]
+			},
+			"body": {
+				"restitution": 0.3
+			}
+		}
+	},
+	"entities": [
+		{
+			"id": "box-000",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.05, 0.5, -1.05]
+			}
+		},
+		{
+			"id": "box-001",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.05, 0.5, 0.0]
+			}
+		},
+		{
+			"id": "box-002",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.05, 0.5, 1.05]
+			}
+		},
+		{
+			"id": "box-010",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.05, 1.52, -1.05]
+			}
+		},
+		{
+			"id": "box-011",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.05, 1.52, 0.0]
+			}
+		},
+		{
+			"id": "box-012",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.05, 1.52, 1.05]
+			}
+		},
+		{
+			"id": "box-020",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.05, 2.54, -1.05]
+			}
+		},
+		{
+			"id": "box-021",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.05, 2.54, 0.0]
+			}
+		},
+		{
+			"id": "box-022",
+			"prefab": "crate",
+			"transform": {
+				"position": [-1.05, 2.54, 1.05]
+			}
+		},
+		{
+			"id": "box-100",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.0, 0.5, -1.05]
+			}
+		},
+		{
+			"id": "box-101",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.0, 0.5, 0.0]
+			}
+		},
+		{
+			"id": "box-102",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.0, 0.5, 1.05]
+			}
+		},
+		{
+			"id": "box-110",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.0, 1.52, -1.05]
+			}
+		},
+		{
+			"id": "box-111",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.0, 1.52, 0.0]
+			}
+		},
+		{
+			"id": "box-112",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.0, 1.52, 1.05]
+			}
+		},
+		{
+			"id": "box-120",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.0, 2.54, -1.05]
+			}
+		},
+		{
+			"id": "box-121",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.0, 2.54, 0.0]
+			}
+		},
+		{
+			"id": "box-122",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.0, 2.54, 1.05]
+			}
+		},
+		{
+			"id": "box-200",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.05, 0.5, -1.05]
+			}
+		},
+		{
+			"id": "box-201",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.05, 0.5, 0.0]
+			}
+		},
+		{
+			"id": "box-202",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.05, 0.5, 1.05]
+			}
+		},
+		{
+			"id": "box-210",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.05, 1.52, -1.05]
+			}
+		},
+		{
+			"id": "box-211",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.05, 1.52, 0.0]
+			}
+		},
+		{
+			"id": "box-212",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.05, 1.52, 1.05]
+			}
+		},
+		{
+			"id": "box-220",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.05, 2.54, -1.05]
+			}
+		},
+		{
+			"id": "box-221",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.05, 2.54, 0.0]
+			}
+		},
+		{
+			"id": "box-222",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.05, 2.54, 1.05]
+			}
+		},
+		{
+			"id": "rain",
+			"spawner": {
+				"prefab": "ball",
+				"rate": 20,
+				"count": 40,
+				"area": {
+					"min": [-3, 6, -3],
+					"max": [3, 9, 3]
+				}
+			}
+		}
+	]
+}

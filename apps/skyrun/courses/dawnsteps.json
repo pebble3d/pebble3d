@@ -1,0 +1,130 @@
+{
+	"id": "dawnsteps",
+	"name": "Dawnsteps",
+	"tagline": "Stairs, ramps, a ferry and a lift: the first climb above the cloud sea.",
+	"medals": { "gold": 30, "silver": 36, "bronze": 48 },
+	"killY": -6,
+	"start": { "pos": [0, 0, 3], "yaw": 0 },
+	"islands": [
+		{ "pos": [0, 0, 0], "radius": 6, "depth": 7, "seed": 1 },
+		{ "pos": [0, 1.8, -16], "radius": 3.5, "depth": 5, "seed": 2 },
+		{ "pos": [-15, 4.27, -16], "radius": 3.8, "depth": 6, "seed": 3 },
+		{ "pos": [-36, 4.27, -16], "radius": 3.5, "depth": 5, "seed": 4 },
+		{
+			"pos": [-36, 9.27, -27],
+			"radius": 3.5,
+			"depth": 6,
+			"seed": 5,
+			"top": "stone"
+		},
+		{ "pos": [-4, 8, -31], "radius": 4.5, "depth": 8, "seed": 6 }
+	],
+	"stairs": [
+		{
+			"from": [0, 0, -2],
+			"yaw": 0,
+			"steps": 6,
+			"rise": 0.3,
+			"run": 0.7,
+			"width": 3
+		}
+	],
+	"blocks": [
+		{ "pos": [0, 1.4, -8.35], "size": [3, 0.8, 5] },
+		{
+			"pos": [-7.3, 2.85, -16],
+			"size": [3, 0.4, 8],
+			"yaw": 90,
+			"tilt": 18,
+			"kind": "wood"
+		},
+		{ "pos": [-31.5, 8.9, -28.5], "size": [1.8, 0.8, 1.8], "kind": "brass" },
+		{ "pos": [-27.5, 8.5, -30], "size": [1.8, 0.8, 1.8], "kind": "brass" },
+		{ "pos": [-23.5, 8.1, -30.5], "size": [1.8, 0.8, 1.8], "kind": "brass" }
+	],
+	"movers": [
+		{
+			"id": "ferry",
+			"kind": "slide",
+			"size": [3, 0.5, 3],
+			"pos": [-21.4, 4.02, -16],
+			"to": [-31.1, 4.02, -16],
+			"period": 7,
+			"hold": 0.25
+		},
+		{
+			"id": "lift",
+			"kind": "slide",
+			"size": [2.6, 0.4, 2.6],
+			"pos": [-36, 4.07, -21.2],
+			"to": [-36, 9.07, -21.2],
+			"period": 8,
+			"hold": 0.3
+		},
+		{
+			"id": "wheel",
+			"kind": "spin",
+			"shape": "disc",
+			"size": [7, 0.5, 7],
+			"pos": [-14.5, 7.5, -31],
+			"rate": 40
+		}
+	],
+	"checkpoints": [
+		{ "pos": [0, 1.8, -16], "yaw": 90 },
+		{ "pos": [-15, 4.27, -16], "yaw": 90 },
+		{ "pos": [-36, 9.27, -27], "yaw": -90 }
+	],
+	"goal": { "pos": [-4, 8, -31] },
+	"shards": [
+		[0, 3.4, -11.7],
+		[-7.3, 4.2, -16],
+		[-11.4, 5.9, -16],
+		[-26.3, 5.4, -16],
+		[-36, 7.2, -21.2],
+		[-27.5, 10.2, -30],
+		[-14.5, 8.8, -28.2],
+		[-14.5, 8.8, -33.8]
+	],
+	"bot": [
+		{ "to": [0, 0, -1.2] },
+		{ "to": [0, 1.8, -9.6] },
+		{ "to": [0, 1.8, -13.2], "jump": true, "jumpAt": 2.6 },
+		{ "to": [0, 1.8, -16] },
+		{ "to": [-11.6, 4.27, -16] },
+		{ "to": [-17.6, 4.27, -16] },
+		{
+			"to": [0, 0, 0],
+			"rel": "ferry",
+			"within": 0.5,
+			"waitMover": { "id": "ferry", "at": [-21.4, 4.02, -16], "near": 0.03 }
+		},
+		{
+			"to": [-34.5, 4.27, -16],
+			"jump": true,
+			"jumpAt": 3.4,
+			"waitMover": { "id": "ferry", "at": [-31.1, 4.02, -16], "near": 0.03 }
+		},
+		{ "to": [-36, 4.27, -18.8] },
+		{
+			"to": [0, 0, 0],
+			"rel": "lift",
+			"within": 0.5,
+			"waitMover": { "id": "lift", "at": [-36, 4.07, -21.2], "near": 0.03 }
+		},
+		{
+			"to": [-36, 9.27, -24.8],
+			"waitMover": { "id": "lift", "at": [-36, 9.07, -21.2], "near": 0.03 }
+		},
+		{ "to": [-36, 9.27, -27] },
+		{ "to": [-33.6, 9.27, -27.8] },
+		{ "to": [-31.5, 9.3, -28.5], "jump": true, "jumpAt": 2.2, "within": 0.5 },
+		{ "to": [-27.5, 8.9, -30], "jump": true, "jumpAt": 0, "within": 0.5 },
+		{ "to": [-23.5, 8.5, -30.5], "jump": true, "jumpAt": 0, "within": 0.5 },
+		{ "to": [-17.5, 8, -30.5], "jump": true, "jumpAt": 0, "within": 0.8 },
+		{ "to": [-11.6, 8, -31], "within": 0.8 },
+		{ "to": [-7.8, 8, -31], "jump": true, "jumpAt": 0, "within": 0.8 },
+		{ "to": [-4, 8, -31] }
+	],
+	"view": { "eye": [14, 14, 10], "target": [-14, 4, -18] }
+}

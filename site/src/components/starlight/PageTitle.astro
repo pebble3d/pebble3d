@@ -1,0 +1,40 @@
+---
+import Default from "@astrojs/starlight/components/PageTitle.astro";
+import { REPO_BRANCH, REPO_URL } from "../../../site.config.mjs";
+
+const data = Astro.locals.starlightRoute.entry.data as {
+	rawMarkdown?: string;
+	sourcePath?: string;
+};
+const raw = data.rawMarkdown;
+const source = data.sourcePath;
+---
+
+<Default />
+{
+	(raw || source) && (
+		<p class="page-links">
+			{raw && <a href={raw}>{raw.endsWith(".txt") ? "llms.txt" : "Raw markdown"}</a>}
+			{source && (
+				<a href={`${REPO_URL}/blob/${REPO_BRANCH}/${source}`}>Source: {source}</a>
+			)}
+		</p>
+	)
+}
+
+<style>
+	.page-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.25rem;
+		margin-top: 0.5rem;
+		font-family: var(--__sl-font-mono);
+		font-size: 0.8125rem;
+	}
+	.page-links a {
+		color: var(--sl-color-text-accent);
+	}
+	.page-links a:hover {
+		color: var(--sl-color-accent-high);
+	}
+</style>

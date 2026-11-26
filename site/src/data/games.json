@@ -1,0 +1,1153 @@
+{
+	"$comment": "The demos list. One entry per game: the site pages, the home grid, sitemap, JSON-LD and `pnpm build:site` (which builds apps/<app> into play/<id>/) all read this file. Links without a scheme are relative to the site base. Every number in an entry must appear in apps/<app>/README.md, the game's committed README (node site/scripts/check-claims.mjs). See site/README.md. webglFallback: false when the demo does not render correctly on the WebGL fallback yet (the page then says so).",
+	"games": [
+		{
+			"id": "ronin-outpost",
+			"name": "Ronin Outpost",
+			"app": "katana-defense",
+			"blurb": "Hold the gate against eight waves of the dead with a katana. Toon-shaded, with skinned zombie crowds.",
+			"tag": "animation · IK · toon style",
+			"genre": "Action, horde defence",
+			"pitch": "A katana horde-defence game. You are a lone swordsman holding the community-hall gate through eight waves of the dead, from golden hour to dusk. Every cut is procedural sword technique on a real character skeleton, the undead shamble in on four different bodies, and the whole scene is cel-shaded with ink outlines over a Gaussian-splat capture of a real place.",
+			"controls": [
+				{
+					"keys": "WASD / arrows",
+					"action": "Move; hold Shift to sprint"
+				},
+				{
+					"keys": "Mouse",
+					"action": "Camera, after clicking the canvas"
+				},
+				{
+					"keys": "Left click or J",
+					"action": "Light combo: three cuts, ending in the Crescent Sweep"
+				},
+				{
+					"keys": "Right click or K",
+					"action": "Heavy attack; hold to charge Thunder Cleave"
+				},
+				{
+					"keys": "Light, Light, Heavy",
+					"action": "Launcher"
+				},
+				{
+					"keys": "Q or double-tap",
+					"action": "Dodge; dodge then Light for a dash-slash"
+				},
+				{
+					"keys": "Space",
+					"action": "Jump; Heavy in the air plunges"
+				},
+				{
+					"keys": "Hold E",
+					"action": "Spin Storm, when the Focus meter is full"
+				},
+				{
+					"keys": "1–3",
+					"action": "Pick an upgrade after every second wave"
+				}
+			],
+			"features": [
+				{
+					"title": "Opt-in toon style",
+					"text": "post.style: \"toon\" gives cel lighting, ink outlines from the depth and normal prepass, and a posterised grade on the splat. The default PBR path is unchanged.",
+					"links": [
+						{
+							"label": "Recipe: post and toon style",
+							"href": "docs/cookbook/post-and-toon-style/"
+						}
+					]
+				},
+				{
+					"title": "Skinned crowds",
+					"text": "Hordes of skinned zombies, 60-plus by wave 8, built from four Rocketbox civilians, with slowed walks, sprinting runners and larger brutes.",
+					"links": [
+						{
+							"label": "Recipe: instanced crowds and performance",
+							"href": "docs/cookbook/instanced-crowds-and-perf/"
+						}
+					]
+				},
+				{
+					"title": "Procedural sword technique",
+					"text": "Two-bone IK keeps both hands on the hilt, the torso twists into each swing, and the katana is parented to the hand bone.",
+					"links": [
+						{
+							"label": "Recipe: character and camera",
+							"href": "docs/cookbook/character-and-camera/"
+						}
+					]
+				},
+				{
+					"title": "A real place as the level",
+					"text": "The arena is a Gaussian-splat capture of a community hall, composited with the meshes.",
+					"links": [
+						{
+							"label": "Recipe: splat environments",
+							"href": "docs/cookbook/splat-environments/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "05-spin-storm.webp",
+					"alt": "Ronin Outpost: the swordsman's Spin Storm whirls blade trails through a wave-5 crowd of zombies at the hall gate"
+				},
+				{
+					"file": "03-light-combo-slash.webp",
+					"alt": "Close-up of the masked swordsman in an indigo gi cutting in front of the hall gate"
+				},
+				{
+					"file": "08-dusk-wave8.webp",
+					"alt": "Wave 8: the swordsman spins through a horde of zombies in the yard"
+				}
+			],
+			"caption": "Ronin Outpost · toon-shaded skinned crowds · runs in your browser",
+			"webglFallback": true
+		},
+		{
+			"id": "swarm-siege",
+			"name": "Swarm Siege",
+			"app": "swarm-siege",
+			"blurb": "Top-down tower defence against a glowing tide of thousands of instanced enemies, simulated in a worker.",
+			"tag": "instancing at scale · worker · picking",
+			"genre": "Strategy, tower defence",
+			"pitch": "A top-down tower defence. Two rifts at the far corners of a night-time salt flat pour a glowing tide of creatures down ember-lit lanes that merge into one serpentine trunk ending at the Beacon. Place towers on the build pads beside the lanes, upgrade them, and hold for twelve waves. Wave 12 sends more than 7,000 enemies and peaks at about 6,000 alive at once.",
+			"controls": [
+				{
+					"keys": "1 to 4, or click a card",
+					"action": "Choose a tower: Spark, Mortar, Frost or Lance"
+				},
+				{
+					"keys": "Left click",
+					"action": "Place on the pad under the cursor, or select a tower"
+				},
+				{
+					"keys": "U / X",
+					"action": "Upgrade / sell the selected tower"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Begin, call the next wave early, or restart"
+				},
+				{
+					"keys": "WASD / arrows, middle drag",
+					"action": "Pan"
+				},
+				{
+					"keys": "Q / E, right drag",
+					"action": "Orbit"
+				},
+				{
+					"keys": "R / F, wheel",
+					"action": "Tilt, zoom"
+				},
+				{
+					"keys": "Esc",
+					"action": "Cancel placement or selection"
+				}
+			],
+			"features": [
+				{
+					"title": "Instancing at scale",
+					"text": "Each enemy kind is one InstancedMesh; the Mite pool has 32,768 slots, with a per-instance glow read by a TSL emissive node.",
+					"links": [
+						{
+							"label": "Recipe: instanced crowds and performance",
+							"href": "docs/cookbook/instanced-crowds-and-perf/"
+						}
+					]
+				},
+				{
+					"title": "A sim in a Web Worker",
+					"text": "The whole game sim runs in a worker and posts packed snapshots; the main thread only renders.",
+					"links": [
+						{
+							"label": "Recipe: instanced crowds, workers and the fast build",
+							"href": "docs/cookbook/instanced-crowds-and-perf/"
+						}
+					]
+				},
+				{
+					"title": "Camera picking with raycasts",
+					"text": "The cursor ray is an engine raycast that picks towers and build pads.",
+					"links": [
+						{
+							"label": "Recipe: raycasts",
+							"href": "docs/cookbook/raycasts/"
+						}
+					]
+				},
+				{
+					"title": "Seeded spawners for debris",
+					"text": "A Brute's death drops debris shards from a runtime engine spawner as real rigid bodies.",
+					"links": [
+						{
+							"label": "Recipe: prefabs and spawners",
+							"href": "docs/cookbook/prefabs-and-spawners/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "04-junction-close.webp",
+					"alt": "Swarm Siege: a pink tide of creatures floods past glowing towers where the lanes merge"
+				},
+				{
+					"file": "03-the-swarm.webp",
+					"alt": "Top view of wave 12: thousands of creatures stream along the serpentine lane towards the Beacon"
+				},
+				{
+					"file": "05-firefight.webp",
+					"alt": "Lance beams and frost pulses cutting through the swarm"
+				}
+			],
+			"caption": "Swarm Siege · thousands of instanced enemies from a worker",
+			"webglFallback": true
+		},
+		{
+			"id": "breakpoint",
+			"name": "Breakpoint",
+			"app": "breakpoint",
+			"blurb": "Bring down towers built from 838 to 1,344 physics blocks, then watch your best shot re-simulated exactly.",
+			"tag": "rigid bodies · replay",
+			"genre": "Physics, demolition",
+			"pitch": "Physics demolition. Fire heavy iron balls from a siege cannon at stone structures generated from a seed: a keep, a viaduct and a citadel, each built from 838 to 1,344 rigid bodies. You get three shots per site and score the mass you knock below the survey line. Then the game replays your best shot. The replay is not a recording: a second physics world rebuilds the site from its seed, is fed the same inputs, and checks its state hash against the live run on screen.",
+			"controls": [
+				{
+					"keys": "Mouse",
+					"action": "Aim at a spot on a structure"
+				},
+				{
+					"keys": "Hold left click",
+					"action": "Charge the shot, then release to fire"
+				},
+				{
+					"keys": "Space / Enter",
+					"action": "Continue past a card"
+				},
+				{
+					"keys": "R",
+					"action": "Replay your best shot, on the report card"
+				}
+			],
+			"features": [
+				{
+					"title": "Rapier at scale, off the main thread",
+					"text": "3,166 dynamic bodies over three sites on the SIMD fast build. The sim runs in a Web Worker and streams packed body states, so a heavy collapse slows game time instead of dropping frames.",
+					"links": [
+						{
+							"label": "Recipe: instanced crowds, workers and the fast build",
+							"href": "docs/cookbook/instanced-crowds-and-perf/"
+						}
+					]
+				},
+				{
+					"title": "Deterministic replay",
+					"text": "Your best shot is stored as inputs and re-simulated from the seed, ending with a live state-hash check.",
+					"links": [
+						{
+							"label": "Recipe: deterministic game loop",
+							"href": "docs/cookbook/deterministic-game-loop/"
+						}
+					]
+				},
+				{
+					"title": "Shadows and AO on debris",
+					"text": "Cascaded shadow maps, GTAO and bloom from the default pipeline, on one InstancedMesh per block kind.",
+					"links": [
+						{
+							"label": "Scene reference: post",
+							"href": "docs/scene-reference/#post"
+						}
+					]
+				},
+				{
+					"title": "Runtime spawns and impacts",
+					"text": "Each shot spawns a ball body at runtime with a launch velocity; dust, chips and sound are driven from the physics state alone.",
+					"links": [
+						{
+							"label": "Recipe: bodies, impulses and velocity",
+							"href": "docs/cookbook/bodies-impulses-velocity/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "03-impact.webp",
+					"alt": "Breakpoint: an iron ball bursts through the keep's curtain wall in slow motion"
+				},
+				{
+					"file": "02-aim.webp",
+					"alt": "Aiming the siege cannon at the Old Keep across the desert, with the survey line marked out"
+				},
+				{
+					"file": "10-replay-verified.webp",
+					"alt": "The best-shot replay of the Sun Citadel, with the state hash matching the live run"
+				}
+			],
+			"caption": "Breakpoint · rigid-body demolition with an exact replay",
+			"webglFallback": true
+		},
+		{
+			"id": "drift-drone",
+			"name": "Drift Drone",
+			"app": "drift-drone",
+			"blurb": "An FPV drone time trial through LED gates in a real 3D-scanned yard, against a re-simulated ghost.",
+			"tag": "force-driven flight · splats · depth of field",
+			"genre": "Racing, drone",
+			"pitch": "An FPV drone time trial. Fly a racing quadcopter through LED gates around an old brick hall in a real Gaussian-splat capture: low over the garden beds, up past the windows and under the eaves. Your best lap comes back as a ghost, re-simulated from your own stick inputs, and the last crossing of the line is a slow-motion photo finish with depth of field. The drone is a plain dynamic body flown only by thrust and torque impulses.",
+			"controls": [
+				{
+					"keys": "W / S",
+					"action": "Climb / descend (assisted) or throttle (acro)"
+				},
+				{
+					"keys": "A / D",
+					"action": "Yaw"
+				},
+				{
+					"keys": "Arrows or I J K L",
+					"action": "Tilt (assisted) or pitch and roll rates (acro)"
+				},
+				{
+					"keys": "Space",
+					"action": "Acro: ease the throttle back to hover"
+				},
+				{
+					"keys": "Gamepad",
+					"action": "Left stick throttle and yaw, right stick pitch and roll"
+				},
+				{
+					"keys": "C",
+					"action": "Chase / FPV camera"
+				},
+				{
+					"keys": "R / Esc",
+					"action": "Restart the race / menu"
+				},
+				{
+					"keys": "Title: Tab, M, Enter",
+					"action": "Track, flight mode, arm"
+				}
+			],
+			"features": [
+				{
+					"title": "6-DOF force-driven flight",
+					"text": "A 0.8 kg dynamic sphere flown only by applyImpulse and applyTorqueImpulse, with a rate loop on angularVelocity.",
+					"links": [
+						{
+							"label": "Recipe: bodies, impulses and velocity",
+							"href": "docs/cookbook/bodies-impulses-velocity/"
+						}
+					]
+				},
+				{
+					"title": "Ghosts by re-simulation",
+					"text": "Your best lap's input log is replayed in a second world in lockstep with you; tests check it is tick-for-tick identical.",
+					"links": [
+						{
+							"label": "Recipe: deterministic game loop",
+							"href": "docs/cookbook/deterministic-game-loop/"
+						}
+					]
+				},
+				{
+					"title": "Splat and mesh compositing at speed",
+					"text": "Gates, the quad and its trails composite into the 800k-splat hall capture and cast shadows on the splat floor.",
+					"links": [
+						{
+							"label": "Recipe: splat environments",
+							"href": "docs/cookbook/splat-environments/"
+						}
+					]
+				},
+				{
+					"title": "Photo-finish depth of field",
+					"text": "The finish replay drives the renderer's depth of field onto the drone.",
+					"links": [
+						{
+							"label": "Recipe: depth of field",
+							"href": "docs/cookbook/depth-of-field/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "07-eaves-climb.webp",
+					"alt": "Drift Drone: the quadcopter climbs through a glowing yellow gate under the hall's eaves"
+				},
+				{
+					"file": "05-fpv-windows.webp",
+					"alt": "FPV view flying past the brick hall's windows towards a pink gate"
+				},
+				{
+					"file": "09-photo-finish.webp",
+					"alt": "The slow-motion photo finish with depth of field on the drone at the line"
+				}
+			],
+			"caption": "Drift Drone · force-driven flight through a real capture",
+			"webglFallback": true
+		},
+		{
+			"id": "ghostline",
+			"name": "Ghostline",
+			"app": "ghostline",
+			"blurb": "Marble time trials against a ghost that is re-simulated live from your inputs, not played back.",
+			"tag": "determinism · PBR",
+			"genre": "Racing, time trial",
+			"pitch": "A marble time trial. Tilt the board and roll a glass, chrome or ember marble down three ribbon courses in the sky, with boosts, jumps, sweepers and checkpoints, against a translucent ghost of your best run. The ghost is never a recording: it is your run re-simulated by a second physics world fed the same seed and the same logged inputs, one tick at a time, in lockstep with you.",
+			"controls": [
+				{
+					"keys": "WASD / arrows",
+					"action": "Tilt the board (relative to the camera)"
+				},
+				{
+					"keys": "Space",
+					"action": "Hop, when grounded"
+				},
+				{
+					"keys": "Shift",
+					"action": "Brake"
+				},
+				{
+					"keys": "R",
+					"action": "Retry and race your ghost again"
+				},
+				{
+					"keys": "Esc",
+					"action": "Menu"
+				},
+				{
+					"keys": "Title: arrows, G, Enter",
+					"action": "Pick course and marble, ghost mode, race"
+				},
+				{
+					"keys": "Gamepad",
+					"action": "Left stick tilts, A hops, B brakes"
+				}
+			],
+			"features": [
+				{
+					"title": "Ghosts from inputs",
+					"text": "A run is fully defined by the course JSON, the seed and the input log. Inputs are quantised before logging, so the camera never leaks into the sim, and the results screen re-simulates your run headless to verify it.",
+					"links": [
+						{
+							"label": "Recipe: deterministic game loop",
+							"href": "docs/cookbook/deterministic-game-loop/"
+						}
+					]
+				},
+				{
+					"title": "Node and Chromium agree",
+					"text": "The shipped par ghosts were recorded in Node and end on the same hash in the browser.",
+					"links": [
+						{
+							"label": "Verification: determinism",
+							"href": "docs/verification/#determinism"
+						}
+					]
+				},
+				{
+					"title": "PBR marbles and courses",
+					"text": "Iridescent clearcoat glass, mirror chrome and ember marbles on lacquered decks, with CSM shadows, GTAO and bloom.",
+					"links": [
+						{
+							"label": "Scene reference: post",
+							"href": "docs/scene-reference/#post"
+						}
+					]
+				},
+				{
+					"title": "JSON courses",
+					"text": "Each course is an engine scene plus a turtle-style track that expands into trimesh colliders and meshes.",
+					"links": [
+						{
+							"label": "Recipe: scene basics",
+							"href": "docs/cookbook/scene-basics/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "08-ember-glamour.webp",
+					"alt": "Ghostline: the glowing ember marble rolling down the Neon Undertow course"
+				},
+				{
+					"file": "04-race-the-ghost.webp",
+					"alt": "A glass marble racing the par ghost on the Sunfold Meadow course, with the split delta shown"
+				},
+				{
+					"file": "10-results.webp",
+					"alt": "The results screen: a gold medal, checkpoint splits and the re-simulation check"
+				}
+			],
+			"caption": "Ghostline · ghosts re-simulated from your inputs",
+			"webglFallback": true
+		},
+		{
+			"id": "skyrun",
+			"name": "Skyrun",
+			"app": "skyrun",
+			"blurb": "A parkour time trial across floating islands: ride ferries, lifts and a spinning wheel against your own ghost.",
+			"tag": "character controller · moving platforms",
+			"genre": "Platformer, time trial",
+			"pitch": "A third-person parkour time trial above a dawn cloud sea. Run, jump and ride across floating islands: climb stairs and ramps, hop onto shuttles, a ferry, lifts, a turnstile bridge, orbiting gondolas and a spinning wheel, collect sky shards, pass every checkpoint and reach the gold gate. Your best run comes back as a translucent ghost, re-simulated from your own inputs.",
+			"controls": [
+				{
+					"keys": "WASD / arrows",
+					"action": "Run, relative to the camera"
+				},
+				{
+					"keys": "Space",
+					"action": "Jump"
+				},
+				{
+					"keys": "Shift",
+					"action": "Sprint"
+				},
+				{
+					"keys": "Mouse or Q / E",
+					"action": "Turn the camera (click to lock the mouse)"
+				},
+				{
+					"keys": "R / Esc",
+					"action": "Restart / menu"
+				},
+				{
+					"keys": "Title: ← →, Tab, Enter",
+					"action": "Course, runner, start"
+				},
+				{
+					"keys": "Results: Enter, N",
+					"action": "Retry, next course"
+				}
+			],
+			"features": [
+				{
+					"title": "Riding moving platforms",
+					"text": "The engine's opt-in character.ridePlatforms carries the runner exactly with sliding, spinning and orbiting kinematic platforms, and keeps their velocity as momentum on a jump.",
+					"links": [
+						{
+							"label": "Recipe: character and camera",
+							"href": "docs/cookbook/character-and-camera/"
+						}
+					]
+				},
+				{
+					"title": "The full character controller",
+					"text": "accel, autostep up stairs, a slope limit, ground snap, coyote jump and teleport respawns, with a spring-arm camera.",
+					"links": [
+						{
+							"label": "Scene reference: character",
+							"href": "docs/scene-reference/#entitiescharacter"
+						}
+					]
+				},
+				{
+					"title": "Ghosts by re-simulation",
+					"text": "Your best run is stored as its input log and replayed in a second world.",
+					"links": [
+						{
+							"label": "Recipe: deterministic game loop",
+							"href": "docs/cookbook/deterministic-game-loop/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "05-gap-jump.webp",
+					"alt": "Skyrun: the runner lands on a floating island after a gap jump above the clouds"
+				},
+				{
+					"file": "08-wheel.webp",
+					"alt": "The runner riding a spinning wooden wheel platform"
+				},
+				{
+					"file": "14-spire.webp",
+					"alt": "The runner at the glowing finish gate on Gale Spires"
+				}
+			],
+			"caption": "Skyrun · a character riding kinematic platforms",
+			"webglFallback": true
+		},
+		{
+			"id": "field-notes",
+			"name": "Field Notes",
+			"app": "field-notes",
+			"blurb": "Photograph luminous anomalies inside two real, 3D-captured places, with a working depth of field.",
+			"tag": "Gaussian splats · depth of field",
+			"genre": "Exploration, photography",
+			"pitch": "You are a field researcher with one roll of film. Six luminous, impossible objects have surfaced inside a real, photo-captured place. Walk the site in third person, follow the signal to find each one, then raise your camera and bring back a photograph worth keeping: composed on a third, filling the frame, in focus and correctly exposed. Twelve frames, five minutes of daylight, two survey sites.",
+			"controls": [
+				{
+					"keys": "WASD / arrows",
+					"action": "Jog; hold Shift to sprint"
+				},
+				{
+					"keys": "Mouse",
+					"action": "Look (click to capture the pointer)"
+				},
+				{
+					"keys": "C or right click",
+					"action": "Raise or lower the camera"
+				},
+				{
+					"keys": "Click or Space",
+					"action": "Release the shutter, with the camera up"
+				},
+				{
+					"keys": "Wheel",
+					"action": "Zoom"
+				},
+				{
+					"keys": "F",
+					"action": "Eye-autofocus on the nearest anomaly"
+				},
+				{
+					"keys": "Z / X",
+					"action": "Focus by hand"
+				},
+				{
+					"keys": "Q / E",
+					"action": "Exposure down or up a third of a stop"
+				},
+				{
+					"keys": "Tab or 1–2",
+					"action": "Change survey site, on the title"
+				},
+				{
+					"keys": "Enter",
+					"action": "Start, and a new survey from the results"
+				}
+			],
+			"features": [
+				{
+					"title": "Splat and mesh compositing",
+					"text": "Two captures, an outdoor yard and an apartment courtyard. Meshes occlude splats and splats occlude meshes, with shadows on the splat floor through the engine's shadow catcher.",
+					"links": [
+						{
+							"label": "Recipe: splat environments",
+							"href": "docs/cookbook/splat-environments/"
+						}
+					]
+				},
+				{
+					"title": "Opt-in depth of field",
+					"text": "Photo mode blurs the splat and the meshes together, with focus, zoom and exposure through the tone mapper.",
+					"links": [
+						{
+							"label": "Recipe: depth of field",
+							"href": "docs/cookbook/depth-of-field/"
+						}
+					]
+				},
+				{
+					"title": "Kinematic character controller",
+					"text": "The researcher is the engine's Rust character controller with a third-person spring-arm camera.",
+					"links": [
+						{
+							"label": "Recipe: character and camera",
+							"href": "docs/cookbook/character-and-camera/"
+						}
+					]
+				},
+				{
+					"title": "Raycast scoring",
+					"text": "Each photo's occlusion penalty is an engine raycast from the lens to the subject.",
+					"links": [
+						{
+							"label": "Recipe: raycasts",
+							"href": "docs/cookbook/raycasts/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "03-viewfinder-yard.webp",
+					"alt": "Field Notes: photo mode with eye-autofocus on a chrome knot floating in a real scanned yard"
+				},
+				{
+					"file": "07-explore-courtyard.webp",
+					"alt": "The researcher walking through the scanned apartment towards a glowing anomaly, with a developed print"
+				},
+				{
+					"file": "09-composite-courtyard.webp",
+					"alt": "A scanned wicker chair and glass wall drawn in front of a glowing mesh door"
+				}
+			],
+			"caption": "Field Notes · meshes composited into real splat captures",
+			"webglFallback": true
+		},
+		{
+			"id": "ringout",
+			"name": "Ringout",
+			"app": "ringout",
+			"blurb": "Local multiplayer sumo for up to four on a collapsing, spinning arena, with a replay that proves itself.",
+			"tag": "impulses · kinematic movers · replay",
+			"genre": "Party, sumo",
+			"pitch": "A local multiplayer sumo arena. Up to four heavy orbs roll on a spinning arena of 61 hexagonal basalt columns. Shove, dash and knock the others off the edge while the arena collapses ring by ring from the outside in. Two people share one keyboard and bots fill the other seats. After every round, an instant replay re-simulates the round from its input log and shows on screen that it reproduces the live state hash.",
+			"controls": [
+				{
+					"keys": "W A S D",
+					"action": "Player 1: roll"
+				},
+				{
+					"keys": "Space / Left Shift",
+					"action": "Player 1: dash"
+				},
+				{
+					"keys": "Arrow keys",
+					"action": "Player 2: roll"
+				},
+				{
+					"keys": "Enter / Right Shift",
+					"action": "Player 2: dash"
+				},
+				{
+					"keys": "Title: 1–4, R",
+					"action": "Change the seats and the match length"
+				},
+				{
+					"keys": "Title: Enter / Space",
+					"action": "Start the match"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Skip a replay, or rematch"
+				},
+				{
+					"keys": "Esc",
+					"action": "Leave the match"
+				}
+			],
+			"features": [
+				{
+					"title": "Impulses and torque",
+					"text": "Orbs are dynamic spheres driven by torque impulses about the rolling axis plus small steering impulses. A dash is one big impulse with a cooldown.",
+					"links": [
+						{
+							"label": "Recipe: bodies, impulses and velocity",
+							"href": "docs/cookbook/bodies-impulses-velocity/"
+						}
+					]
+				},
+				{
+					"title": "Kinematic movers",
+					"text": "Every column is a kinematic body posed each tick with setKinematicPose: the arena turns, warned rings shake, and tiles drop in a seeded order.",
+					"links": [
+						{
+							"label": "API: body control",
+							"href": "docs/api-reference/#body-control"
+						}
+					]
+				},
+				{
+					"title": "Instant replay with a hash proof",
+					"text": "The replay rebuilds the round in a fresh world from its seed and input log and compares state hashes on screen.",
+					"links": [
+						{
+							"label": "Recipe: deterministic game loop",
+							"href": "docs/cookbook/deterministic-game-loop/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "05-ring-drop.webp",
+					"alt": "Ringout: the outer ring of hex columns glows and drops while three orbs clash in the middle"
+				},
+				{
+					"file": "03-opening-clash.webp",
+					"alt": "Two glowing orbs meet at the start of a round on the hex arena"
+				},
+				{
+					"file": "09-replay-verified.webp",
+					"alt": "The instant replay, with the re-simulated state hash matching the live round"
+				}
+			],
+			"caption": "Ringout · impulses, kinematic movers and a verified replay",
+			"webglFallback": true
+		},
+		{
+			"id": "rockfall",
+			"name": "Rockfall",
+			"app": "rockfall",
+			"blurb": "Dodge escalating waves of falling rocks, with up to 1,800 live rigid bodies in the pit.",
+			"tag": "seeded spawners · scale",
+			"genre": "Arcade, survival",
+			"pitch": "An arcade survival game. The walls of a desert quarry are coming down: rocks, slate slabs, boulders and finally molten meteors rain into a walled pit in escalating waves. Read the impact markers, dodge, push through the rubble, grab crystals, and stay standing as long as you can. Every falling rock comes from an engine spawner: the game never places a rock itself.",
+			"controls": [
+				{
+					"keys": "WASD / arrows",
+					"action": "Move; the camera never turns, so W is always up"
+				},
+				{
+					"keys": "Shift",
+					"action": "Sprint, using stamina"
+				},
+				{
+					"keys": "Space",
+					"action": "Jump over rubble or a rolling boulder"
+				},
+				{
+					"keys": "Space, Enter or click",
+					"action": "Start a run, or restart from the results"
+				}
+			],
+			"features": [
+				{
+					"title": "Rust-side seeded spawners",
+					"text": "The wave director only creates spawner entities: a template body, a rate, a count, an area and a seed. The engine decides when and where each rock appears.",
+					"links": [
+						{
+							"label": "Recipe: prefabs and spawners",
+							"href": "docs/cookbook/prefabs-and-spawners/"
+						}
+					]
+				},
+				{
+					"title": "Thousands of live bodies",
+					"text": "Up to 1,400 convex-hull bodies on the deterministic build and 1,800 on the fast build, drawn as one InstancedMesh per rock kind.",
+					"links": [
+						{
+							"label": "Recipe: instanced crowds and performance",
+							"href": "docs/cookbook/instanced-crowds-and-perf/"
+						}
+					]
+				},
+				{
+					"title": "A character that pushes bodies",
+					"text": "The player is the kinematic character controller; it shoves pebbles aside while boulders barely move.",
+					"links": [
+						{
+							"label": "Recipe: character and camera",
+							"href": "docs/cookbook/character-and-camera/"
+						}
+					]
+				},
+				{
+					"title": "Raycast impact markers",
+					"text": "Each landing point is predicted ballistically, and an engine raycast finds the top of the rubble under it.",
+					"links": [
+						{
+							"label": "Recipe: raycasts",
+							"href": "docs/cookbook/raycasts/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "05-meteor-shower.webp",
+					"alt": "Rockfall: a meteor shower over the quarry pit, with pink landing markers around the player"
+				},
+				{
+					"file": "03-encircled.webp",
+					"alt": "A ring of closing impact markers around the shielded player in wave 3"
+				},
+				{
+					"file": "08-full-pit-fast.webp",
+					"alt": "Wave 7: the pit full of 1,801 live rigid bodies on the fast build"
+				}
+			],
+			"caption": "Rockfall · engine spawners and up to 1,800 live bodies",
+			"webglFallback": true
+		},
+		{
+			"id": "lanternfall",
+			"name": "Lanternfall",
+			"app": "lanternfall",
+			"blurb": "A stealth heist in a keep generated fresh from a seed every run. Stay out of the lantern light.",
+			"tag": "scene generation · raycast AI",
+			"genre": "Stealth",
+			"pitch": "A stealth heist in a keep that is generated fresh from a seed every run. You are a thief in a moonlit stone keep guarded by brass automaton wardens. Steal the Ember Relic from the hall farthest from the gate, take what gold you pass, and walk back out. Lantern light shows you to the guards: in the dark they see you only from a step or two away, in a lantern pool from across the room. Every keep is a real Pebble3D scene, written by a seeded generator and checked by the schema.",
+			"controls": [
+				{
+					"keys": "WASD / arrows",
+					"action": "Creep (the camera looks north)"
+				},
+				{
+					"keys": "Shift",
+					"action": "Run; guards within 7 m hear it and come to look"
+				},
+				{
+					"keys": "Enter / Space",
+					"action": "Begin, or retry the same keep after a result"
+				},
+				{
+					"keys": "N",
+					"action": "A new keep (the next seed)"
+				}
+			],
+			"features": [
+				{
+					"title": "Runtime scene generation",
+					"text": "A seed becomes a schema-valid scene JSON with rooms, doorways, cover, lanterns and guards, then loads through createGame. Tests flood-fill every seed from 1 to 10,000 to prove the relic, the exit and every room are reachable.",
+					"links": [
+						{
+							"label": "Recipe: JSON levels and headless verify",
+							"href": "docs/cookbook/json-levels-and-headless-verify/"
+						}
+					]
+				},
+				{
+					"title": "Raycast perception",
+					"text": "Each guard's sight is a static-only engine raycast from its eye to the thief, with a reach that scales with the light on the thief's tile. Walls and pillars are real cover.",
+					"links": [
+						{
+							"label": "Recipe: raycasts",
+							"href": "docs/cookbook/raycasts/"
+						}
+					]
+				},
+				{
+					"title": "Characters with accel",
+					"text": "The thief and the guards are engine characters: kinematic capsules with eased acceleration, driven only by input intents.",
+					"links": [
+						{
+							"label": "Recipe: character and camera",
+							"href": "docs/cookbook/character-and-camera/"
+						}
+					]
+				},
+				{
+					"title": "Deterministic runs",
+					"text": "Fixed 60 Hz ticks and a seeded generator: the Node test reproduces the browser capture exactly.",
+					"links": [
+						{
+							"label": "Recipe: deterministic game loop",
+							"href": "docs/cookbook/deterministic-game-loop/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "03-alarm.webp",
+					"alt": "Lanternfall: a brass warden's red sight cone catches the thief in a lantern-lit hall"
+				},
+				{
+					"file": "07-keep-from-above.webp",
+					"alt": "Overhead view of a whole generated keep at night, with lanterns and guard cones clipped by walls"
+				},
+				{
+					"file": "02-creep.webp",
+					"alt": "The thief sneaking through the dark between the guards' cones"
+				}
+			],
+			"caption": "Lanternfall · a generated keep and raycast guards",
+			"webglFallback": true
+		},
+		{
+			"id": "chain-reaction",
+			"name": "Chain Reaction",
+			"app": "chain-reaction",
+			"blurb": "Contraption puzzles whose levels are JSON and whose solutions are verified headless in Node.",
+			"tag": "JSON levels · headless verify",
+			"genre": "Puzzle",
+			"pitch": "A contraption puzzle on a studio pegboard. Each level gives you a few parts: ramps, dominoes, springs, fans and see-saws. Place them on the grid, press Run, and watch the chain play out. Get the red ball into the glowing cup using as few parts as possible. Every run is a deterministic engine simulation, so the same parts always produce the same run, down to the last bit of the state hash.",
+			"controls": [
+				{
+					"keys": "Click or 1–5",
+					"action": "Choose a part from the tray"
+				},
+				{
+					"keys": "R or wheel",
+					"action": "Rotate or flip the part"
+				},
+				{
+					"keys": "Left click",
+					"action": "Place a part on a cell"
+				},
+				{
+					"keys": "Left or right click",
+					"action": "Remove a placed part"
+				},
+				{
+					"keys": "Space",
+					"action": "Run the machine; again to reset"
+				},
+				{
+					"keys": "Esc",
+					"action": "Reset (your parts are kept)"
+				}
+			],
+			"features": [
+				{
+					"title": "Levels are JSON",
+					"text": "Each level is puzzle data plus a partial engine scene, merged over a base scene and parsed by the SDK's schema like any other scene.",
+					"links": [
+						{
+							"label": "Recipe: JSON levels and headless verify",
+							"href": "docs/cookbook/json-levels-and-headless-verify/"
+						}
+					]
+				},
+				{
+					"title": "A headless verifier",
+					"text": "pnpm --filter chain-reaction verify runs every reference solution in Node on the same wasm and checks the goal, par and the stored state hash.",
+					"links": [
+						{
+							"label": "Verification",
+							"href": "docs/verification/"
+						}
+					]
+				},
+				{
+					"title": "Browser and Node agree",
+					"text": "The result card shows when your run's hash matches the one the Node verifier stored.",
+					"links": [
+						{
+							"label": "Recipe: deterministic game loop",
+							"href": "docs/cookbook/deterministic-game-loop/"
+						}
+					]
+				},
+				{
+					"title": "Impulses as gameplay",
+					"text": "Springs and fans apply impulses before each tick through World.applyImpulse.",
+					"links": [
+						{
+							"label": "Recipe: bodies, impulses and velocity",
+							"href": "docs/cookbook/bodies-impulses-velocity/"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "02-build-ghost.webp",
+					"alt": "Chain Reaction: building the Grand Contraption level, with a fan, a ramp and a spring in the tray"
+				},
+				{
+					"file": "06-catapult.webp",
+					"alt": "The Catapult level: a see-saw about to lob the red ball towards the cup"
+				},
+				{
+					"file": "08-verified-result.webp",
+					"alt": "The result card: three stars, the state hash, and a check mark for matching the Node verifier"
+				}
+			],
+			"caption": "Chain Reaction · solutions verified headless in Node",
+			"webglFallback": true
+		},
+		{
+			"id": "pebble-garden",
+			"name": "Pebble Garden",
+			"app": "pebble-garden",
+			"blurb": "A physics sandbox and level editor whose gardens export as scene JSON and import with readable errors.",
+			"tag": "scene JSON · validation · play and rewind",
+			"genre": "Sandbox, puzzle",
+			"pitch": "A physics sandbox and level editor. Place pieces on a sand garden with the mouse, move, rotate and scale them with a gizmo, set their colour and body type, then press Play to simulate and press it again to rewind exactly. Every garden is a Pebble3D scene: Export writes schema-valid scene JSON, and Import opens any scene JSON with readable error messages. A human can build what an agent writes, and the reverse.",
+			"controls": [
+				{
+					"keys": "Click tray, click sand",
+					"action": "Place a piece (Shift keeps placing)"
+				},
+				{
+					"keys": "1–0",
+					"action": "Pick one of the ten palette pieces"
+				},
+				{
+					"keys": "G / R / S",
+					"action": "Move, rotate or scale gizmo"
+				},
+				{
+					"keys": "Q / E",
+					"action": "Turn the selection 15°"
+				},
+				{
+					"keys": "Arrows, Page Up / Down",
+					"action": "Nudge 0.25 m"
+				},
+				{
+					"keys": "Delete, Ctrl D",
+					"action": "Delete, duplicate"
+				},
+				{
+					"keys": "Ctrl Z, Ctrl Shift Z",
+					"action": "Undo, redo"
+				},
+				{
+					"keys": "Space",
+					"action": "Play, and again to rewind"
+				},
+				{
+					"keys": "X, I",
+					"action": "Export, import"
+				},
+				{
+					"keys": "Drag, right-drag, wheel",
+					"action": "Orbit, pan, zoom"
+				}
+			],
+			"features": [
+				{
+					"title": "Scenes as a product feature",
+					"text": "Export writes tidy, schema-valid scene JSON; tests check each starter garden survives export and import with the same state hash.",
+					"links": [
+						{
+							"label": "Scene reference",
+							"href": "docs/scene-reference/"
+						}
+					]
+				},
+				{
+					"title": "Readable validation",
+					"text": "Import reports a syntax error's line and column, and every schema problem with its field path, line and a suggestion for a misspelt key.",
+					"links": [
+						{
+							"label": "Recipe: scene basics",
+							"href": "docs/cookbook/scene-basics/"
+						}
+					]
+				},
+				{
+					"title": "Play and rewind",
+					"text": "Play runs on the deterministic build, so two plays from the same edit give the same hash.",
+					"links": [
+						{
+							"label": "Recipe: deterministic game loop",
+							"href": "docs/cookbook/deterministic-game-loop/"
+						}
+					]
+				},
+				{
+					"title": "Kinematic motors",
+					"text": "Kinematic pieces turn about their own up axis on Play, driven by setKinematicPose.",
+					"links": [
+						{
+							"label": "API: body control",
+							"href": "docs/api-reference/#body-control"
+						}
+					]
+				}
+			],
+			"screenshots": [
+				{
+					"file": "04-inspector-gizmo.webp",
+					"alt": "Pebble Garden: the Rock Garden sandbox with a selected piece, its gizmo and the inspector panel"
+				},
+				{
+					"file": "05-domino-run.webp",
+					"alt": "Domino Terrace: a ball rolls into a row of dominoes towards the bowl"
+				},
+				{
+					"file": "09-import-errors.webp",
+					"alt": "The import panel listing schema errors with field paths, lines and suggestions"
+				}
+			],
+			"caption": "Pebble Garden · scene JSON as the save format",
+			"webglFallback": true
+		}
+	]
+}

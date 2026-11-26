@@ -1,0 +1,183 @@
+{
+	"version": 1,
+	"environment": {
+		"preset": "studio",
+		"ground": {
+			"color": "#e8dcc4"
+		}
+	},
+	"camera": {
+		"presets": {
+			"hero": {
+				"position": [0.5, 10.5, 13],
+				"target": [0.3, 0, 0.5],
+				"fov": 45
+			}
+		}
+	},
+	"sim": {
+		"seed": 3
+	},
+	"prefabs": {
+		"pebble": {
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#d9482f",
+					"roughness": 0.2
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"friction": 0.6,
+				"restitution": 0.15,
+				"angularDamping": 0.25,
+				"linearDamping": 0.02,
+				"ccd": true
+			},
+			"transform": {
+				"scale": [0.42, 0.42, 0.42]
+			}
+		},
+		"boulder": {
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#45403d",
+					"roughness": 0.85
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"mass": 6
+			},
+			"transform": {
+				"scale": [1, 1, 1]
+			}
+		},
+		"pillar": {
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#9a958c",
+					"roughness": 0.85
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [0.6, 1.6, 0.6]
+			}
+		},
+		"wall": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#9a958c",
+					"roughness": 0.9
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [3, 0.6, 0.3]
+			}
+		},
+		"bowl": {
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#6f8f4e",
+					"roughness": 0.9
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [1.6, 0.1, 1.6]
+			}
+		},
+		"rake": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#6e4128",
+					"roughness": 0.55
+				}
+			},
+			"body": {
+				"type": "kinematic"
+			},
+			"transform": {
+				"scale": [3, 0.3, 0.3]
+			}
+		}
+	},
+	"entities": [
+		{
+			"id": "pebble",
+			"prefab": "pebble",
+			"transform": {
+				"position": [-0.5, 0.21, 0]
+			}
+		},
+		{
+			"id": "stone-1",
+			"prefab": "boulder",
+			"transform": {
+				"position": [-3.2, 0.5, -2.6]
+			}
+		},
+		{
+			"id": "stone-2",
+			"prefab": "pillar",
+			"transform": {
+				"position": [-4.2, 0.8, 1.6]
+			}
+		},
+		{
+			"id": "stone-3",
+			"prefab": "pillar",
+			"transform": {
+				"position": [1.2, 0.45, -3.4],
+				"scale": [0.9, 0.9, 0.9]
+			}
+		},
+		{
+			"id": "goal",
+			"prefab": "bowl",
+			"transform": {
+				"position": [4.2, -0.03, 0],
+				"scale": [2, 0.1, 2]
+			}
+		},
+		{
+			"id": "back-wall",
+			"prefab": "wall",
+			"transform": {
+				"position": [5.25, 0.3, 0],
+				"rotation": [0, 0.707107, 0, 0.707107],
+				"scale": [2.4, 0.6, 0.3]
+			}
+		},
+		{
+			"id": "near-wall",
+			"prefab": "wall",
+			"transform": {
+				"position": [4.2, 0.3, -1.05],
+				"scale": [1.8, 0.6, 0.3]
+			}
+		},
+		{
+			"id": "far-wall",
+			"prefab": "wall",
+			"transform": {
+				"position": [4.2, 0.3, 1.05],
+				"scale": [1.8, 0.6, 0.3]
+			}
+		}
+	]
+}

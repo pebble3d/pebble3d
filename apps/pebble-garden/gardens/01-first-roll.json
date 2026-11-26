@@ -1,0 +1,164 @@
+{
+	"version": 1,
+	"environment": {
+		"preset": "studio",
+		"ground": {
+			"color": "#e8dcc4"
+		}
+	},
+	"camera": {
+		"presets": {
+			"hero": {
+				"position": [-0.5, 11.5, 15.5],
+				"target": [-0.8, 0, 1.6],
+				"fov": 45
+			}
+		}
+	},
+	"sim": {
+		"seed": 1
+	},
+	"prefabs": {
+		"plank": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#b8743f",
+					"roughness": 0.65
+				}
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.4
+			},
+			"transform": {
+				"scale": [2.4, 0.12, 0.8]
+			}
+		},
+		"pebble": {
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#d9482f",
+					"roughness": 0.2
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"friction": 0.6,
+				"restitution": 0.15,
+				"angularDamping": 0.25,
+				"linearDamping": 0.02,
+				"ccd": true
+			},
+			"transform": {
+				"scale": [0.42, 0.42, 0.42]
+			}
+		},
+		"pillar": {
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#9a958c",
+					"roughness": 0.85
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [0.6, 1.6, 0.6]
+			}
+		},
+		"wall": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#9a958c",
+					"roughness": 0.9
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [3, 0.6, 0.3]
+			}
+		},
+		"bowl": {
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#6f8f4e",
+					"roughness": 0.9
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [1.6, 0.1, 1.6]
+			}
+		}
+	},
+	"entities": [
+		{
+			"id": "post",
+			"prefab": "pillar",
+			"transform": {
+				"position": [-6.3, 0.95, 0],
+				"scale": [0.6, 1.9, 0.6]
+			}
+		},
+		{
+			"id": "chute",
+			"prefab": "plank",
+			"transform": {
+				"position": [-5, 1.4, 0],
+				"rotation": [0, 0, -0.190809, 0.981627],
+				"scale": [3, 0.12, 1]
+			}
+		},
+		{
+			"id": "pebble",
+			"prefab": "pebble",
+			"transform": {
+				"position": [-6.1, 2.3, 0]
+			}
+		},
+		{
+			"id": "goal",
+			"prefab": "bowl",
+			"transform": {
+				"position": [3.5, -0.03, 3],
+				"scale": [2, 0.1, 2]
+			}
+		},
+		{
+			"id": "back-wall",
+			"prefab": "wall",
+			"transform": {
+				"position": [3.5, 0.3, 4.05],
+				"scale": [2.4, 0.6, 0.3]
+			}
+		},
+		{
+			"id": "left-wall",
+			"prefab": "wall",
+			"transform": {
+				"position": [2.45, 0.3, 3],
+				"rotation": [0, 0.707107, 0, 0.707107],
+				"scale": [1.8, 0.6, 0.3]
+			}
+		},
+		{
+			"id": "right-wall",
+			"prefab": "wall",
+			"transform": {
+				"position": [4.55, 0.3, 3],
+				"rotation": [0, 0.707107, 0, 0.707107],
+				"scale": [1.8, 0.6, 0.3]
+			}
+		}
+	]
+}

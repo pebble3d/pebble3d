@@ -1,0 +1,421 @@
+{
+	"_comment": "Large assets are never committed. `pnpm fetch-assets` downloads each entry into apps/playground/public/assets/<file>, verifies its sha256 and regenerates public/assets/LICENSES.md (committed). `pnpm fetch-assets --update-hashes` records the sha256 values. An entry with `derive` is built from its `url` (source, `sourceSha256`) and any `derive.sources` ({ url, sha256 }) by a pinned derive tool (splat-transform, or scripts/assets/build-rocketbox.mjs for the Rocketbox avatar); `sha256` is the derived file's hash and `splats` its splat count.",
+	"assets": [
+		{
+			"id": "hdri-qwantani-noon-puresky",
+			"url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/qwantani_noon_puresky_2k.hdr",
+			"sha256": "d070d48c8e802c92027b0f7b1965b5bd820b0d25afca225503abfec67e00ad07",
+			"license": "CC0 1.0",
+			"attribution": "Qwantani Noon (Pure Sky) by Greg Zaal (photography) and Jarod Guest (processing), Poly Haven, https://polyhaven.com/a/qwantani_noon_puresky",
+			"file": "qwantani_noon_puresky_2k.hdr"
+		},
+		{
+			"id": "splat-knock-community-hall",
+			"url": "https://raw.githubusercontent.com/playcanvas/engine/faadad5928c358408bf1ca6f27da8f327e48e7b7/examples/assets/splats/knock-community-hall.sog",
+			"sourceSha256": "2c9ef67e619878cdb85d8f972cc6b1b8a8c76cbd7b4ed1137ac97bbd78785202",
+			"derive": {
+				"tool": "splat-transform",
+				"steps": [
+					[
+						"-q",
+						"-w",
+						"-g",
+						"cpu",
+						"{source}",
+						"{tmp}/decimated.ply",
+						"-d",
+						"800000"
+					],
+					["-q", "-w", "{tmp}/decimated.ply", "{out}"]
+				]
+			},
+			"sha256": "635e85f69898965ca68fc17c23c6030cce042d5e17b956a02664fca83fd01687",
+			"license": "CC BY 4.0",
+			"attribution": "Knock Community Hall by scbenoit (https://superspl.at/user?id=scbenoit), https://superspl.at/scene/0ff2e6dc; drone capture, 1,935,100 splats. Modified: decimated to 800,000 splats and converted to SPZ.",
+			"splats": 800000,
+			"file": "knock-community-hall-800k.spz"
+		},
+		{
+			"id": "splat-sa3d-apartment",
+			"url": "https://raw.githubusercontent.com/playcanvas/engine/faadad5928c358408bf1ca6f27da8f327e48e7b7/examples/assets/splats/apartment.sog",
+			"sourceSha256": "961aad67c47e6ee236bd3789978745da6b2ae6afe7f1a0863e05617ef03881d5",
+			"derive": {
+				"tool": "splat-transform",
+				"steps": [
+					["-q", "-w", "-g", "cpu", "{source}", "{tmp}/apartment.ply"],
+					["-q", "-w", "{tmp}/apartment.ply", "{out}"]
+				]
+			},
+			"sha256": "5daa0ce25a6f702eefe7dec23a0a7d0de1c8d296ed1f338a3f39c1f50b617ddf",
+			"license": "CC BY 4.0",
+			"attribution": "SA3D_R&D_XP47 (apartment interior) by Stephane Agullo (https://sa3d.fr), https://superspl.at/view?id=cdcec084. Modified: converted to SPZ.",
+			"splats": 661466,
+			"file": "sa3d-apartment.spz"
+		},
+		{
+			"id": "character-robot-expressive",
+			"url": "https://raw.githubusercontent.com/mrdoob/three.js/r170/examples/models/gltf/RobotExpressive/RobotExpressive.glb",
+			"sha256": "047f5e5fb3bb6d378bd1df16ca6137f2a596c99b3a1b5690b4020c05aaf6f319",
+			"license": "CC0 1.0",
+			"attribution": "RobotExpressive by Tomás Laulhé (Quaternius, https://quaternius.com); modifications by Don McCurdy; distributed with three.js r170 examples",
+			"file": "RobotExpressive.glb"
+		},
+		{
+			"id": "character-rocketbox-male-adult-16",
+			"_comment": "Clips: Idle = m_idle_neutral_01, Walk = m_walk_neutral_01, Run = m_run_fast_01 (rotation tracks + hips height; hips XZ root motion removed, held at the clip's frame-0 XZ). Jump (0.6 s, plays once) and Fall (0.67 s loop) are procedural, keyframed from Idle frame 0 by scripts/assets/airborne-clips.mjs (no CC0 jump/fall source is available at a sha256-pinnable URL). Authored ground speed measured from the hips' root-motion XZ displacement over the clip before removal: Walk 1.012 m/s, Run 5.839 m/s in the source's units (cm/100); at the built avatar's 1.75 m scale (x0.9674) that is Walk 0.979 m/s, Run 5.649 m/s.",
+			"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_16/Export/Male_Adult_16.fbx",
+			"sourceSha256": "9c03f1142ddbca6592336f7823f39436635e996fccc3c2a0a9dc32535d6b706d",
+			"derive": {
+				"tool": "rocketbox-build",
+				"sources": {
+					"body_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_16/Textures/m019_body_color.tga",
+						"sha256": "537b0853dcec81c6e7dba07795273fa692f468c944fb57f9c2133ca9e57ef656"
+					},
+					"body_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_16/Textures/m019_body_normal.tga",
+						"sha256": "4a1250326ba550994e875a231fc599f76303890576eb685abb279b7284438c29"
+					},
+					"body_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_16/Textures/m019_body_specular.tga",
+						"sha256": "0817f42ed73a84c02ea0b951fd0cb8ca4bbb303f0f31e2811cc18eb2721cff45"
+					},
+					"head_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_16/Textures/m019_head_color.tga",
+						"sha256": "e8ca7dabfcc79b31cd7e0f0fa4f58f718dcb4e79e48dcbd8d96ee11a9c332e7b"
+					},
+					"head_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_16/Textures/m019_head_normal.tga",
+						"sha256": "2fdf0826218ee5ba9978205f9ef712ff25e24f2e793c1e6b12ef5b5371855887"
+					},
+					"head_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_16/Textures/m019_head_specular.tga",
+						"sha256": "269d463d646488d60c299b3dbe6dc04e7ea710b60b4f73b41f6d8dc40586c822"
+					},
+					"idle": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_static/m_idle_neutral_01.max.fbx",
+						"sha256": "818cc185af21390575f7fbfdeb3012ba2ce5969fbcb220ea725a2617b339a6e2"
+					},
+					"walk": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/m_walk_neutral_01.max.fbx",
+						"sha256": "e6805ae6b6b49fe10f06c1b17b14ddde90d09b9fea689ac34793df252f44dcd0"
+					},
+					"run": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/m_run_fast_01.max.fbx",
+						"sha256": "81d096f62465ae038149e7726485133264e4a47d105d236370b00dc18c650526"
+					}
+				},
+				"steps": [
+					[
+						"{out}",
+						"avatar={source}",
+						"body_color={source:body_color}",
+						"body_normal={source:body_normal}",
+						"body_specular={source:body_specular}",
+						"head_color={source:head_color}",
+						"head_normal={source:head_normal}",
+						"head_specular={source:head_specular}",
+						"idle={source:idle}",
+						"walk={source:walk}",
+						"run={source:run}"
+					]
+				]
+			},
+			"license": "MIT",
+			"attribution": "Male_Adult_16 avatar and animations m_idle_neutral_01, m_walk_neutral_01, m_run_fast_01 from the Microsoft Rocketbox Avatar Library, Copyright (c) 2020 Microsoft, MIT License (https://github.com/microsoft/Microsoft-Rocketbox/blob/0943055db6ec570bcef9f2c8b41c9e5467c808f9/LICENSE.md). Modified: converted FBX/TGA to GLB with assimpjs and KTX-Software 4.4.2 (KTX2), animations merged with root motion removed, scaled to 1.75 m, roughness derived from the specular map, procedural Jump and Fall clips added (scripts/assets/build-rocketbox.mjs, scripts/assets/airborne-clips.mjs).",
+			"file": "rocketbox-male-adult-16.glb",
+			"sha256": "bd3c2b5e4e1b6821418091a51eb918ae9c2435ba0a6e7ca31f8555bf355a5d49"
+		},
+		{
+			"id": "character-rocketbox-male-adult-06",
+			"_comment": "Clips: Idle = m_idle_drunk_01, Walk = m_walk_bruised, Run = m_run_fast_01 (hips XZ root motion removed); Jump and Fall are procedural (airborne-clips.mjs). Built by scripts/assets/rocketbox-entry.mjs, textures capped at 1024 px (normals 512, roughness 256), meshes simplified to ~45 % of the triangles (meshoptimizer), body and head maps atlased into one material.",
+			"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_06/Export/Male_Adult_06.fbx",
+			"derive": {
+				"tool": "rocketbox-build",
+				"sources": {
+					"body_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_06/Textures/m011_body_color.tga",
+						"sha256": "f92110adc6f33c8802652e4c2f5282226e3fbee672f510b3fb765a1599dd3f91"
+					},
+					"body_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_06/Textures/m011_body_normal.tga",
+						"sha256": "7416e297789e42ce3f23af46a3dea9d372046034e2b18c0bf4a3b18569a97c72"
+					},
+					"body_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_06/Textures/m011_body_specular.tga",
+						"sha256": "ea260e6d6464b5deac4ab187e046472fd0ef27141b56eccec861bbc3d454fde7"
+					},
+					"head_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_06/Textures/m011_head_color.tga",
+						"sha256": "b3f7731c506ae105bead54cb558c366ed9e72463565f78727365e52a90b841c5"
+					},
+					"head_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_06/Textures/m011_head_normal.tga",
+						"sha256": "1710343a59dfb60f8369772aebfafbb3c507f2b1f62f4341effe7ed07ee431b9"
+					},
+					"head_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_06/Textures/m011_head_specular.tga",
+						"sha256": "75ff79448342413273d4ce225887fa46d98671bb0a97460134a1c2971b4e2719"
+					},
+					"opacity_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_06/Textures/m011_opacity_color.tga",
+						"sha256": "7cb2146e511c1bd207f5e7f061c8b66915db1bbc15c3748c6d98469630fd346d"
+					},
+					"idle": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_static/m_idle_drunk_01.max.fbx",
+						"sha256": "f4738ff9b44c2db43d6293efd7988f295821dda518f56879ef695f40a6ca44ae"
+					},
+					"walk": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/m_walk_bruised.max.fbx",
+						"sha256": "36e135e6a4d8688d38ac929da8cddab956d8e1bda44a980e5db38f1d33e32179"
+					},
+					"run": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/m_run_fast_01.max.fbx",
+						"sha256": "81d096f62465ae038149e7726485133264e4a47d105d236370b00dc18c650526"
+					}
+				},
+				"steps": [
+					[
+						"{out}",
+						"avatar={source}",
+						"body_color={source:body_color}",
+						"body_normal={source:body_normal}",
+						"body_specular={source:body_specular}",
+						"head_color={source:head_color}",
+						"head_normal={source:head_normal}",
+						"head_specular={source:head_specular}",
+						"opacity_color={source:opacity_color}",
+						"idle={source:idle}",
+						"walk={source:walk}",
+						"run={source:run}",
+						"--max-texture=1024",
+						"--simplify=0.45",
+						"--atlas"
+					]
+				]
+			},
+			"license": "MIT",
+			"attribution": "Male_Adult_06 avatar and animations m_idle_drunk_01, m_walk_bruised, m_run_fast_01 from the Microsoft Rocketbox Avatar Library, Copyright (c) 2020 Microsoft, MIT License (https://github.com/microsoft/Microsoft-Rocketbox/blob/0943055db6ec570bcef9f2c8b41c9e5467c808f9/LICENSE.md). Modified: converted FBX/TGA to GLB with assimpjs and KTX-Software 4.4.2 (KTX2), textures capped at 1024 px (normals 512, roughness 256), meshes simplified to ~45 % of the triangles (meshoptimizer), body and head maps atlased into one material, animations merged with root motion removed, scaled to 1.75 m, roughness derived from the specular map, procedural Jump and Fall clips added (scripts/assets/build-rocketbox.mjs, scripts/assets/airborne-clips.mjs).",
+			"file": "rocketbox-male-adult-06.glb",
+			"sourceSha256": "537284add0fb8bd3bf9dd9459cba2c6d4d34de50b86dfdfef09c2c57cbf1a878",
+			"sha256": "988b8263e1249a4df5e0132cdb37911e1d70ca9e801be573f3b2ff46f2aeee67"
+		},
+		{
+			"id": "character-rocketbox-male-adult-18",
+			"_comment": "Clips: Idle = m_idle_drunk_02, Walk = m_walk_drunk, Run = m_run_fast_01 (hips XZ root motion removed); Jump and Fall are procedural (airborne-clips.mjs). Built by scripts/assets/rocketbox-entry.mjs, textures capped at 1024 px (normals 512, roughness 256), meshes simplified to ~45 % of the triangles (meshoptimizer), body and head maps atlased into one material.",
+			"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_18/Export/Male_Adult_18.fbx",
+			"derive": {
+				"tool": "rocketbox-build",
+				"sources": {
+					"body_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_18/Textures/m023_body_color.tga",
+						"sha256": "b47dc98ae870bad036d658a1c732faf026f219eaab488317644f970184d8e7f9"
+					},
+					"body_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_18/Textures/m023_body_normal.tga",
+						"sha256": "dd2165f38a6c6a22d47f017f04a3980775e4365e703bc2dc24521deec581d834"
+					},
+					"body_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_18/Textures/m023_body_specular.tga",
+						"sha256": "4048113f04e1f2981c14bb6d4a7385ce1be192261723ae56e7bf08a49e94b2dc"
+					},
+					"head_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_18/Textures/m023_head_color.tga",
+						"sha256": "086433bf57e1e9ef8690860ecf2adeeab1c4b0e663947e9c9fd0354b8abd6ad7"
+					},
+					"head_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_18/Textures/m023_head_normal.tga",
+						"sha256": "1bdb46ac5a7ef422f9d42da68b69190a974c40ae039ad33e32491de96c355f4f"
+					},
+					"head_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Male_Adult_18/Textures/m023_head_specular.tga",
+						"sha256": "d2cc0ac4cfb3f431c2881b44898a36daed8139b2d80b448ce06fd74b5fd31caf"
+					},
+					"idle": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_static/m_idle_drunk_02.max.fbx",
+						"sha256": "0e3290fa2ce6130bd0455ee6c958e66dcdeb7f47421a490a5b41613289ea4a13"
+					},
+					"walk": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/m_walk_drunk.max.fbx",
+						"sha256": "0233cd6c99aff830494ec4f1d95b79c6335ff5cc9b8397df1239e3a3f097180d"
+					},
+					"run": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/m_run_fast_01.max.fbx",
+						"sha256": "81d096f62465ae038149e7726485133264e4a47d105d236370b00dc18c650526"
+					}
+				},
+				"steps": [
+					[
+						"{out}",
+						"avatar={source}",
+						"body_color={source:body_color}",
+						"body_normal={source:body_normal}",
+						"body_specular={source:body_specular}",
+						"head_color={source:head_color}",
+						"head_normal={source:head_normal}",
+						"head_specular={source:head_specular}",
+						"idle={source:idle}",
+						"walk={source:walk}",
+						"run={source:run}",
+						"--max-texture=1024",
+						"--simplify=0.45",
+						"--atlas"
+					]
+				]
+			},
+			"license": "MIT",
+			"attribution": "Male_Adult_18 avatar and animations m_idle_drunk_02, m_walk_drunk, m_run_fast_01 from the Microsoft Rocketbox Avatar Library, Copyright (c) 2020 Microsoft, MIT License (https://github.com/microsoft/Microsoft-Rocketbox/blob/0943055db6ec570bcef9f2c8b41c9e5467c808f9/LICENSE.md). Modified: converted FBX/TGA to GLB with assimpjs and KTX-Software 4.4.2 (KTX2), textures capped at 1024 px (normals 512, roughness 256), meshes simplified to ~45 % of the triangles (meshoptimizer), body and head maps atlased into one material, animations merged with root motion removed, scaled to 1.75 m, roughness derived from the specular map, procedural Jump and Fall clips added (scripts/assets/build-rocketbox.mjs, scripts/assets/airborne-clips.mjs).",
+			"file": "rocketbox-male-adult-18.glb",
+			"sourceSha256": "94bc6fb7efcdf7acad06c6a6b90910e0a58446df6beae578e1ceb35585d85306",
+			"sha256": "9d497d1b59bc783f51ad392872b07683992d9bf00b19d7e4a5935ba0398b6a35"
+		},
+		{
+			"id": "character-rocketbox-female-adult-04",
+			"_comment": "Clips: Idle = f_idle_drunk_01, Walk = f_walk_injured, Run = f_run_fast_01 (hips XZ root motion removed); Jump and Fall are procedural (airborne-clips.mjs). Built by scripts/assets/rocketbox-entry.mjs, textures capped at 1024 px (normals 512, roughness 256), meshes simplified to ~45 % of the triangles (meshoptimizer), body and head maps atlased into one material.",
+			"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_04/Export/Female_Adult_04.fbx",
+			"derive": {
+				"tool": "rocketbox-build",
+				"sources": {
+					"body_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_04/Textures/f004_body_color.tga",
+						"sha256": "02c1362ed7daed6cb3aac33dc85f8e635c9be29265c7d96515c8ca7230c50781"
+					},
+					"body_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_04/Textures/f004_body_normal.tga",
+						"sha256": "01e3802e124c854ebfef58fd36f4dc188433e1d7a989a92cfd0699adaed0a947"
+					},
+					"body_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_04/Textures/f004_body_specular.tga",
+						"sha256": "3ad2a628cfffd6c097d3d512ef91866d0b2c82e54b16c6d17460ab98194e952e"
+					},
+					"head_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_04/Textures/f004_head_color.tga",
+						"sha256": "61b418a825e85514541f28c5968e9e0a0d1897506f7c7bccd27eef336e1473ef"
+					},
+					"head_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_04/Textures/f004_head_normal.tga",
+						"sha256": "f9e94fcc0952d60fc86eef3d737f46d53473ffc9e306984bf64570306d900823"
+					},
+					"head_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_04/Textures/f004_head_specular.tga",
+						"sha256": "59e6049bed79f690cd35537ca781da5dfd123964c71bd6035c7a1b2015928ebe"
+					},
+					"opacity_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_04/Textures/f004_opacity_color.tga",
+						"sha256": "cf9b868f3f2b9f48ee3d764d1b8f611df94167e393f6275c04779963b3ddd506"
+					},
+					"idle": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_static/f_idle_drunk_01.max.fbx",
+						"sha256": "490f5b2f5258892ad00089123c9dbca193bff22924519a474eb1aae65fd4391e"
+					},
+					"walk": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/f_walk_injured.max.fbx",
+						"sha256": "8e46e00966bf5bf0e75298e8aa27606038b80f6d9d14c77762d0488417cd5464"
+					},
+					"run": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/f_run_fast_01.max.fbx",
+						"sha256": "b4ec45c0413e382ab12b7c80ebd395b0bbb85006c5d103726d344ab7f7e543c5"
+					}
+				},
+				"steps": [
+					[
+						"{out}",
+						"avatar={source}",
+						"body_color={source:body_color}",
+						"body_normal={source:body_normal}",
+						"body_specular={source:body_specular}",
+						"head_color={source:head_color}",
+						"head_normal={source:head_normal}",
+						"head_specular={source:head_specular}",
+						"opacity_color={source:opacity_color}",
+						"idle={source:idle}",
+						"walk={source:walk}",
+						"run={source:run}",
+						"--max-texture=1024",
+						"--simplify=0.45",
+						"--atlas"
+					]
+				]
+			},
+			"license": "MIT",
+			"attribution": "Female_Adult_04 avatar and animations f_idle_drunk_01, f_walk_injured, f_run_fast_01 from the Microsoft Rocketbox Avatar Library, Copyright (c) 2020 Microsoft, MIT License (https://github.com/microsoft/Microsoft-Rocketbox/blob/0943055db6ec570bcef9f2c8b41c9e5467c808f9/LICENSE.md). Modified: converted FBX/TGA to GLB with assimpjs and KTX-Software 4.4.2 (KTX2), textures capped at 1024 px (normals 512, roughness 256), meshes simplified to ~45 % of the triangles (meshoptimizer), body and head maps atlased into one material, animations merged with root motion removed, scaled to 1.75 m, roughness derived from the specular map, procedural Jump and Fall clips added (scripts/assets/build-rocketbox.mjs, scripts/assets/airborne-clips.mjs).",
+			"file": "rocketbox-female-adult-04.glb",
+			"sourceSha256": "a1a0debc6851d0ffe2079b5743d3255ad115139ccd6f8c8fccfd52c49bef6dfd",
+			"sha256": "42780a37b9690e6599770e4185a1e67bf055997e9dbbf3caf7a2ea41df3c60ac"
+		},
+		{
+			"id": "character-rocketbox-female-adult-08",
+			"_comment": "Clips: Idle = f_idle_drunk_01, Walk = f_walk_bruised, Run = f_run_fast_01 (hips XZ root motion removed); Jump and Fall are procedural (airborne-clips.mjs). Built by scripts/assets/rocketbox-entry.mjs, textures capped at 1024 px (normals 512, roughness 256), meshes simplified to ~45 % of the triangles (meshoptimizer), body and head maps atlased into one material.",
+			"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_08/Export/Female_Adult_08.fbx",
+			"derive": {
+				"tool": "rocketbox-build",
+				"sources": {
+					"body_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_08/Textures/f008_body_color.tga",
+						"sha256": "13fad57cdcfaee92264172ef076539d928bbc1ba86309f493cd7dae06137d4fa"
+					},
+					"body_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_08/Textures/f008_body_normal.tga",
+						"sha256": "f972d479856273160ea49b01e0e4f5a15fb557d9651053bbd530bc4e106c4791"
+					},
+					"body_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_08/Textures/f008_body_specular.tga",
+						"sha256": "2cef23f209fa396cde23fd5b38f84e9b9044e474ebcb6f20087b72ae93caf52a"
+					},
+					"head_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_08/Textures/f008_head_color.tga",
+						"sha256": "17e73fd0e0fb4e769b2a29c85922bad356a55d1fa0d4628c906ead0403793d35"
+					},
+					"head_normal": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_08/Textures/f008_head_normal.tga",
+						"sha256": "547c1ff67a6308f2a1396af71b9dfe30d133525cf0d2b632085302b51a800ca9"
+					},
+					"head_specular": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_08/Textures/f008_head_specular.tga",
+						"sha256": "a9a7814d948b561335aa7812cf755eb3e21ce509f0a1e3dc0b9e83b1cd5f9fdc"
+					},
+					"opacity_color": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Avatars/Adults/Female_Adult_08/Textures/f008_opacity_color.tga",
+						"sha256": "9d2fdbbf9df2ecbb34082541c82bf1d464fbddc3b5f8683d0ea060a667cdeb8e"
+					},
+					"idle": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_static/f_idle_drunk_01.max.fbx",
+						"sha256": "490f5b2f5258892ad00089123c9dbca193bff22924519a474eb1aae65fd4391e"
+					},
+					"walk": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/f_walk_bruised.max.fbx",
+						"sha256": "33973f3240c17b45529e4e6e29e40f200efdc92076f496a0da866cfa318b3495"
+					},
+					"run": {
+						"url": "https://raw.githubusercontent.com/microsoft/Microsoft-Rocketbox/0943055db6ec570bcef9f2c8b41c9e5467c808f9/Assets/Animations/all_animations_max_motextr_xy/f_run_fast_01.max.fbx",
+						"sha256": "b4ec45c0413e382ab12b7c80ebd395b0bbb85006c5d103726d344ab7f7e543c5"
+					}
+				},
+				"steps": [
+					[
+						"{out}",
+						"avatar={source}",
+						"body_color={source:body_color}",
+						"body_normal={source:body_normal}",
+						"body_specular={source:body_specular}",
+						"head_color={source:head_color}",
+						"head_normal={source:head_normal}",
+						"head_specular={source:head_specular}",
+						"opacity_color={source:opacity_color}",
+						"idle={source:idle}",
+						"walk={source:walk}",
+						"run={source:run}",
+						"--max-texture=1024",
+						"--simplify=0.45",
+						"--atlas"
+					]
+				]
+			},
+			"license": "MIT",
+			"attribution": "Female_Adult_08 avatar and animations f_idle_drunk_01, f_walk_bruised, f_run_fast_01 from the Microsoft Rocketbox Avatar Library, Copyright (c) 2020 Microsoft, MIT License (https://github.com/microsoft/Microsoft-Rocketbox/blob/0943055db6ec570bcef9f2c8b41c9e5467c808f9/LICENSE.md). Modified: converted FBX/TGA to GLB with assimpjs and KTX-Software 4.4.2 (KTX2), textures capped at 1024 px (normals 512, roughness 256), meshes simplified to ~45 % of the triangles (meshoptimizer), body and head maps atlased into one material, animations merged with root motion removed, scaled to 1.75 m, roughness derived from the specular map, procedural Jump and Fall clips added (scripts/assets/build-rocketbox.mjs, scripts/assets/airborne-clips.mjs).",
+			"file": "rocketbox-female-adult-08.glb",
+			"sourceSha256": "cf857fe04595edee9174caaf3f0d18dd5d5cc4d0702c8851f2cc413dd8cfea9e",
+			"sha256": "2551f2d745fc73bc82a01e939453fd42758ec420c2fe675dfbd0ea3b1e8ff8f5"
+		}
+	]
+}

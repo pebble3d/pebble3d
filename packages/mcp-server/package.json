@@ -1,0 +1,7 @@
+{
+	"name": "@pebble3d/mcp-server",
+	"version": "0.0.0",
+	"private": true,
+	"description": "M2 stub: MCP server exposing the engine to agents.",
+	"license": "SEE LICENSE IN LICENSE"
+}

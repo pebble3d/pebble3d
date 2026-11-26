@@ -1,0 +1,123 @@
+{
+	"id": "sunfold",
+	"name": "Sunfold Meadow",
+	"tagline": "A ceramic ribbon unspooled over open sky.",
+	"medals": {
+		"gold": 31,
+		"silver": 34.5,
+		"bronze": 39
+	},
+	"physics": {
+		"gravity": -16
+	},
+	"look": {
+		"deck": {
+			"color": "#b9d1c8",
+			"stripe": "#1f6fae",
+			"roughness": 0.32,
+			"clearcoat": 0.6
+		},
+		"wall": {
+			"color": "#dff4ff",
+			"roughness": 0.05,
+			"metalness": 0,
+			"glass": 0.9
+		},
+		"hull": {
+			"color": "#c4704a",
+			"roughness": 0.55,
+			"metalness": 0
+		},
+		"rail": {
+			"color": "#d9dde2"
+		},
+		"accent": "#ffb43c",
+		"pillars": {
+			"color": "#f4f1ea",
+			"every": 18
+		},
+		"ground": {
+			"y": 0,
+			"color": "#6f8c48",
+			"roughness": 0.95,
+			"size": 900
+		}
+	},
+	"scene": {
+		"version": 1,
+		"environment": {
+			"preset": "outdoor",
+			"hdri": "/assets/qwantani_noon_puresky_2k.hdr",
+			"fog": {
+				"near": 140,
+				"far": 650,
+				"color": "#bccbd6"
+			}
+		},
+		"lighting": {
+			"sun": {
+				"direction": [0.55, 0.75, 0.35],
+				"intensity": 3.0,
+				"color": "#fff0dc"
+			}
+		},
+		"post": {
+			"toneMapping": "aces",
+			"exposure": 0.85,
+			"bloom": {
+				"enabled": true,
+				"strength": 0.35,
+				"threshold": 1.6
+			},
+			"ao": {
+				"enabled": true,
+				"radius": 0.6
+			}
+		},
+		"camera": {
+			"controller": "orbit"
+		},
+		"sim": {
+			"build": "deterministic",
+			"seed": 1
+		}
+	},
+	"track": {
+		"start": {
+			"pos": [0, 62, 0],
+			"heading": 0
+		},
+		"width": 5,
+		"wall": 0.9,
+		"segments": [
+			{ "len": 14, "pitch": -2 },
+			{ "len": 30, "pitch": -9 },
+			{ "turn": 90, "radius": 24, "pitch": -7, "bank": 14 },
+			{ "len": 26, "pitch": -9, "boost": true },
+			{
+				"turn": -120,
+				"radius": 20,
+				"pitch": -6,
+				"bank": 18,
+				"checkpoint": true
+			},
+			{ "len": 20, "pitch": -5 },
+			{ "len": 9, "pitch": 12, "wall": 0.6 },
+			{ "gap": 9, "pitch": -14 },
+			{ "len": 28, "pitch": -8, "width": 7, "wall": 1.1 },
+			{
+				"turn": 180,
+				"radius": 17,
+				"pitch": -5,
+				"bank": 20,
+				"checkpoint": true
+			},
+			{ "len": 32, "pitch": -11, "boost": true },
+			{ "turn": -75, "radius": 30, "pitch": -6, "bank": 12 },
+			{ "len": 24, "pitch": -3, "checkpoint": true },
+			{ "turn": 60, "radius": 26, "pitch": -7, "bank": 12 },
+			{ "len": 22, "pitch": -4, "finish": true },
+			{ "len": 26, "pitch": 7 }
+		]
+	}
+}

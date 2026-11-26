@@ -1,0 +1,32 @@
+{
+	"$schema": "../../../packages/sdk/scene.schema.json",
+	"version": 1,
+	"environment": {
+		"preset": "outdoor",
+		"hdri": "/assets/qwantani_noon_puresky_2k.hdr",
+		"fog": { "near": 45, "far": 170, "color": "#d9a777" },
+		"ground": { "y": 0, "size": 80, "visible": false }
+	},
+	"lighting": {
+		"sun": {
+			"direction": [0.55, 0.85, 0.35],
+			"intensity": 5.2,
+			"color": "#ffc489"
+		}
+	},
+	"post": {
+		"toneMapping": "aces",
+		"exposure": 0.82,
+		"bloom": { "enabled": true, "strength": 0.5, "threshold": 1.0 },
+		"ao": { "enabled": true, "radius": 0.6 }
+	},
+	"camera": {
+		"controller": "thirdPerson",
+		"presets": {
+			"hero": { "position": [0, 16, 16], "target": [0, 0, 0], "fov": 50 },
+			"overhead": { "position": [0, 40, 0.01], "target": [0, 0, 0], "fov": 50 }
+		}
+	},
+	"sim": { "build": "deterministic", "seed": 7 },
+	"entities": []
+}

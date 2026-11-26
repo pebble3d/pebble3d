@@ -1,0 +1,89 @@
+---
+import AgentChecks from "../../components/AgentChecks.astro";
+import { agents } from "../../data/agents";
+import Base from "../../layouts/Base.astro";
+import { href } from "../../lib/site";
+---
+
+<Base
+	title="Build with AI"
+	description="Build Pebble3D games with Claude Code, Cursor, Codex or Copilot: the files each agent reads, a prompt that works, and the commands an agent runs to check its own work."
+	nav="ai"
+>
+	<section class="wrap page-head">
+		<p class="eyebrow">Build with AI</p>
+		<h1>Your agent writes the scene. The repo tells it how, and proves it worked.</h1>
+		<p class="lede">
+			Pebble3D is written to be read by coding agents. The rules are in one file, every
+			scene field is documented with its default, and every change can be checked with a
+			command that writes an image and a report.
+		</p>
+	</section>
+
+	<section class="wrap" aria-label="Agents" style="padding-bottom: 24px">
+		<div class="grid agent-cards">
+			{
+				agents.map((a) => (
+					<a class="card" href={href(`build-with-ai/${a.id}/`)}>
+						<span class="t">{a.name}</span>
+						<span class="d">{a.summary}</span>
+						<span class="go">Setup and prompt →</span>
+					</a>
+				))
+			}
+		</div>
+	</section>
+
+	<article class="wrap prose">
+		<h2>What the agent reads</h2>
+		<ul>
+			<li>
+				<a href={href("docs/agents/")}><code>AGENTS.md</code></a>: where things are, the
+				commands, the invariants it must not break, and a before-you-finish checklist.
+			</li>
+			<li>
+				<a href={href("llms.txt")}><code>llms.txt</code></a> indexes every docs page, and
+				<a href={href("llms-full.txt")}><code>llms-full.txt</code></a> is all of them in one
+				file. Every docs page also has a raw markdown twin: add <code>.md</code> to its path,
+				as in <a href={href("docs/getting-started.md")}><code>/docs/getting-started.md</code></a>.
+			</li>
+			<li>
+				<a href={href("scene.schema.json")}><code>scene.schema.json</code></a>: the JSON
+				Schema for scene files, generated from the zod source, so a scene can be validated
+				before it runs. The <a href={href("docs/scene-reference/")}>scene reference</a> lists
+				every field.
+			</li>
+			<li>
+				The <a href={href("docs/cookbook/")}>cookbook</a> and the
+				<a href={href("docs/examples/")}>examples map</a> point at real code in the
+				<a href={href("demos/")}>demos</a>, by file and line range.
+			</li>
+		</ul>
+
+		<h2>What the agent can verify</h2>
+		<AgentChecks />
+
+		<h2>Why this works for agents</h2>
+		<ul>
+			<li>
+				<strong>Scenes are data.</strong> A level is a JSON file with defaults for every
+				field, not engine code, so a model edits a small, checkable surface.
+			</li>
+			<li>
+				<strong>Physics is deterministic.</strong> The same seed and inputs give the same
+				state hash in Node and in Chromium, so "did my change break the sim?" has a yes or
+				no answer. See <a href={href("docs/cookbook/deterministic-game-loop/")}>the deterministic game loop</a>.
+			</li>
+			<li>
+				<strong>Every game has a bot.</strong> <code>?demo=1</code> plays the game, so an
+				agent can capture it mid-play without a person at the keyboard. See
+				<a href={href("docs/cookbook/demo-bot-and-captures/")}>demo bots and captures</a>.
+			</li>
+		</ul>
+
+		<p class="faint" style="font-size: 14px; margin-top: 3em">
+			Product names belong to their owners. Pebble3D is not affiliated with or endorsed by
+			any of them; these pages only describe how the repo's files work with each tool.
+		</p>
+	</article>
+</Base>

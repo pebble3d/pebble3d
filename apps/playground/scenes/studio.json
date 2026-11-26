@@ -1,0 +1,864 @@
+{
+	"$schema": "../../../packages/sdk/scene.schema.json",
+	"version": 1,
+	"environment": {
+		"preset": "studio"
+	},
+	"lighting": {
+		"sun": {
+			"direction": [0.8, 1, 1],
+			"intensity": 3.4,
+			"color": "#fff1e0"
+		}
+	},
+	"post": {
+		"exposure": 1,
+		"toneMapping": "agx",
+		"bloom": {
+			"enabled": true
+		},
+		"ao": {
+			"enabled": true,
+			"radius": 0.5
+		}
+	},
+	"camera": {
+		"controller": "orbit",
+		"presets": {
+			"hero": {
+				"position": [1.2, 4.4, 10.2],
+				"target": [0.6, 1.2, -0.6],
+				"fov": 45
+			},
+			"close": {
+				"position": [1.1, 2.5, 3.1],
+				"target": [0, 1.9, -2.6],
+				"fov": 40
+			}
+		}
+	},
+	"sim": {
+		"build": "deterministic",
+		"seed": 7
+	},
+	"prefabs": {
+		"swatch": {
+			"mesh": {
+				"primitive": "sphere"
+			},
+			"transform": {
+				"scale": [0.9, 0.9, 0.9]
+			},
+			"body": {
+				"type": "static"
+			}
+		},
+		"crate": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#b07b48",
+					"roughness": 0.74
+				}
+			},
+			"transform": {
+				"scale": [0.42, 0.42, 0.42]
+			},
+			"body": {
+				"friction": 0.6,
+				"restitution": 0.05
+			}
+		},
+		"crate-dark": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#5e4634",
+					"roughness": 0.7
+				}
+			},
+			"transform": {
+				"scale": [0.42, 0.42, 0.42]
+			},
+			"body": {
+				"friction": 0.6,
+				"restitution": 0.05
+			}
+		},
+		"crate-pine": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#c9a06c",
+					"roughness": 0.78
+				}
+			},
+			"transform": {
+				"scale": [0.42, 0.42, 0.42]
+			},
+			"body": {
+				"friction": 0.6,
+				"restitution": 0.05
+			}
+		},
+		"crate-weathered": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#857462",
+					"roughness": 0.85
+				}
+			},
+			"transform": {
+				"scale": [0.42, 0.42, 0.42]
+			},
+			"body": {
+				"friction": 0.6,
+				"restitution": 0.05
+			}
+		}
+	},
+	"entities": [
+		{
+			"id": "floor",
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#47413b",
+					"roughness": 0.86
+				},
+				"castShadow": false
+			},
+			"transform": {
+				"position": [0, -0.25, 0],
+				"scale": [100, 0.5, 100]
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.7
+			}
+		},
+		{
+			"id": "swatch-r0-m0",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#b8b8b8",
+					"roughness": 0,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [-2.4, 3, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r1-m0",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#b8b8b8",
+					"roughness": 0.25,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [-1.2, 3, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r2-m0",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#b8b8b8",
+					"roughness": 0.5,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [0, 3, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r3-m0",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#b8b8b8",
+					"roughness": 0.75,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [1.2, 3, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r4-m0",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#b8b8b8",
+					"roughness": 1,
+					"metalness": 0
+				}
+			},
+			"transform": {
+				"position": [2.4, 3, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r0-m1",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#d9b26a",
+					"roughness": 0,
+					"metalness": 0.5
+				}
+			},
+			"transform": {
+				"position": [-2.4, 1.9, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r1-m1",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#d9b26a",
+					"roughness": 0.25,
+					"metalness": 0.5
+				}
+			},
+			"transform": {
+				"position": [-1.2, 1.9, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r2-m1",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#d9b26a",
+					"roughness": 0.5,
+					"metalness": 0.5
+				}
+			},
+			"transform": {
+				"position": [0, 1.9, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r3-m1",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#d9b26a",
+					"roughness": 0.75,
+					"metalness": 0.5
+				}
+			},
+			"transform": {
+				"position": [1.2, 1.9, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r4-m1",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#d9b26a",
+					"roughness": 1,
+					"metalness": 0.5
+				}
+			},
+			"transform": {
+				"position": [2.4, 1.9, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r0-m2",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#c9ccd1",
+					"roughness": 0,
+					"metalness": 1
+				}
+			},
+			"transform": {
+				"position": [-2.4, 0.8, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r1-m2",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#c9ccd1",
+					"roughness": 0.25,
+					"metalness": 1
+				}
+			},
+			"transform": {
+				"position": [-1.2, 0.8, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r2-m2",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#c9ccd1",
+					"roughness": 0.5,
+					"metalness": 1
+				}
+			},
+			"transform": {
+				"position": [0, 0.8, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r3-m2",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#c9ccd1",
+					"roughness": 0.75,
+					"metalness": 1
+				}
+			},
+			"transform": {
+				"position": [1.2, 0.8, -2.6]
+			}
+		},
+		{
+			"id": "swatch-r4-m2",
+			"prefab": "swatch",
+			"mesh": {
+				"material": {
+					"color": "#c9ccd1",
+					"roughness": 1,
+					"metalness": 1
+				}
+			},
+			"transform": {
+				"position": [2.4, 0.8, -2.6]
+			}
+		},
+		{
+			"id": "crate-000",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.936, 3.21, 0.722],
+				"rotation": [0.052, -0.1472, 0.0124, 0.9877]
+			}
+		},
+		{
+			"id": "crate-001",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [0.915, 3.21, 1.251],
+				"rotation": [-0.0694, -0.01, -0.0645, 0.9955]
+			}
+		},
+		{
+			"id": "crate-002",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [0.944, 3.21, 1.776],
+				"rotation": [-0.2209, -0.1625, 0.0748, 0.9587]
+			}
+		},
+		{
+			"id": "crate-003",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.956, 3.21, 2.242],
+				"rotation": [0.0888, -0.0846, 0.0669, 0.9902]
+			}
+		},
+		{
+			"id": "crate-010",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [0.922, 3.71, 0.719],
+				"rotation": [-0.0802, 0.1323, -0.1336, 0.9789]
+			}
+		},
+		{
+			"id": "crate-011",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [0.961, 3.71, 1.24],
+				"rotation": [0.0093, -0.085, -0.0856, 0.9926]
+			}
+		},
+		{
+			"id": "crate-012",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.964, 3.71, 1.744],
+				"rotation": [-0.1257, 0.0579, -0.0317, 0.9899]
+			}
+		},
+		{
+			"id": "crate-013",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [0.974, 3.71, 2.266],
+				"rotation": [-0.2567, 0.0747, 0.0253, 0.9633]
+			}
+		},
+		{
+			"id": "crate-020",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [0.968, 4.21, 0.733],
+				"rotation": [0.1884, -0.1499, -0.0321, 0.9701]
+			}
+		},
+		{
+			"id": "crate-021",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.922, 4.21, 1.249],
+				"rotation": [-0.1674, 0.0611, 0.0961, 0.9793]
+			}
+		},
+		{
+			"id": "crate-022",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [0.98, 4.21, 1.735],
+				"rotation": [0.1493, 0.0721, 0.0611, 0.9843]
+			}
+		},
+		{
+			"id": "crate-023",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [0.977, 4.21, 2.286],
+				"rotation": [-0.0127, 0.0806, -0.2158, 0.973]
+			}
+		},
+		{
+			"id": "crate-030",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.962, 4.71, 0.789],
+				"rotation": [0.1782, -0.1192, -0.0632, 0.9747]
+			}
+		},
+		{
+			"id": "crate-031",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [0.912, 4.71, 1.247],
+				"rotation": [-0.1212, -0.1398, -0.1611, 0.9694]
+			}
+		},
+		{
+			"id": "crate-032",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [0.92, 4.71, 1.73],
+				"rotation": [-0.0335, 0.114, -0.1287, 0.9845]
+			}
+		},
+		{
+			"id": "crate-033",
+			"prefab": "crate",
+			"transform": {
+				"position": [0.954, 4.71, 2.281],
+				"rotation": [0.1005, 0.1146, -0.0698, 0.9858]
+			}
+		},
+		{
+			"id": "crate-100",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [1.439, 3.21, 0.781],
+				"rotation": [0.0879, -0.067, -0.0622, 0.9919]
+			}
+		},
+		{
+			"id": "crate-101",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [1.429, 3.21, 1.249],
+				"rotation": [0.027, -0.0718, -0.15, 0.9857]
+			}
+		},
+		{
+			"id": "crate-102",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.44, 3.21, 1.755],
+				"rotation": [0.1956, 0.0823, 0.0067, 0.9772]
+			}
+		},
+		{
+			"id": "crate-103",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [1.464, 3.21, 2.214],
+				"rotation": [0.1636, 0.1146, 0.1533, 0.9678]
+			}
+		},
+		{
+			"id": "crate-110",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [1.441, 3.71, 0.742],
+				"rotation": [-0.0589, 0.02, -0.0651, 0.9959]
+			}
+		},
+		{
+			"id": "crate-111",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.427, 3.71, 1.223],
+				"rotation": [-0.0252, -0.0706, -0.0789, 0.9941]
+			}
+		},
+		{
+			"id": "crate-112",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [1.418, 3.71, 1.739],
+				"rotation": [-0.0835, 0.0659, 0.0201, 0.9941]
+			}
+		},
+		{
+			"id": "crate-113",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [1.43, 3.71, 2.238],
+				"rotation": [-0.0752, -0.2087, 0.1931, 0.9558]
+			}
+		},
+		{
+			"id": "crate-120",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.447, 4.21, 0.749],
+				"rotation": [-0.0933, -0.0896, -0.0355, 0.991]
+			}
+		},
+		{
+			"id": "crate-121",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [1.476, 4.21, 1.223],
+				"rotation": [-0.0782, 0.074, 0.0046, 0.9942]
+			}
+		},
+		{
+			"id": "crate-122",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [1.453, 4.21, 1.712],
+				"rotation": [0.0107, 0.1826, 0.1387, 0.9733]
+			}
+		},
+		{
+			"id": "crate-123",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.431, 4.21, 2.239],
+				"rotation": [-0.1913, 0.1562, 0.0187, 0.9688]
+			}
+		},
+		{
+			"id": "crate-130",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [1.436, 4.71, 0.728],
+				"rotation": [0.1169, 0.182, 0.1323, 0.9673]
+			}
+		},
+		{
+			"id": "crate-131",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [1.475, 4.71, 1.269],
+				"rotation": [-0.0719, 0.0046, -0.038, 0.9967]
+			}
+		},
+		{
+			"id": "crate-132",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.412, 4.71, 1.732],
+				"rotation": [-0.0764, 0.0611, 0.1448, 0.9846]
+			}
+		},
+		{
+			"id": "crate-133",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [1.485, 4.71, 2.289],
+				"rotation": [0.1038, -0.0309, -0.0638, 0.9921]
+			}
+		},
+		{
+			"id": "crate-200",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [1.926, 3.21, 0.726],
+				"rotation": [0.0418, 0.1348, 0.1147, 0.9833]
+			}
+		},
+		{
+			"id": "crate-201",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.962, 3.21, 1.274],
+				"rotation": [-0.1705, 0.0659, 0.1682, 0.9687]
+			}
+		},
+		{
+			"id": "crate-202",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [1.97, 3.21, 1.748],
+				"rotation": [-0.175, 0.1574, -0.0912, 0.9676]
+			}
+		},
+		{
+			"id": "crate-203",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [1.988, 3.21, 2.242],
+				"rotation": [-0.0219, 0.099, 0.0498, 0.9936]
+			}
+		},
+		{
+			"id": "crate-210",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.92, 3.71, 0.722],
+				"rotation": [0.1688, 0.1278, -0.1475, 0.9661]
+			}
+		},
+		{
+			"id": "crate-211",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [1.988, 3.71, 1.263],
+				"rotation": [-0.0291, 0.0095, -0.0719, 0.9969]
+			}
+		},
+		{
+			"id": "crate-212",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [1.988, 3.71, 1.762],
+				"rotation": [0.0162, 0.2643, -0.0403, 0.9635]
+			}
+		},
+		{
+			"id": "crate-213",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.976, 3.71, 2.227],
+				"rotation": [-0.123, -0.1026, -0.1286, 0.9787]
+			}
+		},
+		{
+			"id": "crate-220",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [1.931, 4.21, 0.744],
+				"rotation": [-0.1145, 0.1273, -0.0454, 0.9842]
+			}
+		},
+		{
+			"id": "crate-221",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [1.957, 4.21, 1.282],
+				"rotation": [-0.0361, 0.19, 0.0008, 0.9811]
+			}
+		},
+		{
+			"id": "crate-222",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.952, 4.21, 1.711],
+				"rotation": [-0.0255, -0.135, -0.2113, 0.9677]
+			}
+		},
+		{
+			"id": "crate-223",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [1.924, 4.21, 2.248],
+				"rotation": [0.1478, 0.0371, -0.1142, 0.9817]
+			}
+		},
+		{
+			"id": "crate-230",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [1.954, 4.71, 0.773],
+				"rotation": [-0.1144, 0.0175, -0.0731, 0.9906]
+			}
+		},
+		{
+			"id": "crate-231",
+			"prefab": "crate",
+			"transform": {
+				"position": [1.972, 4.71, 1.251],
+				"rotation": [0.0218, 0.092, 0.1459, 0.9848]
+			}
+		},
+		{
+			"id": "crate-232",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [1.959, 4.71, 1.75],
+				"rotation": [0.0118, 0.1877, -0.0464, 0.981]
+			}
+		},
+		{
+			"id": "crate-233",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [1.948, 4.71, 2.285],
+				"rotation": [0.0432, 0.0816, 0.0958, 0.9911]
+			}
+		},
+		{
+			"id": "crate-300",
+			"prefab": "crate",
+			"transform": {
+				"position": [2.455, 3.21, 0.785],
+				"rotation": [0.0945, -0.1008, -0.1051, 0.9848]
+			}
+		},
+		{
+			"id": "crate-301",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [2.416, 3.21, 1.229],
+				"rotation": [-0.2161, 0.0858, 0.1437, 0.9619]
+			}
+		},
+		{
+			"id": "crate-302",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [2.422, 3.21, 1.767],
+				"rotation": [0.0845, -0.1882, 0.2018, 0.9575]
+			}
+		},
+		{
+			"id": "crate-303",
+			"prefab": "crate",
+			"transform": {
+				"position": [2.428, 3.21, 2.286],
+				"rotation": [-0.0527, -0.0066, 0.2538, 0.9658]
+			}
+		},
+		{
+			"id": "crate-310",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [2.423, 3.71, 0.745],
+				"rotation": [0.0066, -0.0682, -0.1291, 0.9893]
+			}
+		},
+		{
+			"id": "crate-311",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [2.468, 3.71, 1.212],
+				"rotation": [0.0165, -0.0182, -0.147, 0.9888]
+			}
+		},
+		{
+			"id": "crate-312",
+			"prefab": "crate",
+			"transform": {
+				"position": [2.46, 3.71, 1.751],
+				"rotation": [-0.1769, 0.1969, 0.1171, 0.9572]
+			}
+		},
+		{
+			"id": "crate-313",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [2.418, 3.71, 2.231],
+				"rotation": [-0.0818, 0.0496, -0.0408, 0.9946]
+			}
+		},
+		{
+			"id": "crate-320",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [2.444, 4.21, 0.783],
+				"rotation": [0.1668, -0.1262, -0.1833, 0.9606]
+			}
+		},
+		{
+			"id": "crate-321",
+			"prefab": "crate",
+			"transform": {
+				"position": [2.456, 4.21, 1.266],
+				"rotation": [-0.1103, -0.1189, 0.0506, 0.9855]
+			}
+		},
+		{
+			"id": "crate-322",
+			"prefab": "crate-dark",
+			"transform": {
+				"position": [2.416, 4.21, 1.785],
+				"rotation": [0.0669, 0.1501, -0.2072, 0.9644]
+			}
+		},
+		{
+			"id": "crate-323",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [2.415, 4.21, 2.279],
+				"rotation": [-0.0736, -0.2563, 0.0845, 0.9601]
+			}
+		},
+		{
+			"id": "crate-330",
+			"prefab": "crate",
+			"transform": {
+				"position": [2.431, 4.71, 0.72],
+				"rotation": [0.0064, -0.0617, -0.0922, 0.9938]
+			}
+		},
+		{
+			"id": "crate-331",
+			"prefab": "crate-weathered",
+			"transform": {
+				"position": [2.414, 4.71, 1.226],
+				"rotation": [-0.0701, -0.0727, 0.0967, 0.9902]
+			}
+		},
+		{
+			"id": "crate-332",
+			"prefab": "crate-pine",
+			"transform": {
+				"position": [2.45, 4.71, 1.724],
+				"rotation": [-0.0213, -0.067, -0.0347, 0.9969]
+			}
+		},
+		{
+			"id": "crate-333",
+			"prefab": "crate",
+			"transform": {
+				"position": [2.469, 4.71, 2.254],
+				"rotation": [-0.0573, -0.0047, 0.0803, 0.9951]
+			}
+		}
+	]
+}

@@ -1,0 +1,99 @@
+{
+	"$schema": "../../../packages/sdk/scene.schema.json",
+	"version": 1,
+	"environment": {
+		"preset": "outdoor",
+		"hdri": "/assets/qwantani_noon_puresky_2k.hdr",
+		"fog": false,
+		"splat": {
+			"url": "/assets/sa3d-apartment.spz",
+			"position": [0, 0, 0],
+			"rotation": [1, 0, 0, 0],
+			"scale": 1,
+			"envFromSplat": true,
+			"floorY": 0,
+			"exposure": 0.95,
+			"saturation": 1.05
+		},
+		"ground": {
+			"y": 0,
+			"size": 80,
+			"visible": false
+		}
+	},
+	"lighting": {
+		"sun": {
+			"direction": [0.35, 1.0, 0.25],
+			"intensity": 2.2,
+			"color": "#fff3e4"
+		}
+	},
+	"post": {
+		"toneMapping": "aces",
+		"exposure": 1.0,
+		"bloom": {
+			"enabled": true,
+			"strength": 0.55,
+			"threshold": 1.2
+		}
+	},
+	"camera": {
+		"controller": "thirdPerson",
+		"presets": {
+			"hero": {
+				"position": [-9.6, 1.65, 6.9],
+				"target": [-2.6, 1.15, 4.4],
+				"fov": 45
+			}
+		}
+	},
+	"sim": {
+		"build": "deterministic",
+		"seed": 29
+	},
+	"entities": [
+		{
+			"id": "player",
+			"character": {
+				"speed": 3.4,
+				"sprintSpeed": 4.4,
+				"accel": 14
+			},
+			"mesh": {
+				"gltf": {
+					"url": "/assets/rocketbox-male-adult-16.glb",
+					"animations": {
+						"idle": "Idle",
+						"walk": {
+							"clip": "Walk",
+							"speed": 0.979
+						},
+						"run": {
+							"clip": "Run",
+							"speed": 5.649
+						},
+						"jump": "Jump",
+						"fall": "Fall"
+					},
+					"look": {
+						"envIntensity": 1.2,
+						"saturation": 0.85
+					}
+				}
+			},
+			"transform": {
+				"position": [11.0, 0.8, 13.0],
+				"rotation": [0, 0.70711, 0, 0.70711],
+				"scale": [1, 1, 1]
+			},
+			"body": {
+				"type": "kinematic",
+				"collider": {
+					"shape": "capsule",
+					"halfHeight": 0.5,
+					"radius": 0.3
+				}
+			}
+		}
+	]
+}

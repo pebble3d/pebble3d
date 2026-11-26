@@ -1,0 +1,271 @@
+{
+	"version": 1,
+	"environment": {
+		"preset": "studio",
+		"ground": {
+			"color": "#e8dcc4"
+		}
+	},
+	"camera": {
+		"presets": {
+			"hero": {
+				"position": [1.5, 10, 15],
+				"target": [1.2, 0.5, 0.5],
+				"fov": 45
+			}
+		}
+	},
+	"sim": {
+		"seed": 2
+	},
+	"prefabs": {
+		"wall": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#9a958c",
+					"roughness": 0.9
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [3, 0.6, 0.3]
+			}
+		},
+		"domino": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#2b2724",
+					"roughness": 0.6
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"friction": 0.6
+			},
+			"transform": {
+				"scale": [0.16, 1, 0.5]
+			}
+		},
+		"pebble": {
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#d9482f",
+					"roughness": 0.2
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"friction": 0.6,
+				"restitution": 0.15,
+				"angularDamping": 0.25,
+				"linearDamping": 0.02,
+				"ccd": true
+			},
+			"transform": {
+				"scale": [0.42, 0.42, 0.42]
+			}
+		},
+		"bowl": {
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#6f8f4e",
+					"roughness": 0.9
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [1.6, 0.1, 1.6]
+			}
+		},
+		"boulder": {
+			"mesh": {
+				"primitive": "sphere",
+				"material": {
+					"color": "#45403d",
+					"roughness": 0.85
+				}
+			},
+			"body": {
+				"type": "dynamic",
+				"mass": 6
+			},
+			"transform": {
+				"scale": [1, 1, 1]
+			}
+		},
+		"plank": {
+			"mesh": {
+				"primitive": "box",
+				"material": {
+					"color": "#b8743f",
+					"roughness": 0.65
+				}
+			},
+			"body": {
+				"type": "static",
+				"friction": 0.4
+			},
+			"transform": {
+				"scale": [2.4, 0.12, 0.8]
+			}
+		},
+		"pillar": {
+			"mesh": {
+				"primitive": "cylinder",
+				"material": {
+					"color": "#9a958c",
+					"roughness": 0.85
+				}
+			},
+			"body": {
+				"type": "static"
+			},
+			"transform": {
+				"scale": [0.6, 1.6, 0.6]
+			}
+		}
+	},
+	"entities": [
+		{
+			"id": "terrace",
+			"prefab": "wall",
+			"transform": {
+				"position": [-0.5, 0.5, 0],
+				"scale": [7, 1, 1.4]
+			},
+			"mesh": {
+				"material": {
+					"color": "#c9bfae"
+				}
+			}
+		},
+		{
+			"id": "domino-1",
+			"prefab": "domino",
+			"transform": {
+				"position": [-3, 1.5, 0]
+			}
+		},
+		{
+			"id": "domino-2",
+			"prefab": "domino",
+			"transform": {
+				"position": [-2.36, 1.5, 0]
+			}
+		},
+		{
+			"id": "domino-3",
+			"prefab": "domino",
+			"transform": {
+				"position": [-1.72, 1.5, 0]
+			}
+		},
+		{
+			"id": "domino-4",
+			"prefab": "domino",
+			"transform": {
+				"position": [-1.08, 1.5, 0]
+			}
+		},
+		{
+			"id": "domino-5",
+			"prefab": "domino",
+			"transform": {
+				"position": [-0.44, 1.5, 0]
+			}
+		},
+		{
+			"id": "domino-6",
+			"prefab": "domino",
+			"transform": {
+				"position": [0.2, 1.5, 0]
+			}
+		},
+		{
+			"id": "domino-7",
+			"prefab": "domino",
+			"transform": {
+				"position": [0.84, 1.5, 0]
+			}
+		},
+		{
+			"id": "domino-8",
+			"prefab": "domino",
+			"transform": {
+				"position": [1.48, 1.5, 0]
+			}
+		},
+		{
+			"id": "domino-9",
+			"prefab": "domino",
+			"transform": {
+				"position": [2.12, 1.5, 0]
+			}
+		},
+		{
+			"id": "plinth",
+			"prefab": "pillar",
+			"transform": {
+				"position": [2.8, 1.2, 0],
+				"scale": [0.3, 0.4, 0.3]
+			}
+		},
+		{
+			"id": "pebble",
+			"prefab": "pebble",
+			"transform": {
+				"position": [2.8, 1.61, 0]
+			}
+		},
+		{
+			"id": "slide",
+			"prefab": "plank",
+			"transform": {
+				"position": [4.2, 0.42, 0],
+				"rotation": [0, 0, -0.207912, 0.978148],
+				"scale": [2.4, 0.12, 1]
+			}
+		},
+		{
+			"id": "goal",
+			"prefab": "bowl",
+			"transform": {
+				"position": [6.2, -0.03, 0],
+				"scale": [2, 0.1, 2]
+			}
+		},
+		{
+			"id": "back-wall",
+			"prefab": "wall",
+			"transform": {
+				"position": [7.25, 0.3, 0],
+				"rotation": [0, 0.707107, 0, 0.707107],
+				"scale": [2.4, 0.6, 0.3]
+			}
+		},
+		{
+			"id": "near-wall",
+			"prefab": "wall",
+			"transform": {
+				"position": [6.2, 0.3, -1.05],
+				"scale": [1.8, 0.6, 0.3]
+			}
+		},
+		{
+			"id": "far-wall",
+			"prefab": "wall",
+			"transform": {
+				"position": [6.2, 0.3, 1.05],
+				"scale": [1.8, 0.6, 0.3]
+			}
+		}
+	]
+}

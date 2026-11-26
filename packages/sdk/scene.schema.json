@@ -1,0 +1,1594 @@
+{
+	"title": "Pebble3D scene",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"$schema": {
+			"type": "string"
+		},
+		"version": {
+			"default": 1,
+			"type": "number",
+			"const": 1
+		},
+		"environment": {
+			"default": {},
+			"type": "object",
+			"properties": {
+				"preset": {
+					"default": "outdoor",
+					"type": "string",
+					"enum": [
+						"outdoor",
+						"studio"
+					]
+				},
+				"hdri": {
+					"description": "Equirect .hdr URL; the outdoor preset has a bundled default.",
+					"type": "string"
+				},
+				"splat": {
+					"description": "A Gaussian-splat capture (.spz, .ply, .splat or .ksplat) drawn with the meshes. Splats neither cast nor receive shadows; a shadow catcher at `floorY` shows mesh shadows on the capture floor.",
+					"type": "object",
+					"properties": {
+						"url": {
+							"type": "string",
+							"minLength": 1
+						},
+						"position": {
+							"default": [
+								0,
+								0,
+								0
+							],
+							"type": "array",
+							"prefixItems": [
+								{
+									"type": "number"
+								},
+								{
+									"type": "number"
+								},
+								{
+									"type": "number"
+								}
+							],
+							"items": false,
+							"minItems": 3,
+							"maxItems": 3
+						},
+						"rotation": {
+							"default": [
+								0,
+								0,
+								0,
+								1
+							],
+							"type": "array",
+							"prefixItems": [
+								{
+									"type": "number"
+								},
+								{
+									"type": "number"
+								},
+								{
+									"type": "number"
+								},
+								{
+									"type": "number"
+								}
+							],
+							"items": false,
+							"minItems": 4,
+							"maxItems": 4
+						},
+						"scale": {
+							"default": 1,
+							"type": "number",
+							"exclusiveMinimum": 0
+						},
+						"envFromSplat": {
+							"default": false,
+							"description": "Image-based lighting from the capture: a cube capture at the splat's bounding-box centre, PMREM-filtered once at load. Replaces the preset's environment map (the background stays).",
+							"type": "boolean"
+						},
+						"floorY": {
+							"default": 0,
+							"description": "World y of the capture's floor (after the transform); places the invisible shadow-catcher plane.",
+							"type": "number"
+						},
+						"exposure": {
+							"default": 1,
+							"description": "Splat colour multiplier (linear) before tone mapping. Compensates the tone mapper's compression; 1 = as captured.",
+							"type": "number",
+							"exclusiveMinimum": 0
+						},
+						"saturation": {
+							"default": 1,
+							"description": "Splat colour saturation before tone mapping (1 = as captured). Compensates AgX desaturation.",
+							"type": "number",
+							"minimum": 0
+						}
+					},
+					"required": [
+						"url"
+					],
+					"additionalProperties": false
+				},
+				"fog": {
+					"description": "Range fog that hides the ground's far edge. `false` disables it. Defaults per preset (studio near 14 / far 42, outdoor near 25 / far 110).",
+					"anyOf": [
+						{
+							"type": "boolean",
+							"const": false
+						},
+						{
+							"type": "object",
+							"properties": {
+								"near": {
+									"description": "metres from the camera (view depth). Default: studio 14, outdoor 25.",
+									"type": "number",
+									"minimum": 0
+								},
+								"far": {
+									"description": "Fully fogged from here. Default: studio 42, outdoor 110.",
+									"type": "number",
+									"minimum": 0
+								},
+								"color": {
+									"description": "Default: studio = backdrop.horizon; outdoor = the HDRI's horizon colour in the view direction.",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						}
+					]
+				},
+				"backdrop": {
+					"description": "Studio background: a vertical gradient from `horizon` (eye level and below) to `zenith` (overhead). Ignored by the outdoor preset.",
+					"default": {},
+					"type": "object",
+					"properties": {
+						"horizon": {
+							"default": "#55504a",
+							"type": "string"
+						},
+						"zenith": {
+							"default": "#141416",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				},
+				"ground": {
+					"description": "Static ground plane collider, plus a visible plane unless `visible: false`.",
+					"type": "object",
+					"properties": {
+						"y": {
+							"default": 0,
+							"type": "number"
+						},
+						"size": {
+							"default": 50,
+							"type": "number",
+							"exclusiveMinimum": 0
+						},
+						"color": {
+							"default": "#808080",
+							"type": "string"
+						},
+						"roughness": {
+							"default": 0.9,
+							"type": "number",
+							"minimum": 0,
+							"maximum": 1
+						},
+						"visible": {
+							"default": true,
+							"type": "boolean"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
+		},
+		"bounds": {
+			"description": "Invisible static walls around [min, max] in XZ, from y = 0 up to `height`.",
+			"type": "object",
+			"properties": {
+				"min": {
+					"type": "array",
+					"prefixItems": [
+						{
+							"type": "number"
+						},
+						{
+							"type": "number"
+						}
+					],
+					"items": false,
+					"minItems": 2,
+					"maxItems": 2,
+					"description": "[x, z]"
+				},
+				"max": {
+					"type": "array",
+					"prefixItems": [
+						{
+							"type": "number"
+						},
+						{
+							"type": "number"
+						}
+					],
+					"items": false,
+					"minItems": 2,
+					"maxItems": 2,
+					"description": "[x, z]"
+				},
+				"height": {
+					"default": 4,
+					"type": "number",
+					"exclusiveMinimum": 0
+				},
+				"thickness": {
+					"default": 0.5,
+					"type": "number",
+					"exclusiveMinimum": 0
+				}
+			},
+			"required": [
+				"min",
+				"max"
+			],
+			"additionalProperties": false
+		},
+		"lighting": {
+			"default": {},
+			"type": "object",
+			"properties": {
+				"sun": {
+					"default": {},
+					"type": "object",
+					"properties": {
+						"direction": {
+							"default": [
+								0.5,
+								1,
+								0.3
+							],
+							"description": "Direction from the scene towards the sun.",
+							"type": "array",
+							"prefixItems": [
+								{
+									"type": "number"
+								},
+								{
+									"type": "number"
+								},
+								{
+									"type": "number"
+								}
+							],
+							"items": false,
+							"minItems": 3,
+							"maxItems": 3
+						},
+						"intensity": {
+							"default": 3,
+							"type": "number",
+							"minimum": 0
+						},
+						"color": {
+							"default": "#ffffff",
+							"type": "string"
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
+		},
+		"post": {
+			"default": {},
+			"type": "object",
+			"properties": {
+				"exposure": {
+					"default": 1,
+					"type": "number",
+					"exclusiveMinimum": 0
+				},
+				"toneMapping": {
+					"default": "agx",
+					"type": "string",
+					"enum": [
+						"agx",
+						"aces",
+						"none"
+					]
+				},
+				"bloom": {
+					"default": {},
+					"type": "object",
+					"properties": {
+						"enabled": {
+							"default": true,
+							"type": "boolean"
+						},
+						"strength": {
+							"default": 0.3,
+							"type": "number",
+							"minimum": 0
+						},
+						"threshold": {
+							"default": 2,
+							"description": "Linear HDR luminance (before tone mapping) a pixel must exceed to bloom. The default only catches specular highlights and emissives, not sunlit white surfaces.",
+							"type": "number",
+							"minimum": 0
+						}
+					},
+					"additionalProperties": false
+				},
+				"ao": {
+					"default": {},
+					"type": "object",
+					"properties": {
+						"enabled": {
+							"default": true,
+							"type": "boolean"
+						},
+						"radius": {
+							"default": 0.5,
+							"type": "number",
+							"exclusiveMinimum": 0
+						}
+					},
+					"additionalProperties": false
+				},
+				"style": {
+					"default": "pbr",
+					"description": "Art style. \"toon\": cel-banded mesh lighting (lit standard materials become ToonNodeMaterial), ink outlines from the mesh-only depth/normal prepass, and a posterised splat grade, tuned by `toon`. \"pbr\" (default) ignores `toon`.",
+					"type": "string",
+					"enum": [
+						"pbr",
+						"toon"
+					]
+				},
+				"toon": {
+					"default": {},
+					"type": "object",
+					"properties": {
+						"bands": {
+							"default": 3,
+							"description": "Sun-light tones, shadow tone included.",
+							"type": "integer",
+							"minimum": 2,
+							"maximum": 8
+						},
+						"shadowTone": {
+							"default": 0,
+							"description": "Sun light kept by the darkest band (0 = ambient only).",
+							"type": "number",
+							"minimum": 0,
+							"maximum": 1
+						},
+						"terminator": {
+							"default": 0,
+							"description": "Added to N·L before banding; > 0 widens the lit bands.",
+							"type": "number",
+							"minimum": -1,
+							"maximum": 1
+						},
+						"rim": {
+							"default": 0.35,
+							"description": "Sun-side rim light strength (per-material toonRim scales it).",
+							"type": "number",
+							"minimum": 0
+						},
+						"rimWidth": {
+							"default": 0.3,
+							"type": "number",
+							"minimum": 0,
+							"maximum": 1
+						},
+						"specular": {
+							"default": 0.6,
+							"description": "Stepped highlight strength (per-material toonSpecular scales it).",
+							"type": "number",
+							"minimum": 0
+						},
+						"outline": {
+							"default": {},
+							"type": "object",
+							"properties": {
+								"enabled": {
+									"default": true,
+									"type": "boolean"
+								},
+								"width": {
+									"default": 1,
+									"description": "CSS pixels (scaled by the device pixel ratio).",
+									"type": "number",
+									"exclusiveMinimum": 0,
+									"maximum": 4
+								},
+								"color": {
+									"default": "#1a1418",
+									"type": "string"
+								},
+								"opacity": {
+									"default": 1,
+									"type": "number",
+									"minimum": 0,
+									"maximum": 1
+								},
+								"depthThreshold": {
+									"default": 0.04,
+									"description": "Relative inverse-depth Laplacian that starts a line.",
+									"type": "number",
+									"exclusiveMinimum": 0
+								},
+								"normalThreshold": {
+									"default": 0.35,
+									"description": "1 - cos(angle) between neighbour normals that starts a crease line.",
+									"type": "number",
+									"exclusiveMinimum": 0,
+									"maximum": 2
+								}
+							},
+							"additionalProperties": false
+						},
+						"splat": {
+							"default": {},
+							"type": "object",
+							"properties": {
+								"levels": {
+									"default": 5,
+									"description": "Posterised lightness steps of the splat.",
+									"type": "integer",
+									"minimum": 2,
+									"maximum": 32
+								},
+								"saturation": {
+									"default": 1.15,
+									"type": "number",
+									"minimum": 0
+								},
+								"strength": {
+									"default": 1,
+									"description": "Blend of the splat grade with the source colour.",
+									"type": "number",
+									"minimum": 0,
+									"maximum": 1
+								},
+								"shadowTint": {
+									"default": "#4a5662",
+									"type": "string"
+								},
+								"highlightTint": {
+									"default": "#fff2df",
+									"type": "string"
+								}
+							},
+							"additionalProperties": false
+						}
+					},
+					"additionalProperties": false
+				}
+			},
+			"additionalProperties": false
+		},
+		"camera": {
+			"default": {},
+			"type": "object",
+			"properties": {
+				"controller": {
+					"default": "orbit",
+					"type": "string",
+					"enum": [
+						"thirdPerson",
+						"orbit",
+						"fly"
+					]
+				},
+				"presets": {
+					"default": {},
+					"type": "object",
+					"propertyNames": {
+						"type": "string"
+					},
+					"additionalProperties": {
+						"type": "object",
+						"properties": {
+							"position": {
+								"type": "array",
+								"prefixItems": [
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									}
+								],
+								"items": false,
+								"minItems": 3,
+								"maxItems": 3
+							},
+							"target": {
+								"default": [
+									0,
+									0,
+									0
+								],
+								"type": "array",
+								"prefixItems": [
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									}
+								],
+								"items": false,
+								"minItems": 3,
+								"maxItems": 3
+							},
+							"fov": {
+								"default": 50,
+								"type": "number",
+								"exclusiveMinimum": 0
+							}
+						},
+						"required": [
+							"position"
+						],
+						"additionalProperties": false
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"prefabs": {
+			"default": {},
+			"type": "object",
+			"propertyNames": {
+				"type": "string"
+			},
+			"additionalProperties": {
+				"type": "object",
+				"properties": {
+					"transform": {
+						"type": "object",
+						"properties": {
+							"position": {
+								"default": [
+									0,
+									0,
+									0
+								],
+								"type": "array",
+								"prefixItems": [
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									}
+								],
+								"items": false,
+								"minItems": 3,
+								"maxItems": 3
+							},
+							"rotation": {
+								"default": [
+									0,
+									0,
+									0,
+									1
+								],
+								"description": "Quaternion [x, y, z, w].",
+								"type": "array",
+								"prefixItems": [
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									}
+								],
+								"items": false,
+								"minItems": 4,
+								"maxItems": 4
+							},
+							"scale": {
+								"default": [
+									1,
+									1,
+									1
+								],
+								"description": "Primitives are unit-sized (box 1x1x1, sphere diameter 1, capsule diameter x by total height y, cylinder diameter x by height y), so scale is their size in metres.",
+								"type": "array",
+								"prefixItems": [
+									{
+										"type": "number",
+										"exclusiveMinimum": 0
+									},
+									{
+										"type": "number",
+										"exclusiveMinimum": 0
+									},
+									{
+										"type": "number",
+										"exclusiveMinimum": 0
+									}
+								],
+								"items": false,
+								"minItems": 3,
+								"maxItems": 3
+							}
+						},
+						"additionalProperties": false
+					},
+					"mesh": {
+						"type": "object",
+						"properties": {
+							"primitive": {
+								"type": "string",
+								"enum": [
+									"box",
+									"sphere",
+									"capsule",
+									"plane",
+									"cylinder"
+								]
+							},
+							"gltf": {
+								"type": "object",
+								"properties": {
+									"url": {
+										"type": "string",
+										"minLength": 1
+									},
+									"animations": {
+										"description": "Animation state -> clip name, or { clip, speed? } in the glTF.",
+										"type": "object",
+										"propertyNames": {
+											"type": "string",
+											"enum": [
+												"idle",
+												"walk",
+												"run",
+												"jump",
+												"fall"
+											]
+										},
+										"additionalProperties": {
+											"anyOf": [
+												{
+													"type": "string"
+												},
+												{
+													"type": "object",
+													"properties": {
+														"clip": {
+															"type": "string",
+															"minLength": 1
+														},
+														"speed": {
+															"description": "Authored ground speed of the clip, m/s.",
+															"type": "number",
+															"exclusiveMinimum": 0
+														}
+													},
+													"required": [
+														"clip"
+													],
+													"additionalProperties": false
+												}
+											]
+										}
+									},
+									"look": {
+										"description": "Per-model look tweaks.",
+										"type": "object",
+										"properties": {
+											"envIntensity": {
+												"type": "number",
+												"minimum": 0
+											},
+											"saturation": {
+												"type": "number",
+												"minimum": 0,
+												"maximum": 2
+											}
+										},
+										"additionalProperties": false
+									}
+								},
+								"required": [
+									"url"
+								],
+								"additionalProperties": false
+							},
+							"material": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"default": "#cccccc",
+										"type": "string"
+									},
+									"roughness": {
+										"default": 0.5,
+										"type": "number",
+										"minimum": 0,
+										"maximum": 1
+									},
+									"metalness": {
+										"default": 0,
+										"type": "number",
+										"minimum": 0,
+										"maximum": 1
+									},
+									"emissive": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							},
+							"castShadow": {
+								"default": true,
+								"type": "boolean"
+							}
+						},
+						"additionalProperties": false,
+						"description": "Exactly one of `primitive` or `gltf`."
+					},
+					"body": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "Default 'dynamic', or 'kinematic' when the entity has a `character`.",
+								"type": "string",
+								"enum": [
+									"dynamic",
+									"static",
+									"kinematic"
+								]
+							},
+							"mass": {
+								"description": "kg. Default: from collider volume at density 1.",
+								"type": "number",
+								"exclusiveMinimum": 0
+							},
+							"friction": {
+								"default": 0.5,
+								"type": "number",
+								"minimum": 0
+							},
+							"restitution": {
+								"default": 0,
+								"type": "number",
+								"minimum": 0
+							},
+							"linearDamping": {
+								"default": 0,
+								"type": "number",
+								"minimum": 0
+							},
+							"angularDamping": {
+								"default": 0,
+								"type": "number",
+								"minimum": 0
+							},
+							"ccd": {
+								"default": false,
+								"type": "boolean"
+							},
+							"collider": {
+								"default": "auto",
+								"description": "'auto' fits the mesh primitive and scale; for glTF it becomes a convex hull computed in JS.",
+								"anyOf": [
+									{
+										"type": "string",
+										"const": "auto"
+									},
+									{
+										"oneOf": [
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "box"
+													},
+													"halfExtents": {
+														"type": "array",
+														"prefixItems": [
+															{
+																"type": "number",
+																"exclusiveMinimum": 0
+															},
+															{
+																"type": "number",
+																"exclusiveMinimum": 0
+															},
+															{
+																"type": "number",
+																"exclusiveMinimum": 0
+															}
+														],
+														"items": false,
+														"minItems": 3,
+														"maxItems": 3
+													}
+												},
+												"required": [
+													"shape",
+													"halfExtents"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "sphere"
+													},
+													"radius": {
+														"type": "number",
+														"exclusiveMinimum": 0
+													}
+												},
+												"required": [
+													"shape",
+													"radius"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "capsule"
+													},
+													"halfHeight": {
+														"type": "number",
+														"exclusiveMinimum": 0
+													},
+													"radius": {
+														"type": "number",
+														"exclusiveMinimum": 0
+													}
+												},
+												"required": [
+													"shape",
+													"halfHeight",
+													"radius"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "convexHull"
+													},
+													"points": {
+														"type": "array",
+														"items": {
+															"type": "number"
+														}
+													}
+												},
+												"required": [
+													"shape",
+													"points"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "trimesh"
+													},
+													"vertices": {
+														"type": "array",
+														"items": {
+															"type": "number"
+														}
+													},
+													"indices": {
+														"type": "array",
+														"items": {
+															"type": "integer",
+															"minimum": 0,
+															"maximum": 9007199254740991
+														}
+													},
+													"fixInternalEdges": {
+														"description": "Smooth contacts across triangle seams (a rolling ball does not bump on internal edges). Default false.",
+														"type": "boolean"
+													}
+												},
+												"required": [
+													"shape",
+													"vertices",
+													"indices"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "plane"
+													}
+												},
+												"required": [
+													"shape"
+												],
+												"additionalProperties": false
+											}
+										]
+									}
+								]
+							}
+						},
+						"additionalProperties": false
+					},
+					"character": {
+						"type": "object",
+						"properties": {
+							"speed": {
+								"default": 4,
+								"description": "Walk speed, m/s.",
+								"type": "number",
+								"exclusiveMinimum": 0
+							},
+							"sprintSpeed": {
+								"default": 7,
+								"description": "m/s.",
+								"type": "number",
+								"exclusiveMinimum": 0
+							},
+							"jumpSpeed": {
+								"default": 5.5,
+								"description": "Initial upward velocity, m/s.",
+								"type": "number",
+								"minimum": 0
+							},
+							"maxSlopeDeg": {
+								"default": 45,
+								"type": "number",
+								"exclusiveMinimum": 0,
+								"exclusiveMaximum": 90
+							},
+							"stepHeight": {
+								"default": 0.35,
+								"description": "metres.",
+								"type": "number",
+								"minimum": 0
+							},
+							"snap": {
+								"default": 0.3,
+								"description": "Ground snap distance, metres.",
+								"type": "number",
+								"minimum": 0
+							},
+							"accel": {
+								"default": 0,
+								"description": "Horizontal acceleration toward the input velocity, m/s². Starts, stops and turns ramp instead of snapping; 0 (default) changes velocity instantly.",
+								"type": "number",
+								"minimum": 0
+							},
+							"ridePlatforms": {
+								"default": false,
+								"description": "Opt-in: while grounded on a kinematic body (a moving or rotating platform driven by `setKinematicPose`), move with it exactly and keep its velocity as momentum when jumping or walking off. Without it, walking on a kinematic body is unreliable.",
+								"type": "boolean"
+							}
+						},
+						"additionalProperties": false,
+						"description": "Requires a kinematic body with a capsule collider."
+					}
+				},
+				"additionalProperties": false
+			}
+		},
+		"entities": {
+			"default": [],
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"minLength": 1
+					},
+					"prefab": {
+						"description": "Prefab deep-merged under this entity (entity fields win).",
+						"type": "string"
+					},
+					"transform": {
+						"type": "object",
+						"properties": {
+							"position": {
+								"default": [
+									0,
+									0,
+									0
+								],
+								"type": "array",
+								"prefixItems": [
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									}
+								],
+								"items": false,
+								"minItems": 3,
+								"maxItems": 3
+							},
+							"rotation": {
+								"default": [
+									0,
+									0,
+									0,
+									1
+								],
+								"description": "Quaternion [x, y, z, w].",
+								"type": "array",
+								"prefixItems": [
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									},
+									{
+										"type": "number"
+									}
+								],
+								"items": false,
+								"minItems": 4,
+								"maxItems": 4
+							},
+							"scale": {
+								"default": [
+									1,
+									1,
+									1
+								],
+								"description": "Primitives are unit-sized (box 1x1x1, sphere diameter 1, capsule diameter x by total height y, cylinder diameter x by height y), so scale is their size in metres.",
+								"type": "array",
+								"prefixItems": [
+									{
+										"type": "number",
+										"exclusiveMinimum": 0
+									},
+									{
+										"type": "number",
+										"exclusiveMinimum": 0
+									},
+									{
+										"type": "number",
+										"exclusiveMinimum": 0
+									}
+								],
+								"items": false,
+								"minItems": 3,
+								"maxItems": 3
+							}
+						},
+						"additionalProperties": false
+					},
+					"mesh": {
+						"type": "object",
+						"properties": {
+							"primitive": {
+								"type": "string",
+								"enum": [
+									"box",
+									"sphere",
+									"capsule",
+									"plane",
+									"cylinder"
+								]
+							},
+							"gltf": {
+								"type": "object",
+								"properties": {
+									"url": {
+										"type": "string",
+										"minLength": 1
+									},
+									"animations": {
+										"description": "Animation state -> clip name, or { clip, speed? } in the glTF.",
+										"type": "object",
+										"propertyNames": {
+											"type": "string",
+											"enum": [
+												"idle",
+												"walk",
+												"run",
+												"jump",
+												"fall"
+											]
+										},
+										"additionalProperties": {
+											"anyOf": [
+												{
+													"type": "string"
+												},
+												{
+													"type": "object",
+													"properties": {
+														"clip": {
+															"type": "string",
+															"minLength": 1
+														},
+														"speed": {
+															"description": "Authored ground speed of the clip, m/s.",
+															"type": "number",
+															"exclusiveMinimum": 0
+														}
+													},
+													"required": [
+														"clip"
+													],
+													"additionalProperties": false
+												}
+											]
+										}
+									},
+									"look": {
+										"description": "Per-model look tweaks.",
+										"type": "object",
+										"properties": {
+											"envIntensity": {
+												"type": "number",
+												"minimum": 0
+											},
+											"saturation": {
+												"type": "number",
+												"minimum": 0,
+												"maximum": 2
+											}
+										},
+										"additionalProperties": false
+									}
+								},
+								"required": [
+									"url"
+								],
+								"additionalProperties": false
+							},
+							"material": {
+								"type": "object",
+								"properties": {
+									"color": {
+										"default": "#cccccc",
+										"type": "string"
+									},
+									"roughness": {
+										"default": 0.5,
+										"type": "number",
+										"minimum": 0,
+										"maximum": 1
+									},
+									"metalness": {
+										"default": 0,
+										"type": "number",
+										"minimum": 0,
+										"maximum": 1
+									},
+									"emissive": {
+										"type": "string"
+									}
+								},
+								"additionalProperties": false
+							},
+							"castShadow": {
+								"default": true,
+								"type": "boolean"
+							}
+						},
+						"additionalProperties": false,
+						"description": "Exactly one of `primitive` or `gltf`."
+					},
+					"body": {
+						"type": "object",
+						"properties": {
+							"type": {
+								"description": "Default 'dynamic', or 'kinematic' when the entity has a `character`.",
+								"type": "string",
+								"enum": [
+									"dynamic",
+									"static",
+									"kinematic"
+								]
+							},
+							"mass": {
+								"description": "kg. Default: from collider volume at density 1.",
+								"type": "number",
+								"exclusiveMinimum": 0
+							},
+							"friction": {
+								"default": 0.5,
+								"type": "number",
+								"minimum": 0
+							},
+							"restitution": {
+								"default": 0,
+								"type": "number",
+								"minimum": 0
+							},
+							"linearDamping": {
+								"default": 0,
+								"type": "number",
+								"minimum": 0
+							},
+							"angularDamping": {
+								"default": 0,
+								"type": "number",
+								"minimum": 0
+							},
+							"ccd": {
+								"default": false,
+								"type": "boolean"
+							},
+							"collider": {
+								"default": "auto",
+								"description": "'auto' fits the mesh primitive and scale; for glTF it becomes a convex hull computed in JS.",
+								"anyOf": [
+									{
+										"type": "string",
+										"const": "auto"
+									},
+									{
+										"oneOf": [
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "box"
+													},
+													"halfExtents": {
+														"type": "array",
+														"prefixItems": [
+															{
+																"type": "number",
+																"exclusiveMinimum": 0
+															},
+															{
+																"type": "number",
+																"exclusiveMinimum": 0
+															},
+															{
+																"type": "number",
+																"exclusiveMinimum": 0
+															}
+														],
+														"items": false,
+														"minItems": 3,
+														"maxItems": 3
+													}
+												},
+												"required": [
+													"shape",
+													"halfExtents"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "sphere"
+													},
+													"radius": {
+														"type": "number",
+														"exclusiveMinimum": 0
+													}
+												},
+												"required": [
+													"shape",
+													"radius"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "capsule"
+													},
+													"halfHeight": {
+														"type": "number",
+														"exclusiveMinimum": 0
+													},
+													"radius": {
+														"type": "number",
+														"exclusiveMinimum": 0
+													}
+												},
+												"required": [
+													"shape",
+													"halfHeight",
+													"radius"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "convexHull"
+													},
+													"points": {
+														"type": "array",
+														"items": {
+															"type": "number"
+														}
+													}
+												},
+												"required": [
+													"shape",
+													"points"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "trimesh"
+													},
+													"vertices": {
+														"type": "array",
+														"items": {
+															"type": "number"
+														}
+													},
+													"indices": {
+														"type": "array",
+														"items": {
+															"type": "integer",
+															"minimum": 0,
+															"maximum": 9007199254740991
+														}
+													},
+													"fixInternalEdges": {
+														"description": "Smooth contacts across triangle seams (a rolling ball does not bump on internal edges). Default false.",
+														"type": "boolean"
+													}
+												},
+												"required": [
+													"shape",
+													"vertices",
+													"indices"
+												],
+												"additionalProperties": false
+											},
+											{
+												"type": "object",
+												"properties": {
+													"shape": {
+														"type": "string",
+														"const": "plane"
+													}
+												},
+												"required": [
+													"shape"
+												],
+												"additionalProperties": false
+											}
+										]
+									}
+								]
+							}
+						},
+						"additionalProperties": false
+					},
+					"character": {
+						"type": "object",
+						"properties": {
+							"speed": {
+								"default": 4,
+								"description": "Walk speed, m/s.",
+								"type": "number",
+								"exclusiveMinimum": 0
+							},
+							"sprintSpeed": {
+								"default": 7,
+								"description": "m/s.",
+								"type": "number",
+								"exclusiveMinimum": 0
+							},
+							"jumpSpeed": {
+								"default": 5.5,
+								"description": "Initial upward velocity, m/s.",
+								"type": "number",
+								"minimum": 0
+							},
+							"maxSlopeDeg": {
+								"default": 45,
+								"type": "number",
+								"exclusiveMinimum": 0,
+								"exclusiveMaximum": 90
+							},
+							"stepHeight": {
+								"default": 0.35,
+								"description": "metres.",
+								"type": "number",
+								"minimum": 0
+							},
+							"snap": {
+								"default": 0.3,
+								"description": "Ground snap distance, metres.",
+								"type": "number",
+								"minimum": 0
+							},
+							"accel": {
+								"default": 0,
+								"description": "Horizontal acceleration toward the input velocity, m/s². Starts, stops and turns ramp instead of snapping; 0 (default) changes velocity instantly.",
+								"type": "number",
+								"minimum": 0
+							},
+							"ridePlatforms": {
+								"default": false,
+								"description": "Opt-in: while grounded on a kinematic body (a moving or rotating platform driven by `setKinematicPose`), move with it exactly and keep its velocity as momentum when jumping or walking off. Without it, walking on a kinematic body is unreliable.",
+								"type": "boolean"
+							}
+						},
+						"additionalProperties": false,
+						"description": "Requires a kinematic body with a capsule collider."
+					},
+					"spawner": {
+						"type": "object",
+						"properties": {
+							"prefab": {
+								"type": "string",
+								"description": "Prefab to spawn; it must have a `body`."
+							},
+							"rate": {
+								"type": "number",
+								"minimum": 0,
+								"description": "Spawns per second."
+							},
+							"count": {
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 9007199254740991,
+								"description": "Total spawns."
+							},
+							"area": {
+								"type": "object",
+								"properties": {
+									"min": {
+										"type": "array",
+										"prefixItems": [
+											{
+												"type": "number"
+											},
+											{
+												"type": "number"
+											},
+											{
+												"type": "number"
+											}
+										],
+										"items": false,
+										"minItems": 3,
+										"maxItems": 3
+									},
+									"max": {
+										"type": "array",
+										"prefixItems": [
+											{
+												"type": "number"
+											},
+											{
+												"type": "number"
+											},
+											{
+												"type": "number"
+											}
+										],
+										"items": false,
+										"minItems": 3,
+										"maxItems": 3
+									}
+								},
+								"required": [
+									"min",
+									"max"
+								],
+								"additionalProperties": false,
+								"description": "World-space box spawns land in, uniformly."
+							},
+							"seed": {
+								"description": "Default: sim.seed + entity index.",
+								"type": "integer",
+								"minimum": 0,
+								"maximum": 4294967295
+							}
+						},
+						"required": [
+							"prefab",
+							"rate",
+							"count",
+							"area"
+						],
+						"additionalProperties": false
+					}
+				},
+				"required": [
+					"id"
+				],
+				"additionalProperties": false
+			}
+		},
+		"sim": {
+			"default": {},
+			"type": "object",
+			"properties": {
+				"build": {
+					"default": "deterministic",
+					"type": "string",
+					"enum": [
+						"deterministic",
+						"fast"
+					]
+				},
+				"seed": {
+					"default": 1,
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 4294967295
+				},
+				"gravity": {
+					"default": -9.81,
+					"type": "number"
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	"additionalProperties": false
+}

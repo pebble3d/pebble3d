@@ -1,0 +1,29 @@
+---
+import { CHECKS } from "../data/agents";
+import { href } from "../lib/site";
+---
+
+<div class="table-wrap" tabindex="0" role="region" aria-label="Verification commands">
+	<table class="stack">
+		<thead>
+			<tr><th>Command</th><th>What it proves</th></tr>
+		</thead>
+		<tbody>
+			{
+				CHECKS.map((c) => (
+					<tr>
+						<td style="white-space: normal"><code>{c.cmd}</code></td>
+						<td>
+							{c.what}
+							{c.gpu && <span class="faint"> Needs a GPU.</span>}
+						</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</div>
+<p>
+	Details, flags and the console-error policy: <a href={href("docs/verification/")}>Verification</a>.
+	A failing check and its fix: <a href={href("docs/troubleshooting/")}>Troubleshooting</a>.
+</p>
