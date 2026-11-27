@@ -33,6 +33,20 @@ Write a scene as JSON, drive it from TypeScript with `createGame`, and verify it
 - [custom-camera](docs/cookbook/custom-camera.md): Driving the camera yourself: removing the orbit controls, follow and spring-arm cameras.
 - [owning-the-world](docs/cookbook/owning-the-world.md): Worlds your code creates, steps and draws next to `createGame`; stale views; `stateHash`.
 
+## Skills
+
+Agent playbooks for building a game with Pebble3D. For any request to make a game, start with make-a-game and follow it.
+
+- [make-a-game](skills/make-a-game/SKILL.md): the entry point; it runs the steps in this order, each with an exit check: interview, brief, scaffold, build, game feel, art pass, complete loop, verify.
+- [game-interview](skills/game-interview/SKILL.md): turn a vague idea into a short design brief the developer approves, with a non-interactive fallback.
+- [start-a-game](skills/start-a-game/SKILL.md): scaffold a new app under `apps/` the way the demos are laid out and prove it boots, captures and tests.
+- [verify-your-work](skills/verify-your-work/SKILL.md): what done means: tests, captures, sidecars, looking at every image, both backends.
+- [engine-pitfalls](skills/engine-pitfalls/SKILL.md): known engine traps as "if you see X, do Y", each linked to the full fix.
+- [game-feel](skills/game-feel/SKILL.md): hit-stop, shake, camera punch, particles, buffering and sound, tuned by watching capture sequences.
+- [art-direction](skills/art-direction/SKILL.md): commit to one look (palette, toon or PBR, lighting, post) and judge captures against it.
+- [complete-game-loop](skills/complete-game-loop/SKILL.md): title, play, results and restart, pause, HUD, a demo bot and a README.
+- [genre-playbooks](skills/genre-playbooks/SKILL.md): per-genre recipes that reuse the shipped demo for racers, platformers, tower defence and more.
+
 ## Examples
 
 - [Examples map](docs/examples.md): where each engine feature is used in the twelve showcase games and the playground, by file and line range.
@@ -48,6 +62,8 @@ Write a scene as JSON, drive it from TypeScript with `createGame`, and verify it
 # Getting started
 
 From nothing to a JSON scene in the playground, then to a minimal game app with a fixed-tick sim, a `?demo=1` bot and `window.__pebble3d` probes.
+
+> Asking a coding agent to make a game? Point it at [`skills/make-a-game/SKILL.md`](../skills/make-a-game/SKILL.md). It interviews you, writes a brief, builds the game and verifies it. This guide is the manual path.
 
 ## 0. Set up once
 
@@ -420,6 +436,24 @@ Working rules for coding agents in the Pebble3D repo: where things are, the comm
 
 Pebble3D is a browser 3D engine: JSON scenes validated by a zod schema, rendered by three.js 0.187 (WebGPU, WebGL fallback), simulated by Rapier compiled from Rust to WebAssembly. New here? Read [docs/getting-started.md](docs/getting-started.md) first.
 
+## Skills
+
+For any request to make a game, start with `skills/make-a-game/SKILL.md` and follow it. It runs the other skills in this order: interview, brief, scaffold, build, game feel, art pass, complete loop, verify.
+
+| Skill                                                    | Use it for                                                                                  |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [make-a-game](skills/make-a-game/SKILL.md)               | Entry point: interview, brief, scaffold, build, game feel, art pass, complete loop, verify. |
+| [game-interview](skills/game-interview/SKILL.md)         | Turn a vague idea into a short design brief (with a non-interactive fallback).              |
+| [start-a-game](skills/start-a-game/SKILL.md)             | Scaffold a new app the way the demos are laid out and prove it boots.                       |
+| [verify-your-work](skills/verify-your-work/SKILL.md)     | What done means: tests, captures, sidecars, looking at every image.                         |
+| [engine-pitfalls](skills/engine-pitfalls/SKILL.md)       | Known engine traps as "if you see X, do Y".                                                 |
+| [game-feel](skills/game-feel/SKILL.md)                   | Hit-stop, shake, particles, buffering and sound that make actions land.                     |
+| [art-direction](skills/art-direction/SKILL.md)           | Commit to one look and judge captures against it.                                           |
+| [complete-game-loop](skills/complete-game-loop/SKILL.md) | Title, play, results, restart, a demo bot and a README.                                     |
+| [genre-playbooks](skills/genre-playbooks/SKILL.md)       | Per-genre recipes that reuse the shipped demo for that genre.                               |
+
+The same files are copied to `.claude/skills/`, where Claude Code, Cursor and GitHub Copilot discover project skills. Edit `skills/` only, then run `pnpm skills:sync`; a test fails if the copies are stale.
+
 ## Repo map
 
 | Path                                         | What it is                                                                                                                                                                       |
@@ -436,6 +470,7 @@ Pebble3D is a browser 3D engine: JSON scenes validated by a zod schema, rendered
 | `apps/field-notes`                           | Field Notes (5231): photography in Gaussian-splat captures, depth of field.                                                                                                      |
 | `apps/rockfall`                              | Rockfall (5240): survival under spawner-driven rock waves; boots renderer and sim itself.                                                                                        |
 | `apps/chain-reaction`                        | Chain Reaction (5250): JSON-level puzzle, headless Node verifier.                                                                                                                |
+| `skills`                                     | Agent skills: markdown playbooks for building a game, starting with `make-a-game`. Copied to `.claude/skills/` by `pnpm skills:sync`.                                            |
 | `scripts/shot`                               | `pnpm shot`: build, serve, render in Chromium, write PNG + JSON sidecar.                                                                                                         |
 | `scripts/docs`                               | `pnpm docs:gen`: regenerates the reference docs and `llms-full.txt`; drift-guard tests.                                                                                          |
 | `scripts/fetch-assets.mjs`, `scripts/assets` | Download and derive large assets per `apps/playground/assets.manifest.json`.                                                                                                     |
@@ -459,6 +494,7 @@ Pebble3D is a browser 3D engine: JSON scenes validated by a zod schema, rendered
 | Screenshot                                         | `pnpm shot --scene showcase --cam hero` or `pnpm shot --app rockfall --param demo=1 --ticks 600`                              |
 | Regenerate docs                                    | `pnpm docs:gen` (not `pnpm docs`, which is a pnpm builtin); `pnpm docs:gen --check` exits 1 if stale                          |
 | Regenerate `scene.schema.json` after a schema edit | `pnpm --filter @pebble3d/sdk schema`                                                                                          |
+| Copy `skills/` to `.claude/skills/`                | `pnpm skills:sync`                                                                                                            |
 | Chain Reaction headless verify                     | `pnpm --filter chain-reaction verify`                                                                                         |
 
 Details: [docs/verification.md](docs/verification.md).
@@ -1304,7 +1340,7 @@ Source: `packages/sdk/wasm/det/engine_core_det.d.ts` (wasm-bindgen output; build
 
 # Verification
 
-How to prove a change works: screenshots with `pnpm shot`, determinism hashes, demo bots, fps benches and the console-error policy.
+How to prove a change works: screenshots with `pnpm shot`, determinism hashes, demo bots, fps benches and the console-error policy. Agents that want the checklist version can start from [`skills/verify-your-work/SKILL.md`](../skills/verify-your-work/SKILL.md).
 
 ## `pnpm shot`
 
@@ -1471,12 +1507,18 @@ Error messages and symptoms seen while building Pebble3D and its showcase games,
 | The sidecar `stateHash` is the same in every capture | [stateHash of the idle world](#the-shot-statehash-never-changes) |
 | `!important` vanished from a CSS file after a lint fix | [biome --unsafe](#biome---unsafe-removed-important) |
 | A worker-based sim makes fixed-mode captures flaky or time out | [Worker in fixed mode](#fixed-mode-captures-with-a-worker-sim) |
+| fps looks fine (or terrible) but was measured headless, on SwiftShader or only on WebGL | [Untrustworthy fps](#fps-from-a-headless-or-webgl-run-is-misleading) |
+| `SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript parameter property is not supported in strip-only mode` | [Parameter properties in Node](#parameter-properties-fail-in-a-node-script) |
+| A night or indoor scene is too bright; no point lights in the scene JSON | [Night scenes](#a-night-scene-is-too-bright) |
+| Draw calls climb fast with each skinned character | [Shadow cascades multiply draws](#draw-calls-climb-with-each-character) |
+| Flat decals on a splat floor get ink outlines in the toon style | [Decal outlines](#decals-on-a-splat-floor-get-ink-outlines) |
+| A bench copied from another game reports numbers for the wrong scene, or never connects | [Copied fps bench](#a-copied-fps-bench-measures-the-wrong-thing) |
 
 ## BackendUnavailable: webgpu
 
 **Symptom:** `BackendUnavailable: webgpu (WebGPURenderer fell back to WebGL)` on the page, in `__pebble3d.error`, or as a `pnpm shot` failure.
 
-**Cause:** the browser exposed no usable WebGPU adapter, so three's `WebGPURenderer` fell back to WebGL, and `createRenderer` (`packages/renderer/src/create.ts`) throws when `webgpu` was requested. On Linux, Chromium ships with WebGPU off.
+**Cause:** the browser exposed no usable WebGPU adapter, so three's `WebGPURenderer` fell back to WebGL, and `createRenderer` (`packages/renderer/src/create.ts`) throws when `webgpu` was requested. On Linux, Chromium often ships with WebGPU off; open `chrome://gpu` and look at the WebGPU line to check.
 
 **Fix:**
 - Start Chromium with `chromium --enable-unsafe-webgpu --enable-features=Vulkan --use-angle=vulkan`. `pnpm shot` already passes these (plus `--ignore-gpu-blocklist`).
@@ -1757,6 +1799,59 @@ const scene = sceneJson as unknown as SceneInput;
 **Cause:** a worker steps on its own clock, so "one tick per frame, stop at n" cannot be enforced across the thread boundary.
 
 **Fix:** run the same sim inline on the main thread whenever `mode` is `fixed` and use the worker only in realtime (`apps/swarm-siege/src/main.ts`, line 81 and lines 133-135; `apps/breakpoint/src/main.ts`, line 85). See [cookbook/instanced-crowds-and-perf.md](cookbook/instanced-crowds-and-perf.md).
+
+## fps from a headless or WebGL run is misleading
+
+**Symptom:** a game "holds 60 fps" in one measurement and stutters for a player, or a bench reports a few fps on a machine with a good GPU.
+
+**Cause:**
+- Headless Chromium without GPU flags renders WebGL on SwiftShader, a CPU rasteriser. Any fps measured there says nothing about the GPU path. `pnpm shot` refuses that adapter; a hand-written Playwright script or bench does not.
+- WebGL can be several times slower than WebGPU for the same scene, so a number from one backend does not carry over to the other. Players on Firefox, Safari or a Chromium without WebGPU get WebGL.
+
+**Fix:**
+- Launch Chromium with `--use-angle=vulkan --enable-features=Vulkan --ignore-gpu-blocklist` (plus `--enable-unsafe-webgpu` for WebGPU), as `scripts/shot/shot.mjs` does.
+- Confirm the renderer string names the real GPU before trusting a number: the sidecar's `adapterInfo`, or in the page `gl.getParameter(gl.getExtension("WEBGL_debug_renderer_info").UNMASKED_RENDERER_WEBGL)` on a WebGL context. "SwiftShader" or "llvmpipe" means software.
+- Measure both backends (`?backend=webgpu` and `?backend=webgl`) on an idle GPU before calling a game smooth. See [fps numbers are low or noisy](#fps-numbers-are-low-or-noisy).
+
+## Parameter properties fail in a Node script
+
+**Symptom:** a headless script or CLI run with `node --experimental-strip-types` (or plain `node` on a version that strips types by default) fails with `SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript parameter property is not supported in strip-only mode`, while vitest and Vite accept the same file.
+
+**Cause:** Node's type stripping only removes type annotations; it does not transform TypeScript-only syntax. A constructor parameter property (`constructor(private readonly sim: MySim) {}`) needs a transform, and so do `enum` and `namespace`. vitest and Vite compile TypeScript fully, so the error appears only in the Node path.
+
+**Fix:** in code a Node script imports (the sim, the bot, level loaders), declare the field and assign it in the constructor: `private readonly sim: MySim; constructor(sim: MySim) { this.sim = sim; }`. Use `as const` objects instead of `enum`. Or run that code through vitest instead of a bare `node` script.
+
+## A night scene is too bright
+
+**Symptom:** a night or interior scene still looks like daylight even with a dim sun, and the scene JSON has no field for point lights or environment strength.
+
+**Cause:** the schema's `lighting` has only `sun`; the `studio` and `outdoor` presets also light every mesh with an environment map at full strength, which dominates once the sun is dim.
+
+**Fix:** after boot, lower `renderer.three.scene.environmentIntensity` (Lanternfall uses 0.06, Breakpoint 0.42, Chain Reaction 0.55) and add three.js lights to `renderer.three.scene` yourself. Keep a small fixed pool of `PointLight`s with `castShadow = false` and move or re-colour them each frame rather than adding and removing lights, since a change in light count can force material recompiles (`LIGHT_POOL` in `apps/lanternfall/src/view/present.ts`).
+
+## Draw calls climb with each character
+
+**Symptom:** a handful of skinned glTF characters adds dozens of draw calls, and fps drops long before the triangle count looks large.
+
+**Cause:** every shadow-casting mesh is drawn once in the main pass and once more for each shadow cascade (`CSM_CASCADES`, 3, in `packages/renderer/src/defaults/lighting.ts`). A character made of several skinned meshes multiplies that again.
+
+**Fix:** turn off shadows for things that do not need them: `"castShadow": false` on the entity in the scene, or `mesh.castShadow = false` on meshes you add (small props, distant crowds, decals). Merge a character's meshes when the asset allows it, and watch `drawCalls` in `stats()` (or the overlay, toggled with the backtick key) as you add characters. More: [cookbook/instanced-crowds-and-perf.md](cookbook/instanced-crowds-and-perf.md).
+
+## Decals on a splat floor get ink outlines
+
+**Symptom:** with `post.style: "toon"`, a flat mesh lying on a Gaussian-splat floor (a puddle, a scorch mark, a target ring) gets a dark ink line around its edge.
+
+**Cause:** the outline pass reads a mesh-only depth/normal prepass. The splat floor is not in it, so at the decal's edge the prepass sees a depth step from the decal to empty background and draws ink. There is no per-object outline opt-out.
+
+**Fix:** make decals transparent materials (`transparent: true`, even at full opacity): transparent meshes are left out of the prepass and get no lines. See [cookbook/post-and-toon-style.md](cookbook/post-and-toon-style.md).
+
+## A copied fps bench measures the wrong thing
+
+**Symptom:** a `bench/fps.mjs` copied from another game times out, measures a title screen, or reports numbers that do not change with your scene.
+
+**Cause:** each game's bench hard-codes its own preview port, URL params (seed, wave, level) and the phases it waits for. Rockfall's, for example, uses port 5242 and opens a fixed wave with rubble.
+
+**Fix:** after copying, change the port to one your app does not use, the query string to one your `?demo=1` bot understands, and every phase name or probe it polls on `__pebble3d.game`. Build first (`pnpm --filter <app> build`). Benches are listed in [verification.md](verification.md#benches-and-capture-scripts).
 
 
 ===== docs/cookbook/scene-basics.md =====
@@ -2830,6 +2925,689 @@ Object.assign(window.__pebble3d ?? {}, {
 See it in: [apps/pebble-garden/src/garden/sim.ts](../../apps/pebble-garden/src/garden/sim.ts) (worlds from the loaded module, lines 43-46; spawn from `expandScene` and views, lines 133-186; one tick, lines 221-237) with [apps/pebble-garden/src/view/garden-view.ts](../../apps/pebble-garden/src/view/garden-view.ts) (meshes from `primitiveGeometry`, placed with `readSlot`, lines 165-176), [apps/ringout/src/game/physics.ts](../../apps/ringout/src/game/physics.ts) (world factory and views that re-point after growth, lines 15-70), [apps/ringout/src/game/app.ts](../../apps/ringout/src/game/app.ts) (accumulator in `onFrame`, lines 491-503; alpha, lines 563-569), [apps/ringout/src/main.ts](../../apps/ringout/src/main.ts) (`stateHash` override, lines 95-99), [apps/pebble-garden/src/main.ts](../../apps/pebble-garden/src/main.ts) (lines 182-186), [apps/lanternfall/src/game/sim.ts](../../apps/lanternfall/src/game/sim.ts) (raycast work deferred to the first tick, lines 325-329).
 
 
+===== skills/make-a-game/SKILL.md =====
+
+---
+name: make-a-game
+description: Use when a developer asks for a game, a game prototype or a playable demo built with Pebble3D (for example "make me a game where...", "build a racing game", "prototype this idea"). Start here before writing any game code.
+---
+
+# Make a game
+
+The front door for every game request in this repo. It fixes the order of work and the check that ends each step. The other skills hold the how; this one holds the sequence. Follow it in order and do not skip ahead to code.
+
+Assumptions: you are in a clone of the Pebble3D monorepo, the game becomes a new app in `apps/<name>/` like the demos in `apps/`, and the repo is set up (`pnpm i && pnpm build:wasm`, see [docs/getting-started.md](../../docs/getting-started.md)). The working rules for the repo are in [AGENTS.md](../../AGENTS.md).
+
+## The sequence
+
+interview → brief → scaffold → build → game feel → art pass → complete loop → verify
+
+| Step          | Load                                                                                                                      | Exit check before moving on                                                                                                                       |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Interview     | [game-interview](../game-interview/SKILL.md)                                                                              | Every open question is answered, defaulted, or written down as an assumption.                                                                     |
+| Brief         | [game-interview](../game-interview/SKILL.md) (its last section)                                                           | `apps/<name>/BRIEF.md` exists and the developer said yes to it (or, non-interactive, its assumptions are marked).                                 |
+| Scaffold      | [start-a-game](../start-a-game/SKILL.md)                                                                                  | `pnpm --filter <name> dev` serves the scene, the first capture shows it (not black), zero console errors, `npx vitest run --project <name>` runs. |
+| Build         | [engine-pitfalls](../engine-pitfalls/SKILL.md), then [genre-playbooks](../genre-playbooks/SKILL.md) for the closest genre | The core verbs from the brief work with the keyboard, the `?demo=1` bot performs them, and sim tests pass.                                        |
+| Game feel     | [game-feel](../game-feel/SKILL.md)                                                                                        | Every player action has visible and audible feedback; a capture sequence shows it.                                                                |
+| Art pass      | [art-direction](../art-direction/SKILL.md)                                                                                | Captures match the "look" section of the brief; palette, lighting and post are one committed style, not defaults.                                 |
+| Complete loop | [complete-game-loop](../complete-game-loop/SKILL.md)                                                                      | Title → play → win or lose → results → restart works by keyboard and by the `?demo=1` bot; README lists controls and URL params.                  |
+| Verify        | [verify-your-work](../verify-your-work/SKILL.md)                                                                          | Everything in that skill passes. **`verify-your-work` defines done; never report done without it.**                                               |
+
+Load [verify-your-work](../verify-your-work/SKILL.md) early too: run its quick checks (a capture, the console, the tests) at the end of every step from scaffold on, not only at the end. A step whose capture you have not looked at is not finished.
+
+Load [engine-pitfalls](../engine-pitfalls/SKILL.md) whenever something renders black, throws, times out in a capture, or behaves differently in Node and the browser. Look up the symptom there and in [docs/troubleshooting.md](../../docs/troubleshooting.md) before debugging from scratch.
+
+## What the developer may skip
+
+The developer decides; you do not skip on their behalf.
+
+- **Interview**: "just build it", or a request that already answers what the player does, the look, controls, players and scope. You still write `BRIEF.md`, with the defaults listed under assumptions, and show it.
+- **Developer approval of the brief**: only when they said not to wait. Then proceed on the assumptions and say so in your first progress message.
+- **Game feel, art pass**: only for an explicitly throwaway prototype ("just the mechanic, grey boxes are fine"). Record the skip in `BRIEF.md` under out of scope.
+- **Complete loop**: the same rule; a mechanic test may stop at "play". Keep the `?demo=1` bot anyway, because verification drives it.
+- **Never skippable**: scaffold, build, and verify. A game that was not captured, looked at and tested is not delivered.
+
+If the developer changes direction mid-way, update `BRIEF.md` first, then continue from the earliest step the change affects.
+
+## Working habits
+
+- One step at a time. Finish its exit check, tell the developer in one or two lines what now works, then load the next skill.
+- Show, do not describe: when a step changes what is on screen, share the capture with the progress message.
+- Study before inventing. The demos in `apps/` solve most problems a new game hits; [docs/examples.md](../../docs/examples.md) lists what each one shows, and the cookbook in [docs/cookbook/](../../docs/cookbook/README.md) has the recipes.
+- Keep the repo invariants from [AGENTS.md](../../AGENTS.md): seeded randomness only in the sim (no `Math.random` or `Date`), no per-frame allocation, no engine changes. If the game needs an engine feature, tell the developer instead of editing `packages/` or `crates/`.
+- Original work only: never name, copy or imitate an existing commercial game, its characters or its art.
+- Online multiplayer is not available (the engine has no netcode). Offer local multiplayer on one keyboard or bot opponents, as `apps/ringout` does.
+
+## Reporting done
+
+Only after `verify-your-work` passes, report: what was built (link `BRIEF.md`), how to run it (`pnpm --filter <name> dev` and the URL), the controls, the captures you looked at, test results, and any assumption or skip still open.
+
+
+===== skills/game-interview/SKILL.md =====
+
+---
+name: game-interview
+description: Use when a game request leaves open what the player does, how it should feel or look, the controls, the players or the scope, and you need a short design brief the developer approves before any code is written.
+---
+
+# Game interview
+
+Turn a request ("a game where you bounce enemies off the edge") into `apps/<name>/BRIEF.md`, a one-page brief the developer says yes to. The goal is to learn what they picture, not to fill a form. Next: `start-a-game`.
+
+## Rules
+
+- **At most six questions, one per message.** Wait for the answer before the next.
+- **Ask only what the request leaves open.** If they said "racing game with a drone", do not ask what the player does.
+- **Propose, do not interrogate.** Once you know _why_ they want the game, offer a concrete default and let them correct it: "I'd make it one screen, top-down camera, three lives. Sound right?" beats "How many lives?".
+- **Biggest unknown first.** Usually the look or what the player does. A good opener restates the request in one sentence, then asks one open question about the vaguest word in it: "When you say very stylized, what do you picture?"
+- **Show, when the look is their call.** Words fail for visuals; see "Mockups" below.
+- Never name or suggest imitating an existing commercial game. If the developer names one, ask what they like about it (the feel, the camera, the pace) and write that down instead of the title.
+- Keep a running list of what you have decided. That list becomes the brief.
+
+## The six topics
+
+In rough priority order. Skip any the request or an earlier answer already settles.
+
+| Topic                | What you need                                                                | Default to propose if they shrug                                                 |
+| -------------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| What the player does | The core verbs (roll, dash, jump, place, shoot) and the goal of a round      | One verb plus one special move, a round that ends in a win or a loss             |
+| The feel             | Pace and weight: floaty or heavy, frantic or calm, forgiving or punishing    | Responsive and weighty, short rounds, quick restart                              |
+| The look             | Style, palette, mood, camera; what it should remind them of (in their words) | One committed style suggested by the theme (for example toon with bold outlines) |
+| Controls, platform   | Keyboard, mouse, gamepad, touch; desktop or phone browser                    | Keyboard on a desktop browser                                                    |
+| Players              | Single player, local multiplayer on one keyboard, or online                  | Single player against bots                                                       |
+| Scope of v1          | What the first playable version contains, and what waits                     | One arena or level, the full loop (title, play, results, restart)                |
+
+**Players:** the engine has no online netcode. If they want online play, say so plainly and offer local multiplayer on one keyboard, bot opponents, or both, as `apps/ringout` does ([its README](../../apps/ringout/README.md)). Put online play under out of scope.
+
+## Mockups
+
+When the look (or a visual effect) is the developer's call and they cannot describe it, offer to show options instead of asking:
+
+1. Write a throwaway HTML page outside the app (a temp folder is fine) with a few small animated variants side by side: for example four hit-effect styles, three palettes, or two camera angles. Label each with a letter.
+2. Open it in their browser and ask which one is closest, or what to mix.
+3. If they pick one and want more detail, make a second, more detailed page of that one.
+4. When the choice depends on how it looks in the real renderer, do a quick in-engine test: a scene file in `apps/playground/scenes/` captured with `pnpm shot --scene <name>` (the file name without `.json`; see [docs/getting-started.md](../../docs/getting-started.md)). Delete the test scene afterwards.
+
+Keep mockups cheap: minutes, not hours. They decide a direction; they are not the game.
+
+## Non-interactive or "just build it"
+
+If you cannot hold a back-and-forth (a headless run, a tool without replies) or the developer says "just build it":
+
+1. If you can send one message and get one reply, ask all your open questions in that single message, each with the default you will use, so they can answer only the ones they care about.
+2. If there is no reply, or they said "just build it", use the defaults from the table above (adjusted to whatever the request did say).
+3. Write `BRIEF.md` anyway, with every default listed under **Assumptions**, and continue without waiting for approval. Mention the assumptions in your first progress message so the developer can correct them.
+
+## Writing the brief
+
+1. Pick the app name: short, lowercase, hyphenated, original (not a commercial title), and not already a folder in `apps/`. It is also the package name and the `--filter` name.
+2. Copy [brief-template.md](brief-template.md) to `apps/<name>/BRIEF.md` (create the folder; `start-a-game` fills in the rest). Fill every section in the developer's words where you can. Keep it to one page.
+3. Show it to the developer: "Here is the brief. Yes, or what should change?" Edit until they say yes.
+4. Exit check: `BRIEF.md` exists, has no empty sections, and is approved (or its assumptions are marked, in the non-interactive case).
+
+
+===== skills/start-a-game/SKILL.md =====
+
+---
+name: start-a-game
+description: Use when creating a new game app under apps/ in the Pebble3D repo, before writing gameplay code, to scaffold it the way the demos are laid out and prove it boots, captures and runs its tests.
+---
+
+# Start a game
+
+Scaffold `apps/<name>/` so it builds, serves, captures and tests like the demos do, before any gameplay exists. `<name>` is the app name from `apps/<name>/BRIEF.md`. Next: build the game (`make-a-game` says which skill).
+
+The full walkthrough with every file is [docs/getting-started.md](../../docs/getting-started.md) (section "A minimal game app"). This skill is the checklist and the template to copy.
+
+## Template: Ringout
+
+Copy the layout of `apps/ringout`, a small, complete game (title, play, results, rematch, bot, captures). Read these before copying:
+
+| File                                                                | Take from it                                                                                                                                                                                                                                                                        |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [package.json](../../apps/ringout/package.json)                     | Scripts `dev` (with `--port <n> --strictPort`), `build`, `preview`, `test`, `typecheck`; deps `@pebble3d/sdk`, `@pebble3d/renderer` (`workspace:*`) and the pinned `three`. Change `name` and the port.                                                                             |
+| [vite.config.ts](../../apps/ringout/vite.config.ts)                 | `publicDir: "../playground/public"`, `appType: "mpa"`, `server.fs.allow`, the env var for the build base. Rename the env var. If the game loads glTF or KTX2, copy [apps/rockfall/vite.config.ts](../../apps/rockfall/vite.config.ts) instead: it adds the Basis transcoder plugin. |
+| [index.html](../../apps/ringout/index.html)                         | `<canvas id="app">`, a HUD root, the favicon link, the module script.                                                                                                                                                                                                               |
+| [src/main.ts](../../apps/ringout/src/main.ts)                       | URL params documented in the top comment and parsed strictly; `createGame` with both wasm `?url` imports, `mode`, `backend`, `stopAtTick`; `window.__pebble3d` probes; `main().catch` writing `__pebble3d.error`.                                                                   |
+| [README.md](../../apps/ringout/README.md)                           | Sections: what it is, Run it (commands and a URL param table), Controls, What it shows off, Known issues.                                                                                                                                                                           |
+| [bench/capture-final.sh](../../apps/ringout/bench/capture-final.sh) | Build once, then one `pnpm shot` per moment with `--no-build`, a fixed `--port`, `--param demo=1`; stops on the first failure.                                                                                                                                                      |
+
+Also copy `tsconfig.json` and `vitest.config.ts` from `apps/ringout/` (change the project `name`). Keep game code under `src/game/` (sim, bot, input, UI) and scenes under `scenes/`. Start with the smallest scene that shows something: a ground, a light preset, one player body.
+
+## Checklist
+
+1. **Folder and files.** Create the files above in `apps/<name>/`. `BRIEF.md` is already there from `game-interview`; do not overwrite it.
+2. **Pick an unused port.** List the ports in use:
+
+   ```bash
+   grep -rhoE -- '--port[ =][[:digit:]]+' apps/*/package.json apps/*/bench | sort -u
+   ```
+
+   Pick a free one for `dev` (keep `--strictPort`, so a clash fails loudly instead of moving), and a different free one for the capture script's `--port`. Ringout uses 5270 for dev and 5271 for captures. Note the default playground dev server uses 5173.
+3. **Register the tests.** Add `"apps/<name>"` to the `projects` array in the root `vitest.config.ts`, next to the other apps. Without it the app's tests never run and `--project <name>` matches nothing.
+4. **Demo mode.** Parse `?demo=1` in `src/main.ts` and drive the game with a bot that writes the same input a player produces. At this stage the bot can be trivial (press start, move toward something); it grows with the game. See [docs/cookbook/demo-bot-and-captures.md](../../docs/cookbook/demo-bot-and-captures.md).
+5. **Fixed-tick mode.** Read `mode` and `ticks` and pass `stopAtTick`, or every `pnpm shot` times out.
+6. **WebGL fallback.** `createGame` already honours `?webglFallback=1` (see [docs/troubleshooting.md](../../docs/troubleshooting.md)): do not pass `webglFallback: false`, and support `?backend=webgl` like Ringout does. Check both URLs load.
+7. **Sub-path builds.** Keep asset URLs root-absolute (`/assets/...`) and build URLs in code from `import.meta.env.BASE_URL`, so the game can be hosted under a sub-path: [docs/cookbook/sub-path-hosting.md](../../docs/cookbook/sub-path-hosting.md).
+8. **Install.** Run `pnpm install` at the repo root so pnpm links the workspace packages.
+9. **A first test.** One Node test in `test/` that loads the scene and steps the sim with the real wasm (pattern in [docs/getting-started.md](../../docs/getting-started.md), "Tests in Node").
+
+## Exit check
+
+All of these, before any gameplay work. The dev server never exits, so start it in the background or a second terminal (not in the same shell before the other commands, which would block), and leave it running while you open the pages:
+
+```bash
+npx vitest run --project <name>          # runs your test (not "No projects were found")
+pnpm --filter <name> typecheck
+pnpm shot --app <name> --param demo=1 --ticks 120 --name first
+pnpm --filter <name> dev &               # background; open http://localhost:<port>/ and /?demo=1
+```
+
+- The shot exits 0, its `.json` sidecar has an empty `console` array, and you opened the PNG whose path the shot prints: the scene is visible, not black or empty.
+- `?webglFallback=1` and `?backend=webgl` load without errors.
+- `pnpm lint` is clean for the new files.
+
+If the shot fails or the frame is black, look up the symptom in [docs/troubleshooting.md](../../docs/troubleshooting.md) (stale wasm after a pull is the usual cause: `pnpm build:wasm`).
+
+
+===== skills/verify-your-work/SKILL.md =====
+
+---
+name: verify-your-work
+description: Use when a Pebble3D game or app change looks finished, at the end of every make-a-game step from scaffold on, or before telling anyone a game works. Defines done: tests, captures, sidecars, looking at every image, both backends.
+---
+
+# Verify your work
+
+This skill is the definition of done. A game is not done because it compiles or because a capture exited 0. It is done when the checks below pass and you have looked at what the player will see. Never report done without it.
+
+The reference for every command and flag is [docs/verification.md](../../docs/verification.md). The demo bot and capture script pattern is [docs/cookbook/demo-bot-and-captures.md](../../docs/cookbook/demo-bot-and-captures.md). Any failure: look it up in [docs/troubleshooting.md](../../docs/troubleshooting.md) before debugging from scratch.
+
+`<name>` below is the app folder under `apps/`.
+
+## Quick checks (end of every step)
+
+Run these at the end of every [make-a-game](../make-a-game/SKILL.md) step from scaffold on. They take a minute and catch most regressions.
+
+```bash
+npx vitest run --project <name>
+pnpm shot --app <name> --param demo=1 --ticks 600 --name check
+```
+
+1. The tests pass, and the output shows your test files ran (not "No test files found").
+2. The shot exits 0. Its last line names the backend, adapter, tick and `stateHash`.
+3. Open the `.json` sidecar next to the PNG and read it (next section).
+4. Open the PNG whose path the shot prints, and look at it (the section after).
+
+A step whose capture you have not opened is not finished.
+
+## Read the sidecar
+
+Every capture writes a `.json` sidecar beside the PNG. Check each field; a capture that exits 0 can still be wrong.
+
+| Field         | Pass when                                                                                                                                                                                                                       |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `console`     | An empty array. Never allowlist your own errors to get there; fix them. A warning counts too: fix it, or explain it in the README's known issues with the reason. Never leave one silent.                                       |
+| `adapterInfo` | `backend` is the one you asked for, and the device names a real GPU, not SwiftShader or llvmpipe.                                                                                                                               |
+| `tick`        | The tick you asked for with `--ticks`.                                                                                                                                                                                          |
+| `stateHash`   | Different between captures of different moments in a game that moves. The same hash everywhere means the hook reports an idle world: [stateHash never changes](../../docs/troubleshooting.md#the-shot-statehash-never-changes). |
+| `game`        | Your `__pebble3d.game` probes read what the frame should show: the phase (title, playing, results), the bot's current action, score.                                                                                            |
+
+Run the same capture twice: the `stateHash` must match. If it does not, the sim is not deterministic: [determinism hash mismatch](../../docs/troubleshooting.md#determinism-hash-mismatch).
+
+## Look at every image
+
+Open every PNG (and the animated WebP from a `--sequence`) with your image viewer or file reader. Exit 0 only means nothing errored. For each one, check and write down:
+
+- **Not blank.** Not black, not white, not a flat sky with nothing in it. A black or white frame on WebGL only: [WebGL outdoor black/white](../../docs/troubleshooting.md#webgl-outdoor-scene-is-black-or-white).
+- **The subject is in frame.** The player, the goal and the threat are visible and readable at a glance, not hidden behind scenery or off screen.
+- **The moment is the one you meant.** The title capture shows the title, the results capture shows results. If not, move the tick (scout it headless, as the cookbook's "Scout ticks headless" row explains).
+- **The HUD is readable.** Text not clipped or overlapping, contrast against the scene, numbers that make sense.
+- **It matches the brief.** The palette, lighting and mood in the "look" section of `apps/<name>/BRIEF.md`, not engine defaults.
+- **No rendering faults.** Flickering or z-fighting surfaces, stretched textures, floating or sunken objects, characters in a bind pose.
+
+Describe what you saw in one line per image in your report. If you cannot describe it, you did not look. Reading the `.json` sidecar is not looking: the sidecar cannot show a black frame, a clipped HUD or the wrong moment. Every PNG and WebP you captured gets opened and gets its own line, including the ones from the capture script and the WebGL run.
+
+## The full check (before reporting done)
+
+All of these pass, in this order.
+
+1. **Unit and sim tests.** `npx vitest run --project <name>`. The app has a determinism test written like `apps/rockfall/test/sim.test.ts`: the same seed and input log run twice give the same `world.stateHash()`, and one changed input gives a different one.
+2. **Types and lint.** `pnpm typecheck` and `pnpm lint`. Lint must add no new warnings for your files.
+3. **The capture script.** `bash apps/<name>/bench/capture-final.sh` exits 0. It covers at least title, mid-play, a win or loss, the results screen and one `--sequence` of the core action, all driven by the `?demo=1` bot. Read every sidecar and look at every image, as above.
+4. **The demo bot plays the whole loop.** The captures and the `game` probes show it reaching results and restarting, with the same input type a player produces.
+5. **The WebGL path.** WebGPU is not everywhere: Firefox, Safari and many Linux Chromium builds get WebGL. Capture with `--backend webgl` and look at it; it must exit 0 and look like the WebGPU capture. Then load the game with `?webglFallback=1`, headed (the dev server in a browser) or headless (`pnpm shot --app <name> --param webglFallback=1 --param demo=1 --name fallback`), and check it boots and plays with no console errors; do the same for `/?backend=webgl`. `createGame` reads `webglFallback` from the URL by itself; never pass `webglFallback: false`.
+6. **Performance, when you claim it.** Build, then run the app's fps bench on an idle GPU, on both backends, in a browser that reached the real GPU. Numbers from a headless run on SwiftShader, or from one backend only, prove nothing: [misleading fps](../../docs/troubleshooting.md#fps-from-a-headless-or-webgl-run-is-misleading) and [low or noisy fps](../../docs/troubleshooting.md#fps-numbers-are-low-or-noisy). The target is 60 fps.
+7. **Engine determinism, only if engine code changed.** Games should not change `packages/` or `crates/`. If something did change there, run `pnpm build:wasm` and the determinism script from [AGENTS.md](../../AGENTS.md); it must print `2d76d9927e780425`.
+8. **The README.** `apps/<name>/README.md` lists how to run it, the controls and every URL param the game reads (including `demo`, `seed`, `mode`, `ticks`, `backend`), and a known-issues section for any console warning you could not fix, each with its reason.
+
+### Exit lines for the full check
+
+Each of these is a line you can write truthfully in your report, or the check is not done:
+
+- **Every capture opened.** I opened every PNG and WebP I captured (not only the sidecars), and my report has one line per capture saying what it shows.
+- **WebGL fallback loaded.** I loaded the game with `?webglFallback=1` (headed or headless) and it booted and played with no console errors.
+- **No silent console messages.** Every console error and warning from every capture and page load is fixed, or listed in the README's known issues with the reason.
+
+## When headless WebGPU has no adapter
+
+The right action depends on the symptom.
+
+1. **`software/fallback adapter (SwiftShader) refused`** (often after `shot: headless got a software adapter; retrying headed`). Only this case retries: `pnpm shot` tries once more in a visible window, and only with a display (`DISPLAY` or `WAYLAND_DISPLAY` set). Pass `--headed` to go straight there. Details: [SwiftShader adapter](../../docs/troubleshooting.md#shot-refuses-a-swiftshader-adapter).
+2. **`BackendUnavailable: webgpu (WebGPURenderer fell back to WebGL)` or `requested backend webgpu but the page ran webgl`.** The shot does not retry these; headed alone will not help. Open `chrome://gpu` in the same Chromium and read the WebGPU line. On Linux, WebGPU is often off: launch with `--enable-unsafe-webgpu --enable-features=Vulkan --use-angle=vulkan` (`pnpm shot` already does). Details: [BackendUnavailable: webgpu](../../docs/troubleshooting.md#backendunavailable-webgpu). To check the fallback itself rather than WebGPU, capture with `--param webglFallback=1` or `--backend webgl`; that is a WebGL check and does not stand in for the WebGPU capture.
+3. **Your own boot must report the adapter.** A custom boot without `createGame` has to fill `__pebble3d.adapterInfo`, or the software check cannot work: [SwiftShader adapter](../../docs/troubleshooting.md#shot-refuses-a-swiftshader-adapter).
+4. **No GPU at all** (a container, a remote shell without a display): you cannot verify rendering there. Still run the Node tests, typecheck and lint, then tell the developer plainly that no capture was taken and why, and ask them to run the capture script on a machine with a GPU. Do not switch to WebGL on SwiftShader, allowlist the error, or describe images you did not see.
+
+## Reporting done
+
+Report only after the full check passes:
+
+- What was built, with a link to `apps/<name>/BRIEF.md`.
+- How to run it: `pnpm --filter <name> dev` and the URL, plus the controls.
+- Test, typecheck and lint results, as the commands printed them.
+- The captures you looked at, each with the PNG path the shot printed and your one-line description of it.
+- Which backends you checked, and fps only if you measured it as above.
+- Anything skipped or still open, and every assumption from the brief that the developer has not confirmed.
+
+If any check failed and you could not fix it, say which one and what you saw. A precise "not done yet" is worth more than a false "done".
+
+
+===== skills/engine-pitfalls/SKILL.md =====
+
+---
+name: engine-pitfalls
+description: Use when building gameplay with Pebble3D, and whenever something renders black, throws, times out in a capture, or behaves differently in Node and the browser. Known engine traps as "if you see X, do Y", each linked to the full fix.
+---
+
+# Engine pitfalls
+
+Traps that cost the demo builders hours. Read the whole list once before the build step of [make-a-game](../make-a-game/SKILL.md), then come back by symptom. Each line says what to do; the link has the cause and the full fix in [docs/troubleshooting.md](../../docs/troubleshooting.md). Do not debug from scratch before checking here.
+
+## Rendering
+
+- **`BackendUnavailable: webgpu`** → the browser has no WebGPU. Open with `?webglFallback=1` or `?backend=webgl`, or launch Chromium with the WebGPU flags; check `chrome://gpu`. [Fix](../../docs/troubleshooting.md#backendunavailable-webgpu)
+- **Outdoor scene black or white on WebGL only** → load HDRIs through the engine's environment loader, not your own PMREM. [Fix](../../docs/troubleshooting.md#webgl-outdoor-scene-is-black-or-white)
+- **Your camera drifts when the mouse drags or scrolls** → dispose the default orbit controller after boot and set it to null. [Fix](../../docs/troubleshooting.md#the-orbit-camera-fights-your-camera)
+- **A second character slides in its bind pose** → only the player gets an animated view; attach the others yourself. Entity order picks the player. [Fix](../../docs/troubleshooting.md#other-characters-do-not-animate)
+- **A teleported static body's mesh stays put** → anything that moves must be `"kinematic"`. [Fix](../../docs/troubleshooting.md#a-static-mesh-does-not-move)
+- **Night or interior scene looks like daylight** → lower the scene's `environmentIntensity` and add a fixed pool of three.js point lights; the schema has only a sun. [Fix](../../docs/troubleshooting.md#a-night-scene-is-too-bright)
+- **Draw calls jump with each character** → shadow casters draw once per cascade; turn shadows off for props, crowds and decals. [Fix](../../docs/troubleshooting.md#draw-calls-climb-with-each-character)
+- **Toon ink lines around decals on a splat floor** → make the decals transparent materials. [Fix](../../docs/troubleshooting.md#decals-on-a-splat-floor-get-ink-outlines)
+- **Two captures of the same tick differ by a few pixels** → normal GPU noise; compare `stateHash`, not bytes. [Fix](../../docs/troubleshooting.md#two-identical-shots-differ-slightly)
+
+## Physics and sim
+
+- **`world.setVelocity is not a function`, or a feature silently does nothing after a pull** → stale wasm: `pnpm build:wasm`, restart the dev server. [Fix](../../docs/troubleshooting.md#stale-wasm-setvelocity-is-not-a-function)
+- **Determinism hash mismatch** → stale wasm first, then `Math.random`/`Date`/wall-clock `dt` in the sim, then the `fast` build. [Fix](../../docs/troubleshooting.md#determinism-hash-mismatch)
+- **Node test hash differs from the browser at the same tick** → mirror the browser tick order exactly: physics step, refresh views, bot, rules. [Fix](../../docs/troubleshooting.md#headless-hash-differs-from-the-browser)
+- **Bot or rules input ignored on high-refresh displays** → re-send your character input at the end of every frame, after the tick loop. [Fix](../../docs/troubleshooting.md#your-setcharacterinput-is-overwritten)
+- **Reads return zeros after a spawn** → a spawn detached the views; call `views.refresh()` and read through the views object. [Fix](../../docs/troubleshooting.md#state-views-read-zeros-after-a-spawn)
+- **Raycast misses on a world you just built** → step once before the first query. [Fix](../../docs/troubleshooting.md#raycasts-miss-on-a-new-world)
+- **You want collision callbacks** → there are none; detect contacts in your rules from distances and velocities. [Fix](../../docs/troubleshooting.md#there-are-no-contact-events)
+- **A ball rolls forever** → set `angularDamping` on rolling bodies. [Fix](../../docs/troubleshooting.md#spheres-roll-forever)
+- **The game crawls under heavy physics** → cap ticks per frame, consider the `fast` build or a worker. [Fix](../../docs/troubleshooting.md#heavy-physics-makes-the-game-crawl)
+- **You need a per-tick hook or runtime spawns** → `createGame` has neither; advance your own sim in `onFrame` or boot like Rockfall. [Fix](../../docs/troubleshooting.md#creategame-has-no-per-tick-hook)
+- **Level switch leaves the old game running** → one game per page; new worlds inside it, or reload with new params. [Fix](../../docs/troubleshooting.md#a-second-game-on-the-same-page)
+- **Scene errors appear one per run** → validate with `SceneSchema.safeParse` and print every issue. [Fix](../../docs/troubleshooting.md#only-the-first-scene-error-is-reported)
+- **`TS2352` on an imported scene JSON** → cast through `unknown`. [Fix](../../docs/troubleshooting.md#ts2352-when-passing-an-imported-scene-json)
+
+## Assets and hosting
+
+- **404 for `/favicon.ico` or an asset fails a capture** → add the favicon link, run `pnpm fetch-assets`, copy a demo's `vite.config.ts`. [Fix](../../docs/troubleshooting.md#shot-fails-on-a-404)
+- **Assets, transcoder or wasm 404 under a sub-path** → keep URLs root-absolute and pass hand-loaded ones through `renderer.assetUrl`. [Fix](../../docs/troubleshooting.md#assets-404-under-a-sub-path)
+- **`fetch-assets` hash mismatch or failed avatar** → check the download; the avatar build is linux-x64 only. [Fix](../../docs/troubleshooting.md#fetch-assets-hash-mismatch-or-failed-avatar)
+
+## Captures, benches and toolchain
+
+- **Shot times out on `__pebble3d.done`** → read `mode` and `ticks` from the URL and pass `stopAtTick`; catch boot errors into `__pebble3d.error`. [Fix](../../docs/troubleshooting.md#shot-times-out-waiting-for-__pebble3ddone)
+- **Shot refuses a SwiftShader adapter** → run where a real GPU and a display exist, or `--headed`; a custom boot must report its adapter. [Fix](../../docs/troubleshooting.md#shot-refuses-a-swiftshader-adapter)
+- **`--out must be inside` the capture folder** → omit `--out`, or keep it under the default capture folder. [Fix](../../docs/troubleshooting.md#shot---out-rejected)
+- **Sidecar `stateHash` never changes** → point `__pebble3d.stateHash` at the world your game really runs. [Fix](../../docs/troubleshooting.md#the-shot-statehash-never-changes)
+- **Fixed-mode captures flaky with a worker sim** → run the sim inline in fixed mode, the worker only in realtime. [Fix](../../docs/troubleshooting.md#fixed-mode-captures-with-a-worker-sim)
+- **fps looks good headless, or only WebGL was measured** → confirm a real GPU renderer string and measure both backends. [Fix](../../docs/troubleshooting.md#fps-from-a-headless-or-webgl-run-is-misleading)
+- **Low or swinging fps** → another process is using the GPU; measure on an idle one. [Fix](../../docs/troubleshooting.md#fps-numbers-are-low-or-noisy)
+- **A copied fps bench measures the wrong thing** → change its port, query string and polled phases. [Fix](../../docs/troubleshooting.md#a-copied-fps-bench-measures-the-wrong-thing)
+- **`ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` in a Node script** → no constructor parameter properties or `enum` in code Node imports. [Fix](../../docs/troubleshooting.md#parameter-properties-fail-in-a-node-script)
+- **A new app's tests never run** → add its `vitest.config.ts` and register it in the root `projects` list. [Fix](../../docs/troubleshooting.md#a-new-apps-tests-never-run)
+- **`pnpm docs` does nothing** → it is a pnpm builtin; use `pnpm docs:gen`. [Fix](../../docs/troubleshooting.md#pnpm-docs-does-nothing-useful)
+- **`scene.schema.json` stale or in a merge conflict** → never hand-merge; regenerate it. [Fix](../../docs/troubleshooting.md#sceneschemajson-is-stale)
+- **`!important` vanished after a lint fix** → never run biome `--unsafe` over CSS. [Fix](../../docs/troubleshooting.md#biome---unsafe-removed-important)
+
+## Before you invent a workaround
+
+The demos in `apps/` hit most of these and solved them; [docs/examples.md](../../docs/examples.md) says which demo shows what, and the cookbook in [docs/cookbook/](../../docs/cookbook/README.md) has the patterns. If the fix needs an engine change, stop and tell the developer instead of editing `packages/` or `crates/`. Then prove the fix with [verify-your-work](../verify-your-work/SKILL.md).
+
+
+===== skills/game-feel/SKILL.md =====
+
+---
+name: game-feel
+description: Use when a Pebble3D game's core actions work but feel flat, at the game-feel step of make-a-game, or when a hit, jump, dash or win needs more impact. Layers hit-stop, shake, camera punch, trails, particles, decals, buffering, easing and sound, then tunes them by watching capture sequences.
+---
+
+# Game feel
+
+A game whose mechanics work is a tech demo. A game where every press gets an answer you can see and hear, and the big moments land with weight, is a game. This skill is the polish half of the build: it comes after the core verbs work and before the art pass.
+
+The values to start from, with the demo file that uses each one, are in [techniques.md](techniques.md). Ronin Outpost (`apps/katana-defense`) is the densest reference: read [present.ts](../../apps/katana-defense/src/game/present.ts), where every sim event becomes feedback.
+
+## The process
+
+1. **Pick the moments.** From the brief, choose the three to five moments that matter most: the hit, the jump, the kill, getting hurt, the win. Write them in `BRIEF.md` under a "feel" heading. Polish these deeply; everything else gets a basic cue.
+2. **Give every action an answer.** Before layering, check that every input the player can make produces a visible change and a sound within a tick or two. Missing feedback is the most common reason a game feels broken.
+3. **Layer each big moment.** Build the stack below, one layer at a time, capturing after each.
+4. **Tune by watching** (the loop at the end). Feel lives in motion; a single frame cannot show it.
+
+## The layers
+
+Not every moment needs every layer. A heavy hit takes the full stack; a footstep takes a puff and a tick of sound.
+
+| Layer             | What it does                                                           | Lives in     |
+| ----------------- | ---------------------------------------------------------------------- | ------------ |
+| Hit-stop          | Freezes both sides for a few frames on contact, so the hit reads solid | sim          |
+| Impact frame      | One to three frames of high-contrast flash on the heaviest hits        | presentation |
+| Screen shake      | Trauma that decays; the offset is trauma squared                       | presentation |
+| Camera punch      | The lens narrows by a few degrees and springs back                     | presentation |
+| Slow motion       | Game time drops for the one decisive moment, then eases back           | presentation |
+| Trails            | A tapering ribbon behind the striking edge or a fast body              | presentation |
+| Particles         | Sparks, chunks and dust that arc with gravity and land                 | presentation |
+| Persistent decals | Pools, cracks and rings that stay on the floor after the action        | presentation |
+| Telegraphs        | Enemy wind-ups drawn on the ground before the hit                      | presentation |
+| Input buffering   | A press slightly early still counts; cancel windows chain moves        | sim          |
+| Easing            | Wind-up, strike, follow-through; exponential approach for cameras      | both         |
+| Sound             | A cue per action and per hit, scaled by weight                         | presentation |
+
+**A heavy hit reads best as a stack**, in this order on the timeline: the hit-stop freeze, an impact frame, screen shake starting as the freeze ends, a brief camera punch-in, a tapering trail on the striking limb that hangs during the freeze, particles that burst and arc with gravity, and decals that stay on the floor after the particles land. Each layer alone is subtle. Together they sell weight.
+
+**Scale by weight.** Light, heavy and finisher hits should differ on every layer: Ronin Outpost's light cuts freeze for fewer frames, shake less and do not punch the camera at all. If everything is maximal, nothing is.
+
+**Keep the sim deterministic.** Hit-stop and buffering change gameplay, so they are sim state driven by ticks. Everything else reads the sim's events after the tick and never writes back. No `Math.random` in either: spread particles with offsets from the loop index, and shake with sums of sines.
+
+## Input feel
+
+- Buffer presses for a few frames and let a press just after a move ends still chain ([combo.ts](../../apps/katana-defense/src/game/combat/combo.ts)). Presses during hit-stop are buffered too.
+- Give moves cancel windows so the follow-up starts the moment the current move's commitment ends.
+- For movement: allow a jump pressed just before landing and just after leaving a ledge. Never drop a tap shorter than one tick ([live-input.ts](../../apps/skyrun/src/game/live-input.ts)).
+- Camera and character followers ease with `1 - Math.exp(-k * dt)`, never a fixed lerp per frame. Recipes: [custom-camera.md](../../docs/cookbook/custom-camera.md).
+
+## Sound
+
+Every action and every hit gets a WebAudio cue fired from the event queue after the tick, louder and lower for heavier events. Unlock the context on the first gesture, cap voices per frame, and keep sound off in fixed mode. The pattern and its gotchas: [audio-sfx.md](../../docs/cookbook/audio-sfx.md).
+
+## Budget
+
+Effects cost fill rate, and layered additive effects can cost several times more on the WebGL backend than on WebGPU. Pool every effect (one preallocated `InstancedMesh` per kind, oldest recycled), cap counts, and measure fps on both backends with the effects on screen, as [verify-your-work](../verify-your-work/SKILL.md) describes, before adding more.
+
+## Tune by watching captures
+
+Stills can look great while the motion is stiff. Judge feel in a sequence:
+
+```bash
+pnpm shot --app <name> --param demo=1 --ticks <just before the moment> --sequence 90:2 --scale 0.6 --no-frames --name feel-hit
+```
+
+`--sequence` writes an animated WebP of the moment (flags: [docs/verification.md](../../docs/verification.md); a real script with sequences: [capture-final.sh](../../apps/ringout/bench/capture-final.sh)). Find the tick of the moment by scouting it headless ([demo-bot-and-captures.md](../../docs/cookbook/demo-bot-and-captures.md)). Then loop:
+
+1. Watch the sequence. For each chosen moment, name what is missing or too much: "the hit has no freeze", "the shake hides the target", "the sparks vanish in place".
+2. Change one value, recapture the same tick with the same seed, and compare.
+3. Stop when each moment reads at a glance in the sequence and a still from the middle of it still shows what happened (trail, particles in the air, a mark on the floor).
+
+## Exit check
+
+- Every player action has a visible and an audible answer.
+- Each chosen moment has its layer stack, scaled by weight, and a `--sequence` capture that you watched shows it.
+- Sim tests still pass and the determinism test still holds (feel code did not leak randomness or presentation state into the sim).
+- The effects are pooled, and fps on both backends with the effects on screen is checked when you claim performance.
+
+Next: [art-direction](../art-direction/SKILL.md).
+
+
+===== skills/art-direction/SKILL.md =====
+
+---
+name: art-direction
+description: Use when a Pebble3D game's look is still engine defaults, at the art-pass step of make-a-game, or when captures look flat, muddy or inconsistent. Commits to one look from the brief (palette, toon or PBR, lighting, post, composition) and judges captures against it over at least two improvement passes.
+---
+
+# Art direction
+
+Default lighting on grey boxes reads as a tech demo, whatever the mechanics. A committed look, one palette, one lighting mood, one rendering style, carried through every object and the HUD, reads as a game. You do not need imported art for it: every demo below builds most of its world from primitives and code.
+
+The scene fields for everything here are in [docs/scene-reference.md](../../docs/scene-reference.md); the post and toon recipe is [post-and-toon-style.md](../../docs/cookbook/post-and-toon-style.md).
+
+## Commit to one look
+
+Write the look in the "look" section of `apps/<name>/BRIEF.md` before touching the scene, in one short paragraph a stranger could check a screenshot against:
+
+- **Mood and time of day.** "Dusk on a floating stone arena", "noon in a dusty quarry", "a dark keep lit only by lanterns".
+- **Palette.** A background family, a ground family and one or two accent colours reserved for what the player must notice: the player, the threat, the goal, pickups. Write the hex values.
+- **Style.** Toon or PBR (next section), and why it fits.
+- **Reference.** One or two of the reference captures below that are closest in spirit, and what you take from each.
+
+Every later choice is checked against this paragraph. If a choice does not serve it, drop it.
+
+## Toon or PBR
+
+| Choose | When                                                                                      | Demo                                                                                                                         |
+| ------ | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `toon` | Stylised characters, action, readability over realism; mixing primitives with glTF models | Ronin Outpost: [arena.json](../../apps/katana-defense/scenes/arena.json)                                                     |
+| `pbr`  | Materials are the point (stone, metal, glass), physics debris, a moody lit interior       | Breakpoint: [site.json](../../apps/breakpoint/scenes/site.json); Ringout: [arena.json](../../apps/ringout/scenes/arena.json) |
+
+`post.style: "toon"` bands the lighting, adds a rim and ink outlines. Objects your code builds need `ToonNodeMaterial` or `renderer.stylize`; the recipe has the details. Pick one and apply it everywhere: a toon character on a PBR ground with no outline reads as a mistake.
+
+## Lighting and sky
+
+- **Outdoor** (`environment.preset: "outdoor"`): an HDRI sky lights the scene; pick one that matches the time of day, and set the sun direction and colour to agree with it. Breakpoint pairs a clear noon sky with a warm sun.
+- **Studio** (`"studio"`): a gradient backdrop from `horizon` to `zenith` and range fog of the same colour. Ringout uses a deep violet horizon, a navy zenith and a peach sun: a whole mood from three colours.
+- **Dark interiors**: low ambient, and the light comes from things in the world (lanterns, emissive pickups), as in Lanternfall. Make sure the player and the threat are always lit.
+- A low, warm, side-on sun gives long shadows and shape; a sun straight overhead flattens everything.
+- Fog hides the ground's far edge and separates depth layers. Tint it to the sky.
+
+## Post
+
+- **Tone mapping and exposure.** `agx` (the default) is soft and natural; `aces` is punchier and more saturated. Raise exposure until the ground reads, not until whites clip.
+- **Bloom** only on what should glow: emissives, beams, effects. Lower the threshold for a softer glow, never so low that sunlit ground blooms.
+- **AO** grounds objects on the floor. Leave it on unless you measured it costing too much.
+- Runtime changes (a dusk grade over waves, a photo exposure) go through `toneMappingExposure`, as the recipe shows.
+
+## Composition and silhouettes
+
+- **Readable at a glance.** In a capture shrunk to thumbnail size, you can still find the player, the threat and the goal. If not, fix value contrast first (light against dark), then colour.
+- **Silhouettes.** Each kind of actor has a distinct shape: size, proportions, a hat or a weapon. Ringout gives every orb its own team colour and a name plate; Swarm Siege keeps towers pale and the swarm saturated.
+- **Accent colour is information.** Reserve the brightest, most saturated colours for gameplay (the player, danger, pickups, the HUD's key number). Scenery stays quieter.
+- **Camera framing.** The default view puts the action in the middle third with space in the direction of travel. Title and results screens can use a slow orbit with the subject off centre, leaving room for text, as Ronin Outpost and Ringout do.
+
+## Stage dressing from primitives
+
+An empty plane is the biggest tell of a tech demo. Dress the stage with what the brief's world would contain, built from boxes, cylinders and spheres with distinct materials: walls and crates, posts and rope, rocks, columns, distant silhouettes on the horizon. Vary scale and colour slightly per instance (seeded, never `Math.random` in the sim). Breakpoint's sites are hundreds of boxes; Skyrun's floating islands are simple shapes over a sea of cloud. Dressing should frame the play space, never hide the player.
+
+## The HUD is part of the look
+
+Use one type family, the palette's accent for the numbers that matter, a translucent panel colour taken from the scene, and consistent corner placement. The HUD must not cover the action. Compare the HUDs in the Ringout, Skyrun and Swarm Siege captures below.
+
+## Reference captures
+
+Committed looks from the demos (the site's 1280x720 WebP captures; how they are made: [site/README.md](../../site/README.md)):
+
+| Look                                                  | Capture                                                                                                                                                              |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Toon outdoor, ink outlines, a blade trail             | [Ronin Outpost, light combo](../../site/public/shots/ronin-outpost/03-light-combo-slash.webp), [dusk wave](../../site/public/shots/ronin-outpost/08-dusk-wave8.webp) |
+| PBR stone under noon sun, dust and debris             | [Breakpoint, impact](../../site/public/shots/breakpoint/03-impact.webp)                                                                                              |
+| Studio dusk backdrop, team colours, bold HUD          | [Ringout, opening clash](../../site/public/shots/ringout/03-opening-clash.webp), [ring drop](../../site/public/shots/ringout/05-ring-drop.webp)                      |
+| Dark interior lit by lanterns, a vision cone          | [Lanternfall, creep](../../site/public/shots/lanternfall/02-creep.webp)                                                                                              |
+| Pastel sky, floating islands, soft fog                | [Skyrun, spire](../../site/public/shots/skyrun/14-spire.webp)                                                                                                        |
+| Night, neon beams on a dark ground, a saturated swarm | [Swarm Siege, firefight](../../site/public/shots/swarm-siege/05-firefight.webp)                                                                                      |
+| Racing, motion and speed                              | [Drift Drone](../../site/public/shots/drift-drone/09-photo-finish.webp), [Ghostline](../../site/public/shots/ghostline/08-ember-glamour.webp)                        |
+
+Open them before you start and name, in the brief, what you take from one or two.
+
+## Judge and improve
+
+The art pass is at least two passes, each ending in captures you looked at.
+
+1. Capture the moments from the brief (title, mid-play, the big moment, results) with the `?demo=1` bot, as [verify-your-work](../verify-your-work/SKILL.md) describes. Open every PNG the shot prints.
+2. Put each capture next to the look paragraph and the reference you chose. Write down, per capture, the three biggest gaps: "ground is flat grey", "the player disappears against the wall", "bloom washes out the HUD", "the sky does not match the sun".
+3. Fix the biggest gaps, recapture the same ticks with the same seed, and compare side by side.
+4. Repeat at least once more. Stop when a stranger would describe the capture in the brief's words.
+
+Check the WebGL backend too (`--backend webgl`): fog, bloom and the toon pass must look the same there.
+
+## Exit check
+
+- The look paragraph in `BRIEF.md` names a palette with hex values, the style, the lighting and a reference capture.
+- Captures of title, mid-play, the big moment and results match it; no engine-default grey ground or default sky remains unless the brief chose it.
+- The player, the threat and the goal read in a thumbnail.
+- At least two judge-and-improve passes, each with captures you opened.
+
+Next: [complete-game-loop](../complete-game-loop/SKILL.md).
+
+
+===== skills/complete-game-loop/SKILL.md =====
+
+---
+name: complete-game-loop
+description: Use when a Pebble3D game plays but has no beginning or end, at the complete-loop step of make-a-game, or before calling a game finished. Adds title, play, results and restart, pause, the HUD, a demo bot that plays the whole loop, a README with controls and sourced numbers, and captures of every screen.
+---
+
+# Complete game loop
+
+A mechanic you can play forever with no start screen, no goal and no ending is a prototype. A game has a title that says what to do, a round that can be won or lost, a results screen that says how you did, and a key that starts again. This skill wraps the core play in that loop and documents it.
+
+Template: Ringout (`apps/ringout`) has every piece here at small scale: title with seat setup, countdown, rounds, an instant replay, results, rematch, a bot and a capture script. Read [its README](../../apps/ringout/README.md) and [app.ts](../../apps/ringout/src/game/app.ts) first.
+
+## The phases
+
+```
+title → play → (win | lose) → results → restart → play ...
+```
+
+- **Phases are sim state.** Keep the phase in the sim and change it with a pure transition function, like Ronin Outpost's `nextPhase` in [phase.ts](../../apps/katana-defense/src/game/phase.ts): title, pre-wave, wave, wave clear, upgrade, victory, game over. A test can then drive the whole loop in Node, and the phase feeds the determinism hash.
+- **Every play phase has an end.** A win condition and a lose condition from the brief, and if the game could stall, a limit (Ringout ends a round as a draw after a fight-tick limit, `MAX_FIGHT_TICKS` in [constants.ts](../../apps/ringout/src/game/constants.ts)).
+- **Restart resets everything.** Score, timers, entities, the camera, the HUD and the seeded RNG (from a new or the same seed, as the brief says). A restart that leaks state from the last round is the most common loop bug: test it by playing two rounds in a row in Node and comparing the second round's hash with a fresh first round on the same seed.
+
+## Title screen
+
+- The game's name, one line on the goal, the controls in brief, and "press Enter" (or click). The brief's look applies here too: this is the first frame anyone sees.
+- Put something alive behind it: a slow camera orbit over the arena (Ronin Outpost and Ringout both do), or an attract round played by the bot. Leave room on one side for the text.
+- Any setup (players, difficulty, match length) lives here with keyboard shortcuts, as on Ringout's title.
+- A `?title=1` style param that stays on the title helps the capture script.
+
+## Play and the HUD
+
+- The HUD shows only what the player needs to decide: the score or progress toward the goal, health or lives, a timer if time matters, and the state of the core verb (a cooldown, a meter, ammo). Ringout's HUD is a DOM overlay ([ui/hud.ts](../../apps/ringout/src/game/ui/hud.ts)); its look follows [art-direction](../art-direction/SKILL.md).
+- Announce phase changes on screen: the round banner, "Wave clear", a countdown to the next hazard. A toast for big events (a knock-out, a new best).
+- Show the controls somewhere on first play: a hint bar along the bottom, or the title.
+- A `hud=0` param hides it for clean captures.
+
+## Pause
+
+- Esc (or P) pauses: stop stepping the sim, freeze presentation time, mute or duck sound, and show a small panel with resume, restart and quit to title. In a one-screen local game, Esc may simply return to the title, as Ringout does.
+- Pause when the tab is hidden too, so time does not pile up: Breakpoint listens for `visibilitychange` ([main.ts](../../apps/breakpoint/src/main.ts)). Clear held keys on window blur, or the player keeps running after alt-tab.
+- Pause is not sim input in a replayable game: it stops ticks, it is not recorded as a tick.
+
+## Results and restart
+
+- Say who won or what the outcome was, in big type, then the numbers that matter for this game: score, time, best, per-player stats (Ringout shows wins, knock-outs, dashes and the hardest hit per seat). Show a personal best if the brief wants replay value.
+- One key restarts, one returns to the title. Name both on the screen.
+- **Lock confirm keys briefly** when a results or replay screen appears, so a player still mashing the action key does not skip it. Ringout's `MenuGate` swallows Enter and Space for `LOCK = 0.75` s ([gate.ts](../../apps/ringout/src/game/gate.ts)).
+- Optional but strong: an instant replay of the decisive moment before results, re-simulated from the input log, as Ringout and Breakpoint do.
+
+## The demo bot plays the whole loop
+
+`?demo=1` drives everything through the same input type a player produces: it presses start on the title, plays the round to a win or a loss, waits on results, and restarts. Expose `phase` and the bot's current action as `__pebble3d.game` probes so captures and sidecars show where it is. The pattern: [demo-bot-and-captures.md](../../docs/cookbook/demo-bot-and-captures.md). Pin the ticks of the loop's key moments (first win, results, restart) in a test so a rule change that moves them fails loudly.
+
+**The bot must finish the loop on most seeds, not just one.** A bot that loses or stalls on most seeds makes every capture of results, replay and restart luck. Write a Node test that runs the bot headless over a range of seeds, counts the runs that reach the results phase within a tick limit, and asserts that share is a clear majority. A sketch, with your own sim and bot names:
+
+```ts
+it("the demo bot reaches results on most seeds", () => {
+	let reached = 0;
+	const seeds = Array.from({ length: 20 }, (_, i) => i + 1);
+	for (const seed of seeds) {
+		const sim = makeSim(seed);
+		const bot = makeBot(sim);
+		while (sim.phase !== "results" && sim.tick < MAX_TICKS) sim.step(bot.next());
+		if (sim.phase === "results") reached++;
+		sim.free();
+	}
+	expect(reached / seeds.length).toBeGreaterThanOrEqual(0.8);
+});
+```
+
+If it fails, tune the bot (its aim, timing, which threat it picks), not the game: the rules and numbers in the brief are the player's game, and weakening them so the bot wins changes what you ship. Where the brief wants the bot to show a loss too, assert that separately on a fixed seed.
+
+## README
+
+`apps/<name>/README.md`, with the sections of [Ringout's README](../../apps/ringout/README.md):
+
+1. **What it is**: the pitch in a paragraph, with the game's key numbers.
+2. **Run it**: the install, dev and test commands with the URL, then a table of every URL param the game reads (`demo`, `seed`, `mode`, `ticks`, `backend`, `hud`, `mute`, and the game's own).
+3. **Controls**: a table of every input, per screen. Check each line against the input code; a control the README invents is a bug.
+4. **What it shows off**: the engine features it exercises, each in a sentence.
+5. **Known issues**: what is rough, honestly.
+
+**Every number is sourced.** Each number in the README comes from a constant in the code, a test, or a measurement you ran (say how: backend, machine, idle GPU). Ringout's "61 hexagonal basalt columns in 5 rings" is `RINGS = 5` in [constants.ts](../../apps/ringout/src/game/constants.ts). Do not round up, guess fps, or keep a number after the constant changes.
+
+## Captures
+
+`apps/<name>/bench/capture-final.sh`, after [Ringout's](../../apps/ringout/bench/capture-final.sh): build once, then one shot per moment with `--param demo=1` and a fixed seed, stopping on the first failure. Cover at least the title, mid-play, the big moment, a win or a loss, the results screen and one `--sequence` of the core action. Run it, read every sidecar and open every PNG the shot prints, as [verify-your-work](../verify-your-work/SKILL.md) says.
+
+Putting the game on the project site is a separate step, only when the developer asks: [site/README.md](../../site/README.md) lists the entry, the WebP conversion and the claim checks.
+
+## Exit check
+
+- Title → play → win or lose → results → restart works by keyboard, and by the `?demo=1` bot with no human input.
+- The bot test passes: over a range of seeds, a clear majority of `?demo=1` runs reach results.
+- Pause, tab-hide and Esc behave; restart leaves no state from the last round (tested in Node).
+- The HUD shows what the player needs, and hides with `hud=0`.
+- The README lists how to run it, the controls and every URL param, and every number in it has a source.
+- The capture script covers every screen, and you opened every capture.
+
+Next: [verify-your-work](../verify-your-work/SKILL.md), the full check.
+
+
+===== skills/genre-playbooks/SKILL.md =====
+
+---
+name: genre-playbooks
+description: Use when a Pebble3D game request fits a known genre (racer, platformer, tower defence, physics puzzle, stealth, sandbox, arena brawler, horde action, demolition), at the build step of make-a-game, to reuse the shipped demo that already does that genre well.
+---
+
+# Genre playbooks
+
+Each shipped demo in `apps/` is a worked answer to one genre. A playbook points you at that demo, names the systems the genre needs, the feel points that matter, and the checks that prove the genre works. It does not replace the demo: open it, read its README, and copy its structure before inventing your own.
+
+Load this at the build step of [make-a-game](../make-a-game/SKILL.md), after [engine-pitfalls](../engine-pitfalls/SKILL.md). Polish comes later from [game-feel](../game-feel/SKILL.md) and the definition of done from [verify-your-work](../verify-your-work/SKILL.md); the playbooks only add what is specific to the genre.
+
+## Pick the closest playbook
+
+Read the brief (`apps/<name>/BRIEF.md`) and match the core verb, not the theme. A game about cats racing across rooftops is a platformer or a racer depending on whether the player steers a path or beats a clock.
+
+| The player mainly...                                        | Playbook                            | Demo to study                               |
+| ----------------------------------------------------------- | ----------------------------------- | ------------------------------------------- |
+| Steers a vehicle against a clock or a ghost                 | [racer](racer.md)                   | [drift-drone](../../apps/drift-drone)       |
+| Runs and jumps across platforms                             | [platformer](platformer.md)         | [skyrun](../../apps/skyrun)                 |
+| Places defences and watches waves hit them                  | [tower defence](tower-defence.md)   | [swarm-siege](../../apps/swarm-siege)       |
+| Sets up parts, then runs a machine                          | [physics puzzle](physics-puzzle.md) | [chain-reaction](../../apps/chain-reaction) |
+| Sneaks past watchers to a goal                              | [stealth](stealth.md)               | [lanternfall](../../apps/lanternfall)       |
+| Builds and edits freely with physics                        | [sandbox](sandbox.md)               | [pebble-garden](../../apps/pebble-garden)   |
+| Shoves rivals in a shared arena (local multiplayer or bots) | [arena brawler](arena-brawler.md)   | [ringout](../../apps/ringout)               |
+| Fights a crowd of melee enemies in waves                    | [horde action](horde-action.md)     | [katana-defense](../../apps/katana-defense) |
+| Breaks structures with projectiles                          | [demolition](demolition.md)         | [breakpoint](../../apps/breakpoint)         |
+
+Games often blend two genres. Pick the one that owns the core verb as the base and borrow single systems from the second (for example, a racer with a tower-defence-style upgrade screen).
+
+## When none fits
+
+There is no playbook for fighters, online multiplayer or any genre without a shipped demo. Do not invent one. Use the nearest playbook for structure and the cookbook in [docs/cookbook/](../../docs/cookbook/README.md) for single techniques, and say so: add a line to the assumptions in `BRIEF.md` such as "No playbook for this genre; built on the arena-brawler structure". Tell the developer in your first progress message too.
+
+## How to use a playbook
+
+1. Read the demo README end to end, then the cited source files.
+2. Copy the sim/presentation split. The sim is deterministic and seeded; the view only reads it. Every playbook assumes this.
+3. Build the genre's core systems first and cover them with sim tests before any art.
+4. Before the feel pass, run the genre-specific checks in the playbook. They are in addition to the checks in [verify-your-work](../verify-your-work/SKILL.md), not instead of them.
+
+
 ===== docs/examples.md =====
 
 # Examples map
@@ -3027,6 +3805,12 @@ Where each engine feature is used in the showcase games and the playground: feat
 # Pebble3D
 
 A browser 3D engine: three.js 0.187 (WebGPU, with a WebGL fallback) for rendering, a Rust/WASM Rapier crate for physics, and Gaussian-splat environments. Scenes are plain JSON, validated by a schema, so an agent can write one without reading engine code.
+
+## Agent skills
+
+Ask a coding agent for a game in plain words and it does not start by writing code. The [agent skills](skills/README.md) in `skills/` have it ask at most six short questions (or write down defaults when it cannot ask), write a `BRIEF.md` for you to approve, then build a complete game: title, play, results and restart, with game feel, one committed art direction and a `?demo=1` bot. It verifies the game with tests and screenshots it has looked at before it reports done.
+
+Start with [skills/make-a-game/SKILL.md](skills/make-a-game/SKILL.md), which runs the others in this order: interview, brief, scaffold, build, game feel, art pass, complete loop, verify. Claude Code, Cursor and GitHub Copilot discover the copies in `.claude/skills/`; other agents find them through [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt). Overview: https://pebble3d.github.io/pebble3d/build-with-ai/skills/.
 
 ## Quickstart
 

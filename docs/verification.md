@@ -1,6 +1,6 @@
 # Verification
 
-How to prove a change works: screenshots with `pnpm shot`, determinism hashes, demo bots, fps benches and the console-error policy.
+How to prove a change works: screenshots with `pnpm shot`, determinism hashes, demo bots, fps benches and the console-error policy. Agents that want the checklist version can start from [`skills/verify-your-work/SKILL.md`](../skills/verify-your-work/SKILL.md).
 
 ## `pnpm shot`
 

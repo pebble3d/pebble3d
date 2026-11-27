@@ -21,6 +21,8 @@ export interface Game {
 	/** The first screenshot is the cover. Files live in public/shots/<id>/. */
 	screenshots: { file: string; alt: string }[];
 	caption: string;
+	/** An optional headline number for the home page's proof band. Sourced from the README. */
+	proof?: { stat: string; label: string };
 	/** False while the demo does not render correctly on the WebGL fallback. */
 	webglFallback: boolean;
 }

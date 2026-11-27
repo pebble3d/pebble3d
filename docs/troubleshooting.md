@@ -36,12 +36,18 @@ Error messages and symptoms seen while building Pebble3D and its showcase games,
 | The sidecar `stateHash` is the same in every capture | [stateHash of the idle world](#the-shot-statehash-never-changes) |
 | `!important` vanished from a CSS file after a lint fix | [biome --unsafe](#biome---unsafe-removed-important) |
 | A worker-based sim makes fixed-mode captures flaky or time out | [Worker in fixed mode](#fixed-mode-captures-with-a-worker-sim) |
+| fps looks fine (or terrible) but was measured headless, on SwiftShader or only on WebGL | [Untrustworthy fps](#fps-from-a-headless-or-webgl-run-is-misleading) |
+| `SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript parameter property is not supported in strip-only mode` | [Parameter properties in Node](#parameter-properties-fail-in-a-node-script) |
+| A night or indoor scene is too bright; no point lights in the scene JSON | [Night scenes](#a-night-scene-is-too-bright) |
+| Draw calls climb fast with each skinned character | [Shadow cascades multiply draws](#draw-calls-climb-with-each-character) |
+| Flat decals on a splat floor get ink outlines in the toon style | [Decal outlines](#decals-on-a-splat-floor-get-ink-outlines) |
+| A bench copied from another game reports numbers for the wrong scene, or never connects | [Copied fps bench](#a-copied-fps-bench-measures-the-wrong-thing) |
 
 ## BackendUnavailable: webgpu
 
 **Symptom:** `BackendUnavailable: webgpu (WebGPURenderer fell back to WebGL)` on the page, in `__pebble3d.error`, or as a `pnpm shot` failure.
 
-**Cause:** the browser exposed no usable WebGPU adapter, so three's `WebGPURenderer` fell back to WebGL, and `createRenderer` (`packages/renderer/src/create.ts`) throws when `webgpu` was requested. On Linux, Chromium ships with WebGPU off.
+**Cause:** the browser exposed no usable WebGPU adapter, so three's `WebGPURenderer` fell back to WebGL, and `createRenderer` (`packages/renderer/src/create.ts`) throws when `webgpu` was requested. On Linux, Chromium often ships with WebGPU off; open `chrome://gpu` and look at the WebGPU line to check.
 
 **Fix:**
 - Start Chromium with `chromium --enable-unsafe-webgpu --enable-features=Vulkan --use-angle=vulkan`. `pnpm shot` already passes these (plus `--ignore-gpu-blocklist`).
@@ -322,3 +328,56 @@ const scene = sceneJson as unknown as SceneInput;
 **Cause:** a worker steps on its own clock, so "one tick per frame, stop at n" cannot be enforced across the thread boundary.
 
 **Fix:** run the same sim inline on the main thread whenever `mode` is `fixed` and use the worker only in realtime (`apps/swarm-siege/src/main.ts`, line 81 and lines 133-135; `apps/breakpoint/src/main.ts`, line 85). See [cookbook/instanced-crowds-and-perf.md](cookbook/instanced-crowds-and-perf.md).
+
+## fps from a headless or WebGL run is misleading
+
+**Symptom:** a game "holds 60 fps" in one measurement and stutters for a player, or a bench reports a few fps on a machine with a good GPU.
+
+**Cause:**
+- Headless Chromium without GPU flags renders WebGL on SwiftShader, a CPU rasteriser. Any fps measured there says nothing about the GPU path. `pnpm shot` refuses that adapter; a hand-written Playwright script or bench does not.
+- WebGL can be several times slower than WebGPU for the same scene, so a number from one backend does not carry over to the other. Players on Firefox, Safari or a Chromium without WebGPU get WebGL.
+
+**Fix:**
+- Launch Chromium with `--use-angle=vulkan --enable-features=Vulkan --ignore-gpu-blocklist` (plus `--enable-unsafe-webgpu` for WebGPU), as `scripts/shot/shot.mjs` does.
+- Confirm the renderer string names the real GPU before trusting a number: the sidecar's `adapterInfo`, or in the page `gl.getParameter(gl.getExtension("WEBGL_debug_renderer_info").UNMASKED_RENDERER_WEBGL)` on a WebGL context. "SwiftShader" or "llvmpipe" means software.
+- Measure both backends (`?backend=webgpu` and `?backend=webgl`) on an idle GPU before calling a game smooth. See [fps numbers are low or noisy](#fps-numbers-are-low-or-noisy).
+
+## Parameter properties fail in a Node script
+
+**Symptom:** a headless script or CLI run with `node --experimental-strip-types` (or plain `node` on a version that strips types by default) fails with `SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript parameter property is not supported in strip-only mode`, while vitest and Vite accept the same file.
+
+**Cause:** Node's type stripping only removes type annotations; it does not transform TypeScript-only syntax. A constructor parameter property (`constructor(private readonly sim: MySim) {}`) needs a transform, and so do `enum` and `namespace`. vitest and Vite compile TypeScript fully, so the error appears only in the Node path.
+
+**Fix:** in code a Node script imports (the sim, the bot, level loaders), declare the field and assign it in the constructor: `private readonly sim: MySim; constructor(sim: MySim) { this.sim = sim; }`. Use `as const` objects instead of `enum`. Or run that code through vitest instead of a bare `node` script.
+
+## A night scene is too bright
+
+**Symptom:** a night or interior scene still looks like daylight even with a dim sun, and the scene JSON has no field for point lights or environment strength.
+
+**Cause:** the schema's `lighting` has only `sun`; the `studio` and `outdoor` presets also light every mesh with an environment map at full strength, which dominates once the sun is dim.
+
+**Fix:** after boot, lower `renderer.three.scene.environmentIntensity` (Lanternfall uses 0.06, Breakpoint 0.42, Chain Reaction 0.55) and add three.js lights to `renderer.three.scene` yourself. Keep a small fixed pool of `PointLight`s with `castShadow = false` and move or re-colour them each frame rather than adding and removing lights, since a change in light count can force material recompiles (`LIGHT_POOL` in `apps/lanternfall/src/view/present.ts`).
+
+## Draw calls climb with each character
+
+**Symptom:** a handful of skinned glTF characters adds dozens of draw calls, and fps drops long before the triangle count looks large.
+
+**Cause:** every shadow-casting mesh is drawn once in the main pass and once more for each shadow cascade (`CSM_CASCADES`, 3, in `packages/renderer/src/defaults/lighting.ts`). A character made of several skinned meshes multiplies that again.
+
+**Fix:** turn off shadows for things that do not need them: `"castShadow": false` on the entity in the scene, or `mesh.castShadow = false` on meshes you add (small props, distant crowds, decals). Merge a character's meshes when the asset allows it, and watch `drawCalls` in `stats()` (or the overlay, toggled with the backtick key) as you add characters. More: [cookbook/instanced-crowds-and-perf.md](cookbook/instanced-crowds-and-perf.md).
+
+## Decals on a splat floor get ink outlines
+
+**Symptom:** with `post.style: "toon"`, a flat mesh lying on a Gaussian-splat floor (a puddle, a scorch mark, a target ring) gets a dark ink line around its edge.
+
+**Cause:** the outline pass reads a mesh-only depth/normal prepass. The splat floor is not in it, so at the decal's edge the prepass sees a depth step from the decal to empty background and draws ink. There is no per-object outline opt-out.
+
+**Fix:** make decals transparent materials (`transparent: true`, even at full opacity): transparent meshes are left out of the prepass and get no lines. See [cookbook/post-and-toon-style.md](cookbook/post-and-toon-style.md).
+
+## A copied fps bench measures the wrong thing
+
+**Symptom:** a `bench/fps.mjs` copied from another game times out, measures a title screen, or reports numbers that do not change with your scene.
+
+**Cause:** each game's bench hard-codes its own preview port, URL params (seed, wave, level) and the phases it waits for. Rockfall's, for example, uses port 5242 and opens a fixed wave with rubble.
+
+**Fix:** after copying, change the port to one your app does not use, the query string to one your `?demo=1` bot understands, and every phase name or probe it polls on `__pebble3d.game`. Build first (`pnpm --filter <app> build`). Benches are listed in [verification.md](verification.md#benches-and-capture-scripts).

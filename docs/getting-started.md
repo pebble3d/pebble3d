@@ -2,6 +2,8 @@
 
 From nothing to a JSON scene in the playground, then to a minimal game app with a fixed-tick sim, a `?demo=1` bot and `window.__pebble3d` probes.
 
+> Asking a coding agent to make a game? Point it at [`skills/make-a-game/SKILL.md`](../skills/make-a-game/SKILL.md). It interviews you, writes a brief, builds the game and verifies it. This guide is the manual path.
+
 ## 0. Set up once
 
 ```bash

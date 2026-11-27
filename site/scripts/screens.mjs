@@ -20,6 +20,7 @@ const PAGES = [
 	["docs-getting-started", "docs/getting-started/"],
 	["build-with-ai", "build-with-ai/"],
 	["build-with-ai-claude-code", "build-with-ai/claude-code/"],
+	["build-with-ai-skills", "build-with-ai/skills/"],
 	["compare", "compare/"],
 	["license", "license/"],
 	["credits", "credits/"],

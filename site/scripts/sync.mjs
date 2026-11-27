@@ -7,6 +7,7 @@
 //   public/docs/**.md          the raw markdown twin of every docs page (links absolute).
 //   public/AGENTS.md, README.md, LICENSE, llms.txt, llms-full.txt, scene.schema.json
 //                              served at the site root; llms*.txt are copied unchanged.
+//   public/skills/**           the agent skills (skills/**), raw markdown, links absolute.
 //   public/THIRD-PARTY-NOTICES.txt  licence texts of everything redistributed (notices.mjs).
 import {
 	cpSync,
@@ -70,9 +71,28 @@ function githubUrl(repoPath) {
 	return `${REPO_URL}/${kind}/${REPO_BRANCH}/${repoPath.replace(/\/$/, "")}`;
 }
 
+/** True for a markdown file of an agent skill (served raw under /skills/). */
+const isSkillFile = (repoPath) =>
+	repoPath.startsWith("skills/") && repoPath.endsWith(".md");
+
+/** Repo paths of every file under skills/, in repo order. */
+function skillFiles() {
+	const out = [];
+	const walk = (dir) => {
+		for (const name of readdirSync(join(REPO, dir)).sort()) {
+			const p = posix.join(dir, name);
+			if (statSync(join(REPO, p)).isDirectory()) walk(p);
+			else if (name.endsWith(".md")) out.push(p);
+		}
+	};
+	walk("skills");
+	return out;
+}
+
 /** Where a raw file of the repo is served on the site, or null. */
 function rawSiteUrl(repoPath) {
 	if (ROOT_FILES.includes(repoPath)) return `${SITE_URL}${BASE}${repoPath}`;
+	if (isSkillFile(repoPath)) return `${SITE_URL}${BASE}${repoPath}`;
 	if (pageSlugOf(repoPath) && repoPath.startsWith("docs/"))
 		return `${SITE_URL}${BASE}${repoPath}`;
 	return null;
@@ -102,7 +122,11 @@ function rewriteLinks(md, fromPath, mode) {
 			if (mode === "page") {
 				const slug = pageSlugOf(repoPath);
 				if (slug) url = `${BASE}${slug}/${anchor}`;
-				else if (repoPath === "llms.txt" || repoPath === "llms-full.txt")
+				else if (
+					repoPath === "llms.txt" ||
+					repoPath === "llms-full.txt" ||
+					isSkillFile(repoPath)
+				)
 					url = `${BASE}${repoPath}`;
 			} else {
 				const raw = rawSiteUrl(repoPath);
@@ -193,6 +217,7 @@ Short recipes, each pointing at a game that uses it: [browse the cookbook](${BAS
 function main() {
 	rmSync(CONTENT, { recursive: true, force: true });
 	rmSync(join(PUBLIC, "docs"), { recursive: true, force: true });
+	rmSync(join(PUBLIC, "skills"), { recursive: true, force: true });
 	const pages = docPages();
 	for (const repoPath of pages) {
 		const slug = pageSlugOf(repoPath);
@@ -219,11 +244,18 @@ function main() {
 		const out = f.endsWith(".md") ? rewriteLinks(src, f, "raw") : src;
 		writeFileSync(join(PUBLIC, f), out);
 	}
+	const skills = skillFiles();
+	for (const repoPath of skills) {
+		const out = join(PUBLIC, repoPath);
+		mkdirSync(dirname(out), { recursive: true });
+		const src = readFileSync(join(REPO, repoPath), "utf8");
+		writeFileSync(out, rewriteLinks(src, repoPath, "raw"));
+	}
 	for (const [from, to] of Object.entries(EXTRA_FILES))
 		cpSync(join(REPO, from), join(PUBLIC, to));
 	writeFileSync(join(PUBLIC, "THIRD-PARTY-NOTICES.txt"), buildNotices(REPO));
 	console.log(
-		`sync: ${pages.length} docs pages -> ${relative(REPO, CONTENT)}, raw twins and root files -> ${relative(REPO, PUBLIC)}`,
+		`sync: ${pages.length} docs pages -> ${relative(REPO, CONTENT)}, ${skills.length} skill files, raw twins and root files -> ${relative(REPO, PUBLIC)}`,
 	);
 }
 

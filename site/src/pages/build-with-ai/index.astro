@@ -1,13 +1,16 @@
 ---
 import AgentChecks from "../../components/AgentChecks.astro";
 import { agents } from "../../data/agents";
+import { skillCount } from "../../data/skills";
 import Base from "../../layouts/Base.astro";
 import { href } from "../../lib/site";
+
+const nSkills = skillCount();
 ---
 
 <Base
 	title="Build with AI"
-	description="Build Pebble3D games with Claude Code, Cursor, Codex or Copilot: the files each agent reads, a prompt that works, and the commands an agent runs to check its own work."
+	description="Build Pebble3D games with Claude Code, Cursor, Codex or Copilot. Agent skills make your agent interview you, write a brief, build a complete game and verify it with screenshots before it reports done."
 	nav="ai"
 >
 	<section class="wrap page-head">
@@ -21,6 +24,16 @@ import { href } from "../../lib/site";
 	</section>
 
 	<section class="wrap" aria-label="Agents" style="padding-bottom: 24px">
+		<a class="card skill-entry" href={href("build-with-ai/skills/")}>
+			<span class="k">Making a game?</span>
+			<span class="t sans">Ask in plain words. The agent interviews you first.</span>
+			<span class="d">
+				It asks at most six short questions, writes a brief for you to approve, then builds
+				a complete game: title, play, results and restart, with game feel and one committed
+				look. It verifies the game with screenshots and tests before it reports done.
+			</span>
+			<span class="go">The {nSkills} agent skills →</span>
+		</a>
 		<div class="grid agent-cards">
 			{
 				agents.map((a) => (
@@ -37,6 +50,11 @@ import { href } from "../../lib/site";
 	<article class="wrap prose">
 		<h2>What the agent reads</h2>
 		<ul>
+			<li>
+				<a href={href("build-with-ai/skills/")}>Agent skills</a>: markdown playbooks in
+				<code>skills/</code> (copied to <code>.claude/skills/</code>) for interviewing,
+				scaffolding, verifying and polishing a game.
+			</li>
 			<li>
 				<a href={href("docs/agents/")}><code>AGENTS.md</code></a>: where things are, the
 				commands, the invariants it must not break, and a before-you-finish checklist.

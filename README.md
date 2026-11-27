@@ -2,6 +2,12 @@
 
 A browser 3D engine: three.js 0.187 (WebGPU, with a WebGL fallback) for rendering, a Rust/WASM Rapier crate for physics, and Gaussian-splat environments. Scenes are plain JSON, validated by a schema, so an agent can write one without reading engine code.
 
+## Agent skills
+
+Ask a coding agent for a game in plain words and it does not start by writing code. The [agent skills](skills/README.md) in `skills/` have it ask at most six short questions (or write down defaults when it cannot ask), write a `BRIEF.md` for you to approve, then build a complete game: title, play, results and restart, with game feel, one committed art direction and a `?demo=1` bot. It verifies the game with tests and screenshots it has looked at before it reports done.
+
+Start with [skills/make-a-game/SKILL.md](skills/make-a-game/SKILL.md), which runs the others in this order: interview, brief, scaffold, build, game feel, art pass, complete loop, verify. Claude Code, Cursor and GitHub Copilot discover the copies in `.claude/skills/`; other agents find them through [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt). Overview: https://pebble3d.github.io/pebble3d/build-with-ai/skills/.
+
 ## Quickstart
 
 Requires Node 22.6 or newer (the Node scripts use `--experimental-strip-types`; the avatar GLB hash was verified on Node 25.2.1, see `.nvmrc`), pnpm, a Rust toolchain with the `wasm32-unknown-unknown` target, and `wasm-bindgen-cli` 0.2.130. `pnpm shot` also needs a Chromium for Playwright: run `pnpm exec playwright install chromium` once.

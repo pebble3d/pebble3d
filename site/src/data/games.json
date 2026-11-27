@@ -205,6 +205,10 @@
 				}
 			],
 			"caption": "Swarm Siege · thousands of instanced enemies from a worker",
+			"proof": {
+				"stat": "22,900",
+				"label": "live agents held at 60 fps in the best stress run"
+			},
 			"webglFallback": true
 		},
 		{
@@ -290,6 +294,10 @@
 				}
 			],
 			"caption": "Breakpoint · rigid-body demolition with an exact replay",
+			"proof": {
+				"stat": "3,166",
+				"label": "dynamic bodies simulated in a Web Worker"
+			},
 			"webglFallback": true
 		},
 		{
@@ -860,6 +868,10 @@
 				}
 			],
 			"caption": "Rockfall · engine spawners and up to 1,800 live bodies",
+			"proof": {
+				"stat": "1,800",
+				"label": "convex-hull rigid bodies on the fast build"
+			},
 			"webglFallback": true
 		},
 		{
@@ -945,6 +957,10 @@
 				}
 			],
 			"caption": "Lanternfall · a generated keep and raycast guards",
+			"proof": {
+				"stat": "10,000",
+				"label": "generated keeps flood-filled to prove every room is reachable"
+			},
 			"webglFallback": true
 		},
 		{

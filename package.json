@@ -11,7 +11,8 @@
 		"fetch-assets": "node scripts/fetch-assets.mjs",
 		"shot": "node scripts/shot/shot.mjs",
 		"docs:gen": "node scripts/docs/gen.mjs",
-		"build:site": "node scripts/build-site.mjs"
+		"build:site": "node scripts/build-site.mjs",
+		"skills:sync": "node scripts/skills/sync.mjs"
 	},
 	"engines": {
 		"node": ">=22.6"

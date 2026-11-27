@@ -4,6 +4,24 @@ Working rules for coding agents in the Pebble3D repo: where things are, the comm
 
 Pebble3D is a browser 3D engine: JSON scenes validated by a zod schema, rendered by three.js 0.187 (WebGPU, WebGL fallback), simulated by Rapier compiled from Rust to WebAssembly. New here? Read [docs/getting-started.md](docs/getting-started.md) first.
 
+## Skills
+
+For any request to make a game, start with `skills/make-a-game/SKILL.md` and follow it. It runs the other skills in this order: interview, brief, scaffold, build, game feel, art pass, complete loop, verify.
+
+| Skill                                                    | Use it for                                                                                  |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [make-a-game](skills/make-a-game/SKILL.md)               | Entry point: interview, brief, scaffold, build, game feel, art pass, complete loop, verify. |
+| [game-interview](skills/game-interview/SKILL.md)         | Turn a vague idea into a short design brief (with a non-interactive fallback).              |
+| [start-a-game](skills/start-a-game/SKILL.md)             | Scaffold a new app the way the demos are laid out and prove it boots.                       |
+| [verify-your-work](skills/verify-your-work/SKILL.md)     | What done means: tests, captures, sidecars, looking at every image.                         |
+| [engine-pitfalls](skills/engine-pitfalls/SKILL.md)       | Known engine traps as "if you see X, do Y".                                                 |
+| [game-feel](skills/game-feel/SKILL.md)                   | Hit-stop, shake, particles, buffering and sound that make actions land.                     |
+| [art-direction](skills/art-direction/SKILL.md)           | Commit to one look and judge captures against it.                                           |
+| [complete-game-loop](skills/complete-game-loop/SKILL.md) | Title, play, results, restart, a demo bot and a README.                                     |
+| [genre-playbooks](skills/genre-playbooks/SKILL.md)       | Per-genre recipes that reuse the shipped demo for that genre.                               |
+
+The same files are copied to `.claude/skills/`, where Claude Code, Cursor and GitHub Copilot discover project skills. Edit `skills/` only, then run `pnpm skills:sync`; a test fails if the copies are stale.
+
 ## Repo map
 
 | Path                                         | What it is                                                                                                                                                                       |
@@ -20,6 +38,7 @@ Pebble3D is a browser 3D engine: JSON scenes validated by a zod schema, rendered
 | `apps/field-notes`                           | Field Notes (5231): photography in Gaussian-splat captures, depth of field.                                                                                                      |
 | `apps/rockfall`                              | Rockfall (5240): survival under spawner-driven rock waves; boots renderer and sim itself.                                                                                        |
 | `apps/chain-reaction`                        | Chain Reaction (5250): JSON-level puzzle, headless Node verifier.                                                                                                                |
+| `skills`                                     | Agent skills: markdown playbooks for building a game, starting with `make-a-game`. Copied to `.claude/skills/` by `pnpm skills:sync`.                                            |
 | `scripts/shot`                               | `pnpm shot`: build, serve, render in Chromium, write PNG + JSON sidecar.                                                                                                         |
 | `scripts/docs`                               | `pnpm docs:gen`: regenerates the reference docs and `llms-full.txt`; drift-guard tests.                                                                                          |
 | `scripts/fetch-assets.mjs`, `scripts/assets` | Download and derive large assets per `apps/playground/assets.manifest.json`.                                                                                                     |
@@ -43,6 +62,7 @@ Pebble3D is a browser 3D engine: JSON scenes validated by a zod schema, rendered
 | Screenshot                                         | `pnpm shot --scene showcase --cam hero` or `pnpm shot --app rockfall --param demo=1 --ticks 600`                              |
 | Regenerate docs                                    | `pnpm docs:gen` (not `pnpm docs`, which is a pnpm builtin); `pnpm docs:gen --check` exits 1 if stale                          |
 | Regenerate `scene.schema.json` after a schema edit | `pnpm --filter @pebble3d/sdk schema`                                                                                          |
+| Copy `skills/` to `.claude/skills/`                | `pnpm skills:sync`                                                                                                            |
 | Chain Reaction headless verify                     | `pnpm --filter chain-reaction verify`                                                                                         |
 
 Details: [docs/verification.md](docs/verification.md).

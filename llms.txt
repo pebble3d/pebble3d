@@ -33,6 +33,20 @@ Write a scene as JSON, drive it from TypeScript with `createGame`, and verify it
 - [custom-camera](docs/cookbook/custom-camera.md): Driving the camera yourself: removing the orbit controls, follow and spring-arm cameras.
 - [owning-the-world](docs/cookbook/owning-the-world.md): Worlds your code creates, steps and draws next to `createGame`; stale views; `stateHash`.
 
+## Skills
+
+Agent playbooks for building a game with Pebble3D. For any request to make a game, start with make-a-game and follow it.
+
+- [make-a-game](skills/make-a-game/SKILL.md): the entry point; it runs the steps in this order, each with an exit check: interview, brief, scaffold, build, game feel, art pass, complete loop, verify.
+- [game-interview](skills/game-interview/SKILL.md): turn a vague idea into a short design brief the developer approves, with a non-interactive fallback.
+- [start-a-game](skills/start-a-game/SKILL.md): scaffold a new app under `apps/` the way the demos are laid out and prove it boots, captures and tests.
+- [verify-your-work](skills/verify-your-work/SKILL.md): what done means: tests, captures, sidecars, looking at every image, both backends.
+- [engine-pitfalls](skills/engine-pitfalls/SKILL.md): known engine traps as "if you see X, do Y", each linked to the full fix.
+- [game-feel](skills/game-feel/SKILL.md): hit-stop, shake, camera punch, particles, buffering and sound, tuned by watching capture sequences.
+- [art-direction](skills/art-direction/SKILL.md): commit to one look (palette, toon or PBR, lighting, post) and judge captures against it.
+- [complete-game-loop](skills/complete-game-loop/SKILL.md): title, play, results and restart, pause, HUD, a demo bot and a README.
+- [genre-playbooks](skills/genre-playbooks/SKILL.md): per-genre recipes that reuse the shipped demo for racers, platformers, tower defence and more.
+
 ## Examples
 
 - [Examples map](docs/examples.md): where each engine feature is used in the twelve showcase games and the playground, by file and line range.

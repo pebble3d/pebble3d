@@ -1,5 +1,6 @@
 ---
 import GameCard from "../components/GameCard.astro";
+import { SkillCount } from "../data/skills";
 import Base from "../layouts/Base.astro";
 import {
 	demoCount,
@@ -54,12 +55,47 @@ const pillars = [
 	},
 ];
 
+const proofs = games.flatMap((g) => (g.proof ? [{ game: g, ...g.proof }] : []));
+
+const nSkills = SkillCount();
+const steps = [
+	{
+		title: "Interview",
+		text: "At most six short questions on what your idea leaves open; defaults if it cannot ask.",
+	},
+	{
+		title: "Brief",
+		text: "A BRIEF.md with its assumptions marked, for you to approve before any code.",
+	},
+	{
+		title: "Build",
+		text: "A new app laid out like the demos, its core verbs, and a demo bot that plays them.",
+	},
+	{
+		title: "Feel",
+		text: "Hit-stop, shake, particles and sound, so every action visibly and audibly lands.",
+	},
+	{
+		title: "Art",
+		text: "One committed look for palette, lighting and post, judged against captures.",
+	},
+	{
+		title: "Verify",
+		text: "Title, play, results, restart. Tests pass and every capture is checked before it says done.",
+	},
+];
+
 const files = [
 	{ name: "/llms.txt", what: "index for LLMs", href: href("llms.txt") },
 	{
 		name: "/llms-full.txt",
 		what: "all docs, one file",
 		href: href("llms-full.txt"),
+	},
+	{
+		name: "skills/make-a-game",
+		what: "where a game request starts",
+		href: href("build-with-ai/skills/"),
 	},
 	{
 		name: "AGENTS.md",
@@ -83,7 +119,7 @@ const agents = [
 <Base
 	title="Pebble3D: the browser 3D game engine built for AI agents"
 	fullTitle
-	description="Pebble3D is a browser 3D game engine designed for LLMs: plain JSON scenes checked by a schema, deterministic Rust/WASM physics, WebGPU rendering with Gaussian splats, and headless screenshots to verify every change."
+	description="Pebble3D is a browser 3D game engine built for LLMs. Your coding agent interviews you, writes a brief, builds on JSON scenes and deterministic Rust/WASM physics, and verifies the game with headless screenshots."
 	jsonLd={engineJsonLd}
 >
 	<section class="wrap hero">
@@ -92,8 +128,9 @@ const agents = [
 			<h1>Describe a world.<br />Your agent builds it.</h1>
 			<p class="lede">
 				Pebble3D is a browser 3D engine designed for LLMs: worlds are plain JSON scenes
-				checked by a schema, physics is deterministic Rust compiled to WebAssembly, and
-				every change can be verified with a headless screenshot.
+				checked by a schema, and physics is deterministic Rust compiled to WebAssembly.
+				Ask for a game and your agent interviews you first, then checks its work with
+				headless screenshots.
 			</p>
 			<div class="btn-row">
 				<a class="btn btn-primary" href={href("demos/")}>Play the demos</a>
@@ -179,6 +216,46 @@ const agents = [
 				))
 			}
 		</div>
+	</section>
+
+	<section class="wrap proof-band" aria-labelledby="proof">
+		<h2 id="proof" class="section-title">The demos are the benchmarks</h2>
+		<p class="proof-sub">Measured in the shipped games, on the same engine you install.</p>
+		<div class="grid proof-grid">
+			{
+				proofs.map((p) => (
+					<a class="card proof" href={pageHref(p.game)}>
+						<span class="stat">{p.stat}</span>
+						<span class="label">{p.label}</span>
+						<span class="src">{p.game.name} →</span>
+					</a>
+				))
+			}
+		</div>
+	</section>
+
+	<section class="wrap flow" aria-labelledby="flow">
+		<div class="section-head">
+			<div>
+				<h2 id="flow" class="section-title">Ask for a game. Get a finished one.</h2>
+				<p class="proof-sub">
+					{nSkills} agent skills ship in the repo. A game request starts with
+					<code>make-a-game</code>, which runs them in order.
+				</p>
+			</div>
+			<a class="mono-link" href={href("build-with-ai/skills/")}>How the skills work →</a>
+		</div>
+		<ol class="card steps">
+			{
+				steps.map((s, i) => (
+					<li>
+						<span class="n">{String(i + 1).padStart(2, "0")}</span>
+						<span class="t">{s.title}</span>
+						<span class="d">{s.text}</span>
+					</li>
+				))
+			}
+		</ol>
 	</section>
 
 	<section class="wrap" aria-labelledby="demos" style="padding-bottom: 72px">

@@ -7,7 +7,15 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!packages/sdk/scene.schema.json", "!docs"]
+		"includes": [
+			"**",
+			"!packages/sdk/scene.schema.json",
+			"!docs",
+			"!skills",
+			"!.claude/skills",
+			"!.claude/worktrees",
+			"!.worktrees"
+		]
 	},
 	"formatter": {
 		"enabled": true,

@@ -1,0 +1,137 @@
+---
+import { SkillCount, skills } from "../../data/skills";
+import Base from "../../layouts/Base.astro";
+import { href, REPO_BRANCH, REPO_URL } from "../../lib/site";
+
+const [entry, ...rest] = skills;
+const Count = SkillCount();
+const fileName = (p: string) => p.split("/").pop() ?? p;
+const where = [
+	{
+		tool: "Claude Code",
+		path: ".claude/skills/",
+		note: "Loads them as project skills when started in the repo root.",
+	},
+	{
+		tool: "Cursor",
+		path: ".claude/skills/",
+		note: "Loads project skills from this folder for compatibility.",
+	},
+	{
+		tool: "GitHub Copilot",
+		path: ".claude/skills/",
+		note: "One of the folders it reads project skills from.",
+	},
+	{
+		tool: "Codex and others",
+		path: "AGENTS.md",
+		note: "Its Skills section sends any game request to make-a-game.",
+	},
+];
+---
+
+<Base
+	title="Agent skills for building games"
+	description={`${Count} markdown playbooks that walk a coding agent from a one-line game idea to a finished, verified Pebble3D game: interview, brief, scaffold, build, game feel, art pass, complete loop, verify.`}
+	nav="ai"
+>
+	<nav class="wrap breadcrumb" aria-label="Breadcrumb">
+		<a href={href("build-with-ai/")}>Build with AI</a> / Skills
+	</nav>
+	<section class="wrap page-head" style="padding-top: 16px">
+		<h1>Agent skills for building games</h1>
+		<p class="lede">
+			{Count} short markdown playbooks that take a coding agent from "make me a game
+			where..." to a game that boots, plays a full loop, looks deliberate and has the
+			captures to prove it. Each one is a checklist that links to the docs and the demo
+			code it is based on.
+		</p>
+	</section>
+
+	<section class="wrap" aria-label="Skills" style="padding-bottom: 24px">
+		{
+			entry && (
+				<a class="card skill-entry" href={href(entry.path)}>
+					<span class="k">Start here</span>
+					<span class="t">{entry.name}</span>
+					<span class="d">{entry.description}</span>
+					<span class="go">{entry.path} →</span>
+				</a>
+			)
+		}
+		<div class="grid skill-cards">
+			{
+				rest.map((s) => (
+					<div class="card skill-card">
+						<a class="t" href={href(s.path)}>
+							{s.name}
+						</a>
+						<p class="d">{s.description}</p>
+						{s.extras.length > 0 && (
+							<p class="x">
+								{s.extras.map((p) => (
+									<a href={href(p)}>{fileName(p)}</a>
+								))}
+							</p>
+						)}
+						<a class="go" href={href(s.path)}>
+							SKILL.md →
+						</a>
+					</div>
+				))
+			}
+		</div>
+		<p class="skill-order-note">
+			The cards follow the order make-a-game runs them in. verify-your-work comes last
+			as the full check, but its quick checks (a capture, the console, the tests) also
+			run at the end of every step from scaffold on.
+		</p>
+	</section>
+
+	<article class="wrap prose">
+		<h2>Where agents find them</h2>
+		<p>
+			The skills live in
+			<a href={`${REPO_URL}/tree/${REPO_BRANCH}/skills`}><code>skills/</code></a>, with a
+			copy in <code>.claude/skills/</code> for the tools that discover project
+			skills there.
+		</p>
+		<div class="table-wrap" tabindex="0" role="region" aria-label="Where agents find the skills">
+		<table class="stack">
+			<thead>
+				<tr><th>Tool</th><th>Reads</th><th>How</th></tr>
+			</thead>
+			<tbody>
+				{
+					where.map((w) => (
+						<tr>
+							<td>{w.tool}</td>
+							<td><code>{w.path}</code></td>
+							<td>{w.note}</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+		</div>
+
+		<h2>Using them</h2>
+		<p>
+			Ask for a game in plain words, for example <em>"make me a game where you herd
+			sheep with a dog before a storm hits"</em>. The agent asks at most six short
+			questions about what the request leaves open, writes a brief for you to approve,
+			then builds. If it cannot ask, it writes its assumptions into the brief and goes
+			ahead.
+		</p>
+		<p>
+			Every skill is also listed in <a href={href("llms.txt")}><code>llms.txt</code></a>,
+			and the rules every agent follows are in
+			<a href={href("docs/agents/")}><code>AGENTS.md</code></a>.
+		</p>
+
+		<p class="faint" style="font-size: 14px; margin-top: 3em">
+			Product names belong to their owners. Pebble3D is not affiliated with or endorsed by
+			any of them; this page only describes how the repo's files work with each tool.
+		</p>
+	</article>
+</Base>
