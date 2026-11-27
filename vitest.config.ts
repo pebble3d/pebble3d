@@ -20,6 +20,7 @@ export default defineConfig({
 			"apps/ringout",
 			"apps/pebble-garden",
 			"apps/drift-drone",
+			"apps/flowroll",
 			{
 				test: {
 					name: "scripts",

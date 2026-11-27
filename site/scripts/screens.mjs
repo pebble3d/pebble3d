@@ -17,6 +17,7 @@ const PAGES = [
 	["demo-breakpoint", "demos/breakpoint/"],
 	["demo-swarm-siege", "demos/swarm-siege/"],
 	["demo-skyrun", "demos/skyrun/"],
+	["demo-flowroll", "demos/flowroll/"],
 	["docs-getting-started", "docs/getting-started/"],
 	["build-with-ai", "build-with-ai/"],
 	["build-with-ai-claude-code", "build-with-ai/claude-code/"],

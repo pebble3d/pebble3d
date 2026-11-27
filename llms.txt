@@ -49,7 +49,7 @@ Agent playbooks for building a game with Pebble3D. For any request to make a gam
 
 ## Examples
 
-- [Examples map](docs/examples.md): where each engine feature is used in the twelve showcase games and the playground, by file and line range.
+- [Examples map](docs/examples.md): where each engine feature is used in the showcase games and the playground, by file and line range.
 
 ## Optional
 

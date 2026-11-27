@@ -26,7 +26,7 @@ Start with [docs/getting-started.md](docs/getting-started.md), then browse [docs
 
 ## Showcase games
 
-Twelve original games, each built to show off one strength of the engine. Each one plays a full loop, includes an autoplayer bot (`?demo=1`), and has unit tests. Run `pnpm --filter <app> dev`, then open the port listed below. Each game's README (`apps/<app>/README.md`) covers its controls, URL params, numbers and known issues. Play them online at https://pebble3d.github.io/pebble3d/demos/.
+Original games, each built to show off one strength of the engine. Each one plays a full loop, includes an autoplayer bot (`?demo=1`), and has unit tests. Run `pnpm --filter <app> dev`, then open the port listed below. Each game's README (`apps/<app>/README.md`) covers its controls, URL params, numbers and known issues. Play them online at https://pebble3d.github.io/pebble3d/demos/.
 
 | Game           | App              | Port | What it shows off                                                                                                                                            |
 | -------------- | ---------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -42,6 +42,7 @@ Twelve original games, each built to show off one strength of the engine. Each o
 | Pebble Garden  | `pebble-garden`  | 5290 | A physics sandbox and level editor: gardens export as schema-valid scene JSON, import with readable errors, and play and rewind exactly                      |
 | Swarm Siege    | `swarm-siege`    | 5300 | Tower defence against thousands of instanced enemies simulated in a Web Worker, with raycast camera picking and spawner debris                               |
 | Drift Drone    | `drift-drone`    | 5310 | An FPV drone flown by thrust and torque impulses through a Gaussian-splat capture, with a re-simulated ghost and a depth-of-field photo finish               |
+| Flowroll       | `flowroll`       | 5390 | Brazilian jiu-jitsu as positional chess: a deterministic position graph of moves and counters, hand-keyed jointed mannequins, and a replay of the finish     |
 
 Linux Chromium needs WebGPU switched on: `chromium --enable-unsafe-webgpu --enable-features=Vulkan --use-angle=vulkan`. If WebGPU isn't available, `?backend=webgl` uses the WebGL fallback.
 
