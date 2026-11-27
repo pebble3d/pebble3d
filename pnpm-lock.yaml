@@ -133,25 +133,6 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1(@types/node@26.6.7)(vite@8.3.8(@types/node@26.6.7)(yaml@2.9.1))
 
-  apps/flowroll:
-    dependencies:
-      '@pebble3d/renderer':
-        specifier: workspace:*
-        version: link:../../packages/renderer
-      '@pebble3d/sdk':
-        specifier: workspace:*
-        version: link:../../packages/sdk
-      three:
-        specifier: 0.187.0
-        version: 0.187.0
-    devDependencies:
-      vite:
-        specifier: ^8.3.8
-        version: 8.3.8(@types/node@26.6.7)(yaml@2.9.1)
-      vitest:
-        specifier: ^5.1.1
-        version: 5.1.1(@types/node@26.6.7)(vite@8.3.8(@types/node@26.6.7)(yaml@2.9.1))
-
   apps/ghostline:
     dependencies:
       '@pebble3d/renderer':
