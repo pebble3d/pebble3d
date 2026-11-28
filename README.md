@@ -1,5 +1,9 @@
 # Pebble3D
 
+<p align="center"><a href="https://pebble3d.github.io/pebble3d/demos/"><img src="docs/media/hero.gif" width="480" alt="Five Pebble3D demos played by their demo bots: Swarm Siege, Breakpoint, Ronin Outpost, Drift Drone and Ringout"></a></p>
+
+<p align="center"><b><a href="https://pebble3d.github.io/pebble3d/demos/">Play the demos in your browser</a></b> · <a href="https://pebble3d.github.io/pebble3d/">Site</a> · <a href="skills/README.md">Agent skills</a> · Free to use, including commercially, under $50k annual revenue (<a href="LICENSE">license</a>)</p>
+
 A browser 3D engine: three.js 0.187 (WebGPU, with a WebGL fallback) for rendering, a Rust/WASM Rapier crate for physics, and Gaussian-splat environments. Scenes are plain JSON, validated by a schema, so an agent can write one without reading engine code.
 
 ## Agent skills

@@ -46,7 +46,7 @@ import { WorldView } from "./game/view/world-view.ts";
  *   worker=0|1         sim in a Web Worker (default 1 in realtime; fixed mode always inline)
  *   build=fast|deterministic   wasm build (default: the scene's, fast)
  *   mode=realtime|fixed, ticks=<n>   fixed = one tick per frame (captures), stop at tick n
- *   backend=webgpu|webgl, hud=0, mute=1, cam=<preset>
+ *   backend=webgpu|webgl, hud=0, perf=0 (hide the perf panel), mute=1, cam=<preset>
  *   camYaw/camPitch/camDist/camX/camZ   camera overrides; drift=<rad/s> slow orbit
  *   select=<tower index>  show that tower's selection card (captures)
  *   ghost=<type>@<x>,<z>  show a placement ghost at world (x, z) (captures)
@@ -84,6 +84,7 @@ function readParams(search: string) {
 		stopAtTick: num("ticks"),
 		backend: backend as "webgpu" | "webgl",
 		hud: q.get("hud") !== "0",
+		perf: q.get("perf") !== "0",
 		mute: q.get("mute") === "1",
 		cam: q.get("cam"),
 		camYaw: num("camYaw"),
@@ -188,6 +189,12 @@ async function main(): Promise<void> {
 				p.stress,
 			)
 		: null;
+	// perf=0: hide the perf panel. Fixed-mode captures hold each frame for a screenshot, so
+	// its fps reading there is meaningless.
+	if (!p.perf)
+		hudRoot
+			.querySelector<HTMLElement>(".panel.perf")
+			?.style.setProperty("display", "none");
 	if (!p.demo) {
 		window.addEventListener("keydown", (e) => {
 			const ph = phase();

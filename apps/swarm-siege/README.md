@@ -45,14 +45,14 @@ pnpm install && pnpm build:wasm      # first time only; no downloaded assets are
 pnpm --filter swarm-siege dev        # http://localhost:5300/
 ```
 
-| URL                                            | What you get                                                                                                  |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `/`                                            | Play: title, then waves with build phases, then the result screen                                             |
-| `/?demo=1`                                     | The autoplayer places towers by camera-ray pick, upgrades them, calls waves early and restarts after a result |
-| `/?demo=1&wave=12&gold=3000`                   | The final wave, at full size                                                                                  |
-| `/?stress=1&rate=1000`                         | Perf stress: an endless stream of Mites that loop back to the rifts (no towers, no deaths)                    |
-| `/?worker=0`                                   | Run the sim on the main thread                                                                                |
-| `/?build=deterministic`, `/?hud=0`, `/?mute=1` | Other wasm build, HUD off, sound off                                                                          |
+| URL                                                        | What you get                                                                                                  |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `/`                                                        | Play: title, then waves with build phases, then the result screen                                             |
+| `/?demo=1`                                                 | The autoplayer places towers by camera-ray pick, upgrades them, calls waves early and restarts after a result |
+| `/?demo=1&wave=12&gold=3000`                               | The final wave, at full size                                                                                  |
+| `/?stress=1&rate=1000`                                     | Perf stress: an endless stream of Mites that loop back to the rifts (no towers, no deaths)                    |
+| `/?worker=0`                                               | Run the sim on the main thread                                                                                |
+| `/?build=deterministic`, `/?hud=0`, `/?perf=0`, `/?mute=1` | Other wasm build, HUD off, perf panel off (clean captures), sound off                                         |
 
 All parameters are listed at the top of `src/main.ts`.
 
